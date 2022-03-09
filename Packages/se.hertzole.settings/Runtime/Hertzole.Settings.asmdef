@@ -1,0 +1,30 @@
+{
+    "name": "Hertzole.Settings",
+    "rootNamespace": "Hertzole.Settings",
+    "references": [
+        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+        "GUID:84651a3751eca9349aac36a66bba901b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.localization",
+            "expression": "",
+            "define": "HERTZ_SETTINGS_LOCALIZATION"
+        },
+        {
+            "name": "com.unity.modules.uielements",
+            "expression": "",
+            "define": "HERTZ_SETTINGS_UIELEMENTS"
+        }
+    ],
+    "noEngineReferences": false
+}

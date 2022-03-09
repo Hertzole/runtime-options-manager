@@ -1,0 +1,146 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
+using UnityEngine;
+
+namespace Hertzole.Settings
+{
+	[DefaultExecutionOrder(-10000)]
+	public class SettingsManager : MonoBehaviour
+	{
+		[SerializeField]
+		private SettingsObject settings = default;
+		[SerializeField]
+		private bool singleton = true;
+
+		[Header("Saving")]
+		[SerializeField]
+		private bool autoSaveSettings = true;
+		[SerializeField]
+		private bool prettyPrint = false;
+
+		[Header("Loading")]
+		[SerializeField] 
+		private bool loadOnStart = default;
+
+		private bool dirtySave;
+
+		private readonly Dictionary<string, object> settingData = new Dictionary<string, object>();
+
+		private float saveTime;
+
+		private readonly ISettingSerializer serializer = new SettingSerializer();
+
+		private static SettingsManager instance;
+
+		private Formatting JsonFormat { get { return prettyPrint ? Formatting.Indented : Formatting.None; } }
+
+		private void Awake()
+		{
+			if (singleton)
+			{
+				if (instance != null && instance != this)
+				{
+					Destroy(gameObject);
+					return;
+				}
+
+				instance = this;
+				DontDestroyOnLoad(gameObject);
+			}
+		}
+
+		private void Start()
+		{
+			if (loadOnStart)
+			{
+				LoadSettings();
+			}
+		}
+
+		private void OnEnable()
+		{
+			for (int i = 0; i < settings.Categories.Length; i++)
+			{
+				for (int j = 0; j < settings.Categories[i].Settings.Length; j++)
+				{
+					settings.Categories[i].Settings[j].OnSettingChanged += OnAnySettingChanged;
+				}
+			}
+		}
+
+		private void OnDisable()
+		{
+			for (int i = 0; i < settings.Categories.Length; i++)
+			{
+				for (int j = 0; j < settings.Categories[i].Settings.Length; j++)
+				{
+					settings.Categories[i].Settings[j].OnSettingChanged -= OnAnySettingChanged;
+				}
+			}
+		}
+
+		private void Update()
+		{
+			if (autoSaveSettings && dirtySave && Time.unscaledTime >= saveTime)
+			{
+				SaveSettings();
+			}
+		}
+
+		private void OnDestroy()
+		{
+			if (singleton && instance == this)
+			{
+				instance = null;
+			}
+		}
+		
+		private void OnAnySettingChanged()
+		{
+			dirtySave = true;
+			saveTime = Time.unscaledTime + 1f;
+		}
+
+		public void SaveSettings()
+		{
+			if (!dirtySave)
+			{
+				return;
+			}
+
+			dirtySave = false;
+			serializer.FillData(settings, settingData);
+			string json = serializer.SerializeToJson(settingData, JsonFormat);
+
+			File.WriteAllText(Application.persistentDataPath + "/settings.json", json);
+			Debug.Log("Saved settings");
+		}
+
+		public void LoadSettings()
+		{
+			if (!File.Exists(Application.persistentDataPath + "/settings.json"))
+			{
+				return;
+			}
+
+			serializer.DeserializeFromJson(File.ReadAllText(Application.persistentDataPath + "/settings.json"), settingData);
+			foreach (KeyValuePair<string, object> setting in settingData)
+			{
+				if (settings.TryGetSetting(setting.Key, out Setting settingObject))
+				{
+					settingObject.SetSerializedValue(setting.Value);
+				}
+			}
+		}
+
+#if UNITY_EDITOR
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+		private static void ResetStatics()
+		{
+			instance = null;
+		}
+#endif
+	}
+}

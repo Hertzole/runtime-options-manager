@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1733b69937f84c0990b3a245c3a43003, type: 3}
+  m_Name: New Fullscreen Mode Setting
+  m_EditorClassIdentifier: 
+  displayName: Fullscreen Mode
+  displayNameLocalized:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  identifier: fullscreen_mode
+  uiElement: {fileID: 9197481963319205126, guid: 68a54ba21f269944bb6169a2babbfc68, type: 3}
+  defaultValue: 0
+  references:
+    version: 2
+    RefIds: []
