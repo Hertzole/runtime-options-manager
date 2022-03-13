@@ -21,20 +21,22 @@ namespace Hertzole.Settings
 		private bool prettyPrint = false;
 
 		[Header("Loading")]
-		[SerializeField] 
-		private bool loadOnStart = default;
+		[SerializeField]
+		private bool loadOnStart = true;
 
 		private bool dirtySave;
 
 		private readonly Dictionary<string, object> settingData = new Dictionary<string, object>();
 
 		private float saveTime;
-
-		private readonly ISettingSerializer serializer = new SettingSerializer();
+		
+		private readonly List<string> excludedSettings = new List<string>();
 
 		private static SettingsManager instance;
 
 		private Formatting JsonFormat { get { return prettyPrint ? Formatting.Indented : Formatting.None; } }
+
+		public ISettingSerializer Serializer { get; set; } = new SettingSerializer();
 
 		private void Awake()
 		{
@@ -56,6 +58,18 @@ namespace Hertzole.Settings
 			if (loadOnStart)
 			{
 				LoadSettings();
+			}
+			else
+			{
+				SetDefaultValues();
+			}
+		}
+
+		private void Update()
+		{
+			if (autoSaveSettings && dirtySave && Time.unscaledTime >= saveTime)
+			{
+				SaveSettings();
 			}
 		}
 
@@ -81,14 +95,6 @@ namespace Hertzole.Settings
 			}
 		}
 
-		private void Update()
-		{
-			if (autoSaveSettings && dirtySave && Time.unscaledTime >= saveTime)
-			{
-				SaveSettings();
-			}
-		}
-
 		private void OnDestroy()
 		{
 			if (singleton && instance == this)
@@ -96,7 +102,7 @@ namespace Hertzole.Settings
 				instance = null;
 			}
 		}
-		
+
 		private void OnAnySettingChanged()
 		{
 			dirtySave = true;
@@ -111,26 +117,45 @@ namespace Hertzole.Settings
 			}
 
 			dirtySave = false;
-			serializer.FillData(settings, settingData);
-			string json = serializer.SerializeToJson(settingData, JsonFormat);
+			Serializer.FillData(settings, settingData);
+			string json = Serializer.SerializeToJson(settingData, JsonFormat);
 
 			File.WriteAllText(Application.persistentDataPath + "/settings.json", json);
-			Debug.Log("Saved settings");
 		}
 
 		public void LoadSettings()
 		{
 			if (!File.Exists(Application.persistentDataPath + "/settings.json"))
 			{
+				SetDefaultValues();
 				return;
 			}
 
-			serializer.DeserializeFromJson(File.ReadAllText(Application.persistentDataPath + "/settings.json"), settingData);
+			excludedSettings.Clear();
+
+			Serializer.DeserializeFromJson(File.ReadAllText(Application.persistentDataPath + "/settings.json"), settingData);
 			foreach (KeyValuePair<string, object> setting in settingData)
 			{
 				if (settings.TryGetSetting(setting.Key, out Setting settingObject))
 				{
 					settingObject.SetSerializedValue(setting.Value);
+					excludedSettings.Add(setting.Key);
+				}
+			}
+
+			SetDefaultValues(excludedSettings);
+		}
+
+		public void SetDefaultValues(IList<string> excluding = null)
+		{
+			for (int i = 0; i < settings.Categories.Length; i++)
+			{
+				for (int j = 0; j < settings.Categories[i].Settings.Length; j++)
+				{
+					if (excluding == null || !excluding.Contains(settings.Categories[i].Settings[j].Identifier))
+					{
+						settings.Categories[i].Settings[j].SetSerializedValue(settings.Categories[i].Settings[j].GetDefaultValue());
+					}
 				}
 			}
 		}

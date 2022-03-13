@@ -26,6 +26,8 @@ namespace Hertzole.Settings
 #if UNITY_EDITOR
 		[Header("UI")]
 #endif
+		[SerializeField]
+		protected GameObject uiPrefab = default;
 #if HERTZ_SETTINGS_UIELEMENTS
 		[SerializeField]
 		protected VisualTreeAsset uiElement = default;
@@ -37,12 +39,16 @@ namespace Hertzole.Settings
 #endif
 		public string Identifier { get { return identifier; } set { identifier = value; } }
 		
+		public GameObject UiPrefab { get { return uiPrefab; } set { uiPrefab = value; } }
+		
 		public virtual bool CanSave { get { return true; } }
 
 		public event Action OnSettingChanged;
 
+		public abstract object GetDefaultValue();
+
 		public abstract void SetSerializedValue(object newValue);
-		
+
 		public virtual object GetSerializeValue()
 		{
 			return null;
@@ -51,6 +57,11 @@ namespace Hertzole.Settings
 		protected void InvokeOnSettingChanged()
 		{
 			OnSettingChanged?.Invoke();
+		}
+
+		public virtual GameObject CreateUIObject(Setting targetSetting, Transform parent)
+		{
+			return Instantiate(uiPrefab, parent);
 		}
 
 #if HERTZ_SETTINGS_UIELEMENTS
@@ -91,6 +102,11 @@ namespace Hertzole.Settings
 				OnValueChanged?.Invoke(value);
 				InvokeOnSettingChanged();
 			}
+		}
+
+		public override object GetDefaultValue()
+		{
+			return defaultValue;
 		}
 
 		public override void SetSerializedValue(object newValue)

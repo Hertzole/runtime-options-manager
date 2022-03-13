@@ -100,7 +100,7 @@
       }
     },
     "se.hertzole.settings": {
-      "version": "file:se.hertzole.settings",
+      "version": "file:se.hertzole.settings-manager",
       "depth": 0,
       "source": "embedded",
       "dependencies": {

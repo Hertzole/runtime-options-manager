@@ -7,7 +7,7 @@ namespace Hertzole.Settings
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Audio Setting", menuName = "Hertzole/Settings/Audio Setting")]
 #endif
-	public class AudioSetting : Setting<int>
+	public class AudioSetting : Setting<int>, IMinMaxInt, ICanHaveSlider
 	{
 		[SerializeField]
 		private bool hasMinValue = true;
@@ -17,6 +17,8 @@ namespace Hertzole.Settings
 		private bool hasMaxValue = true;
 		[SerializeField]
 		private int maxValue = 100;
+		[SerializeField] 
+		private bool enableSlider = true;
 		[SerializeField]
 		private AudioMixerGroup mixerGroup = default;
 		[SerializeField]
@@ -27,6 +29,9 @@ namespace Hertzole.Settings
 
 		public int MinValue { get { return minValue; } set { minValue = value; } }
 		public int MaxValue { get { return maxValue; } set { maxValue = value; } }
+	
+		public bool EnableSlider { get { return enableSlider; } set { enableSlider = value; } }
+		public bool WholeSliderNumbers { get { return true; } }
 
 		public AudioMixerGroup MixerGroup { get { return mixerGroup; } set { mixerGroup = value; } }
 		public string TargetProperty { get { return targetProperty; } set { targetProperty = value; } }
@@ -45,21 +50,33 @@ namespace Hertzole.Settings
 			if (newValue != value)
 			{
 				InvokeOnValueChanging(value);
-				if (mixerGroup != null)
-				{
-					float volume = value / 100f;
-					mixerGroup.audioMixer.SetFloat(targetProperty, volume <= 0 ? -80f : Mathf.Log10(volume) * 20);
-				}
 
+				UpdateVolume(newValue);
 				value = newValue;
 				
 				InvokeOnValueChanged(value);
+				InvokeOnSettingChanged();
 			}
 		}
 
 		protected override int TryConvertValue(object newValue)
 		{
 			return Convert.ToInt32(newValue);
+		}
+
+		public override void SetSerializedValue(object newValue)
+		{
+			base.SetSerializedValue(newValue);
+			UpdateVolume(value);
+		}
+
+		private void UpdateVolume(int newValue)
+		{
+			if (mixerGroup != null)
+			{
+				float volume = newValue == 0 ? 0 : newValue / 100f;
+				mixerGroup.audioMixer.SetFloat(targetProperty, volume <= 0 ? -80f : Mathf.Log10(volume) * 20);
+			}
 		}
 	}
 }

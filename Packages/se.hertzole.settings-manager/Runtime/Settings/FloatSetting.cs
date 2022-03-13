@@ -6,7 +6,7 @@ namespace Hertzole.Settings
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Float Setting", menuName = "Hertzole/Settings/Float Setting")]
 #endif
-	public class FloatSetting : Setting<float>
+	public class FloatSetting : Setting<float>, IMinMaxFloat, ICanHaveSlider
 	{
 		[SerializeField]
 		private bool hasMinValue = default;
@@ -16,12 +16,18 @@ namespace Hertzole.Settings
 		private bool hasMaxValue = default;
 		[SerializeField]
 		private float maxValue = default;
+		[SerializeField] 
+		private bool enableSlider = default;
+		[SerializeField] 
+		private bool wholeSliderNumbers = false;
 
 		public bool HasMinValue { get { return hasMinValue; } set { hasMinValue = value; } }
 		public bool HasMaxValue { get { return hasMaxValue; } set { hasMaxValue = value; } }
 
 		public float MinValue { get { return minValue; } set { minValue = value; } }
 		public float MaxValue { get { return maxValue; } set { maxValue = value; } }
+		public bool EnableSlider { get { return enableSlider; } set { enableSlider = value; } }
+		public bool WholeSliderNumbers { get { return wholeSliderNumbers; } set { wholeSliderNumbers = value; } }
 
 		protected override void SetValue(float newValue)
 		{

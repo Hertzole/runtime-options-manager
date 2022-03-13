@@ -1,7 +1,7 @@
 {
   "name": "se.hertzole.settings",
   "version": "0.1.0-preview",
-  "displayName": "Settings",
+  "displayName": "Settings Manager",
   "description": "Settings package",
   "unity": "2020.3",
   "unityRelease": "0f1",
@@ -16,5 +16,12 @@
     "name": "Hertzole",
     "email": "contact@hertzole.se",
     "url": "https://www.hertzole.se"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "uGUI Example",
+      "description": "Example scene with a simple uGUI setup.",
+      "path": "Samples~/uGUI Example"
+    }
+  ]
 }
