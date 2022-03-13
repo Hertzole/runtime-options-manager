@@ -1,0 +1,27 @@
+{
+  "name": "se.hertzole.settings",
+  "version": "0.1.0-preview",
+  "displayName": "Settings Manager",
+  "description": "Settings package",
+  "unity": "2020.3",
+  "unityRelease": "0f1",
+  "dependencies": {
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.nuget.newtonsoft-json": "3.0.1"
+  },
+  "keywords": [
+    "settings"
+  ],
+  "author": {
+    "name": "Hertzole",
+    "email": "contact@hertzole.se",
+    "url": "https://www.hertzole.se"
+  },
+  "samples": [
+    {
+      "displayName": "uGUI Example",
+      "description": "Example scene with a simple uGUI setup.",
+      "path": "Samples~/uGUI Example"
+    }
+  ]
+}
