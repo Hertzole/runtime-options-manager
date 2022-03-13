@@ -31,6 +31,7 @@ MonoBehaviour:
   hasMaxValue: 1
   maxValue: 360
   enableSlider: 1
+  wholeSliderNumbers: 1
   references:
     version: 2
     RefIds: []

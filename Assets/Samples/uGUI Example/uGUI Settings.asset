@@ -26,7 +26,6 @@ MonoBehaviour:
     settings:
     - {fileID: 11400000, guid: 5dfb5274caa4463498ccd30347f59c21, type: 2}
     - {fileID: 11400000, guid: 8ea39d970b5c4a34f8096415f8956b27, type: 2}
-    - {fileID: 11400000, guid: 70b9fc85b705b8947b858ff50425c8f0, type: 2}
   - displayName: Cube
     displayNameLocalized:
       m_TableReference:
