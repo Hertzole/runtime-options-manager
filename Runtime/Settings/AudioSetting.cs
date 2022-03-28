@@ -20,7 +20,7 @@ namespace Hertzole.Settings
 		[SerializeField] 
 		private bool enableSlider = true;
 		[SerializeField]
-		private AudioMixerGroup mixerGroup = default;
+		private AudioMixer targetAudioMixer = default;
 		[SerializeField]
 		private string targetProperty = default;
 
@@ -33,7 +33,7 @@ namespace Hertzole.Settings
 		public bool EnableSlider { get { return enableSlider; } set { enableSlider = value; } }
 		public bool WholeSliderNumbers { get { return true; } }
 
-		public AudioMixerGroup MixerGroup { get { return mixerGroup; } set { mixerGroup = value; } }
+		public AudioMixer TargetAudioMixer { get { return targetAudioMixer; } set { targetAudioMixer = value; } }
 		public string TargetProperty { get { return targetProperty; } set { targetProperty = value; } }
 
 		protected override void SetValue(int newValue)
@@ -72,10 +72,10 @@ namespace Hertzole.Settings
 
 		private void UpdateVolume(int newValue)
 		{
-			if (mixerGroup != null)
+			if (targetAudioMixer != null)
 			{
 				float volume = newValue == 0 ? 0 : newValue / 100f;
-				mixerGroup.audioMixer.SetFloat(targetProperty, volume <= 0 ? -80f : Mathf.Log10(volume) * 20);
+				targetAudioMixer.SetFloat(targetProperty, volume <= 0 ? -80f : Mathf.Log10(volume) * 20);
 			}
 		}
 	}
