@@ -101,6 +101,11 @@ namespace Hertzole.Settings
 			{
 				instance = null;
 			}
+
+			if (dirtySave)
+			{
+				SaveSettings();
+			}
 		}
 
 		private void OnAnySettingChanged()
