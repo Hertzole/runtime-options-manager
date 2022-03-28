@@ -34,7 +34,7 @@ namespace Hertzole.Settings
 			return LocalizationSettings.SelectedLocale;
 		}
 
-#if HERTZ_SETTINGS_UIELEMENTS
+#if HERTZ_SETTINGS_UIELEMENTS && UNITY_2021_2_OR_NEWER
 		public override VisualElement CreateUIElement()
 		{
 			if (uiElement == null)
