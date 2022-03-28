@@ -63,6 +63,8 @@ namespace Hertzole.Settings
 		[SerializeField]
 		private LocalizedString displayNameLocalized = default;
 #endif
+		[SerializeField] 
+		private Sprite icon = default;
 		[SerializeField]
 		private Setting[] settings = default;
 
@@ -70,6 +72,7 @@ namespace Hertzole.Settings
 #if HERTZ_SETTINGS_LOCALIZATION
 		public LocalizedString DisplayNameLocalized { get { return displayNameLocalized; } set { displayNameLocalized = value; } }
 #endif
+		public Sprite Icon { get { return icon; } set { icon = value; } }
 		public Setting[] Settings { get { return settings; } set { settings = value; } }
 	}
 }

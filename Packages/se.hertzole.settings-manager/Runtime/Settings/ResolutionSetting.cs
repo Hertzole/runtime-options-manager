@@ -9,11 +9,27 @@ namespace Hertzole.Settings
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Resolution Setting", menuName = "Hertzole/Settings/Resolution Setting")]
 #endif
-	public class ResolutionSetting : Setting<Resolution>
+	public class ResolutionSetting : Setting<Resolution>, IDropdownValues
 	{
+		[SerializeField]
+		private string resolutionFormat = "{0}x{1}";
+		
 		protected Resolution[] uniqueResolutions = null;
 
 		public override bool CanSave { get { return false; } }
+
+		protected override void SetValue(Resolution newValue)
+		{
+			if (!value.Equals(newValue))
+			{
+				InvokeOnValueChanging(value);
+				value = newValue;
+				InvokeOnValueChanged(value);
+				InvokeOnSettingChanged();
+
+				Screen.SetResolution(newValue.width, newValue.height, Screen.fullScreenMode);
+			}
+		}
 
 		protected override Resolution TryConvertValue(object newValue)
 		{
@@ -60,7 +76,7 @@ namespace Hertzole.Settings
 		}
 #endif
 
-		protected virtual Resolution[] GetUniqueResolutions()
+		public virtual Resolution[] GetUniqueResolutions()
 		{
 			if (uniqueResolutions != null)
 			{
@@ -90,6 +106,45 @@ namespace Hertzole.Settings
 			uniqueResolutions = resolutions.ToArray();
 
 			return uniqueResolutions;
+		}
+
+		public void SetDropdownValue(int index)
+		{
+			GetUniqueResolutions();
+			
+			Screen.SetResolution(uniqueResolutions[index].width, uniqueResolutions[index].height, Screen.fullScreen);
+		}
+
+		public int GetDropdownValue()
+		{
+			GetUniqueResolutions();
+			
+			int index = 0;
+
+			for (int i = 0; i < uniqueResolutions.Length; i++)
+			{
+				if (uniqueResolutions[i].width == Screen.width && uniqueResolutions[i].height == Screen.height)
+				{
+					index = i;
+					break;
+				}
+			}
+
+			return index;
+		}
+
+		public IReadOnlyList<(string text, Sprite icon)> GetDropdownValues()
+		{
+			GetUniqueResolutions();
+			
+			List<(string text, Sprite icon)> values = new List<(string text, Sprite icon)>();
+
+			for (int i = 0; i < uniqueResolutions.Length; i++)
+			{
+				values.Add((string.Format(resolutionFormat, uniqueResolutions[i].width, uniqueResolutions[i].height), null));
+			}
+
+			return values;
 		}
 	}
 }
