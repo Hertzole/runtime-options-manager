@@ -1,7 +1,9 @@
 ﻿#if HERTZ_SETTINGS_INPUTSYSTEM
 using System;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 namespace Hertzole.Settings
 {
@@ -23,7 +25,73 @@ namespace Hertzole.Settings
 			return default;
 		}
 
-		public override void SetSerializedValue(object newValue) { }
+		public override void SetSerializedValue(object newValue)
+		{
+			if (newValue is JObject json)
+			{
+				InputActionData actionData = json.ToObject<InputActionData>();
+				SetSerializedValue(actionData);
+			}
+			else if (newValue is InputActionData actionData)
+			{
+				if (targetAction.action.id.ToString() != actionData.id)
+				{
+					return;
+				}
+
+				ReadOnlyArray<InputBinding> actionBindings = targetAction.action.bindings;
+				for (int i = 0; i < actionData.bindings.Length; i++)
+				{
+					if (!actionData.bindings[i].isOverwritten)
+					{
+						continue;
+					}
+
+					for (int j = 0; j < actionBindings.Count; j++)
+					{
+						if (actionBindings[j].id.ToString() == actionData.bindings[i].id)
+						{
+							InputBinding binding = actionBindings[j];
+							binding.overridePath = actionData.bindings[i].path;
+							targetAction.action.ApplyBindingOverride(binding);
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				throw new ArgumentException("InputSetting.SetSerializedValue: newValue must be a JObject or InputActionData.");
+			}
+		}
+
+		public override object GetSerializeValue()
+		{
+			string actionId = targetAction.action.id.ToString();
+
+			InputBindingData[] bindingData = new InputBindingData[bindings.Length];
+
+			for (int i = 0; i < bindings.Length; i++)
+			{
+				string bindingId = bindings[i].bindingId;
+				string path = string.Empty;
+				ReadOnlyArray<InputBinding> actionBindings = targetAction.action.bindings;
+				bool hasOverrides = false;
+				for (int j = 0; j < actionBindings.Count; j++)
+				{
+					if (actionBindings[j].id.ToString() == bindingId)
+					{
+						hasOverrides = actionBindings[j].hasOverrides;
+						path = hasOverrides ? actionBindings[j].overridePath : actionBindings[j].path;
+						break;
+					}
+				}
+
+				bindingData[i] = new InputBindingData(bindingId, path, hasOverrides);
+			}
+
+			return new InputActionData(actionId, bindingData);
+		}
 
 		public InputActionRebindingExtensions.RebindingOperation StartRebind(PlayerInput targetInput, out bool isComposite, out int bindingIndex)
 		{
@@ -42,6 +110,11 @@ namespace Hertzole.Settings
 			isComposite = action.bindings[bindingIndex].isComposite;
 			action.Disable();
 			return action.PerformInteractiveRebinding(bindingIndex);
+		}
+
+		public void FinishRebind()
+		{
+			InvokeOnSettingChanged();
 		}
 
 		public bool ResetToDefault(PlayerInput targetInput)
@@ -76,6 +149,7 @@ namespace Hertzole.Settings
 					return bindings[i].bindingId;
 				}
 			}
+
 			Debug.LogError($"Cannot find a target binding for control scheme '{input.currentControlScheme}' in '{name}'.", this);
 
 			return string.Empty;
