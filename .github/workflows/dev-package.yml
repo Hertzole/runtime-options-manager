@@ -20,7 +20,7 @@ jobs:
         mv /tmp/README.md README.md
         git add README.md
         mkdir "Samples~"
-        mv /tmp/example/ "Samples~/"
+        mv /tmp/example/* "Samples~/"
         git add "Samples~"
         git config --global user.name 'github-bot'
         git config --global user.email 'github-bot@users.noreply.github.com'
