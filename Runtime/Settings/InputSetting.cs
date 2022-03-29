@@ -59,10 +59,6 @@ namespace Hertzole.Settings
 					}
 				}
 			}
-			else
-			{
-				throw new ArgumentException("InputSetting.SetSerializedValue: newValue must be a JObject or InputActionData.");
-			}
 		}
 
 		public override object GetSerializeValue()
