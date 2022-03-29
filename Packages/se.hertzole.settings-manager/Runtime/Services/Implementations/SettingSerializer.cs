@@ -5,6 +5,22 @@ namespace Hertzole.Settings
 {
 	public class SettingSerializer : ISettingSerializer
 	{
+		private readonly JsonSerializerSettings serializerSettings;
+
+		public SettingSerializer()
+		{
+			serializerSettings = new JsonSerializerSettings
+			{
+				Converters = new List<JsonConverter>
+				{
+#if HERTZ_SETTINGS_INPUTSYSTEM
+					new InputActionDataJsonConverter(),
+					new InputBindingDataJsonConverter()
+#endif
+				}
+			};
+		}
+
 		public void FillData(SettingsObject settings, Dictionary<string, object> dataToFill, bool clearData = true)
 		{
 			if (clearData)
@@ -20,7 +36,7 @@ namespace Hertzole.Settings
 					{
 						continue;
 					}
-					
+
 					dataToFill.Add(settings.Categories[i].Settings[j].Identifier, settings.Categories[i].Settings[j].GetSerializeValue());
 				}
 			}
@@ -28,7 +44,7 @@ namespace Hertzole.Settings
 
 		public string SerializeToJson(Dictionary<string, object> data, Formatting formatting = Formatting.None)
 		{
-			return JsonConvert.SerializeObject(data, formatting);
+			return JsonConvert.SerializeObject(data, formatting, serializerSettings);
 		}
 
 		public void DeserializeFromJson(string json, Dictionary<string, object> dataToFill, bool clearData = true)
@@ -38,7 +54,7 @@ namespace Hertzole.Settings
 				dataToFill.Clear();
 			}
 
-			Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+			Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(json, serializerSettings);
 			if (data == null)
 			{
 				return;

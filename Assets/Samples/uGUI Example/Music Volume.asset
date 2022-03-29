@@ -31,7 +31,7 @@ MonoBehaviour:
   hasMaxValue: 1
   maxValue: 100
   enableSlider: 1
-  mixerGroup: {fileID: 24300002, guid: 3601568b8c86fdc4fbfb07929efee791, type: 2}
+  targetAudioMixer: {fileID: 24100000, guid: 3601568b8c86fdc4fbfb07929efee791, type: 2}
   targetProperty: MusicVolume
   references:
     version: 2

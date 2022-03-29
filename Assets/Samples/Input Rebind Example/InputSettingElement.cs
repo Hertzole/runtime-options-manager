@@ -79,6 +79,7 @@ public class InputSettingElement : MonoBehaviour
 		rebindingOperation?.action.Enable();
 		rebindingOperation?.Dispose();
 		rebindingOperation = null;
+		inputSetting.FinishRebind();
 	}
 
 	private void UpdateBindingDisplay()
