@@ -28,7 +28,7 @@ MonoBehaviour:
   targetAction: {fileID: -1721885394449788270, guid: 69a5d0f6ac31e854f8aec66d8db59f70, type: 3}
   bindings:
   - bindingId: 96a58d53-8447-4155-add8-18ee2f832159
-    groups: Das Real Keyboardz
+    groups: Keyboard
   - bindingId: 16fa6896-00df-47f7-83fe-1cbc0bf1b50b
     groups: Gamepad
   references:

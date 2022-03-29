@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f85330685774546863396a7a1c1a501, type: 3}
-  m_Name: Move Down
+  m_Name: Move Left
   m_EditorClassIdentifier: 
-  displayName: Move Down
+  displayName: Move Left
   displayNameLocalized:
     m_TableReference:
       m_TableCollectionName: 
@@ -22,14 +22,14 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  identifier: move_down
+  identifier: move_left
   uiPrefab: {fileID: 607000209400603388, guid: 1f7271c14f4cf6546810acfe75cc30dd, type: 3}
   uiElement: {fileID: 0}
   targetAction: {fileID: -1721885394449788270, guid: 69a5d0f6ac31e854f8aec66d8db59f70, type: 3}
   bindings:
-  - bindingId: f0f91576-e75b-4987-a47b-08d76865bbc2
+  - bindingId: 2fa40cf2-2a6f-4dfb-bd0d-98697530af6c
     groups: Keyboard
-  - bindingId: a4c3ace2-caeb-4749-932d-995d2be10b18
+  - bindingId: 13ced629-e664-4872-9788-346be245c969
     groups: Gamepad
   references:
     version: 2

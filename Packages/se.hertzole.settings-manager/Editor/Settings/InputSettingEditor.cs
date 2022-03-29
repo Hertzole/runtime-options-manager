@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
@@ -12,14 +13,21 @@ namespace Hertzole.Settings.Editor
 	public class InputSettingEditor : SettingEditor
 	{
 		private readonly GUIContent bindingLabel = new GUIContent("Binding");
+		private readonly GUIContent groupLabel = new GUIContent("Group");
 
-		private GUIContent[] m_BindingOptions;
+		private GUIContent[] bindingOptions;
 
-		private int m_SelectedBindingOption;
+		private GUIContent[] groupOptions;
+
+		private int[] selectedBindingOptionValues;
+		private int[] selectedGroupOptionValues;
+
+		private ReorderableList bindingsList;
 		private SerializedProperty bindings;
 		private SerializedProperty targetAction;
 
-		private string[] m_BindingOptionValues;
+		private string[] bindingOptionValues;
+		private string[] groupOptionValues;
 
 		protected override void OnEnable()
 		{
@@ -28,7 +36,54 @@ namespace Hertzole.Settings.Editor
 			targetAction = serializedObject.FindProperty(nameof(targetAction));
 			bindings = serializedObject.FindProperty(nameof(bindings));
 
-			// RefreshBindingOptions();
+			bindingsList = new ReorderableList(serializedObject, bindings, true, true, true, true)
+			{
+				drawHeaderCallback = rect =>
+				{
+					Rect r = new Rect(rect.x + 16, rect.y, rect.width / 2 - 16, EditorGUIUtility.singleLineHeight);
+					EditorGUI.LabelField(r, bindingLabel);
+					r.x += rect.width / 2f - 8;
+					EditorGUI.LabelField(r, groupLabel);
+				},
+				drawElementCallback = (rect, index, active, focused) =>
+				{
+					if (targetAction.objectReferenceValue == null)
+					{
+						return;
+					}
+
+					Rect r = new Rect(rect.x, rect.y + 3, rect.width / 2 - 2, EditorGUIUtility.singleLineHeight);
+					int newSelectedBinding = EditorGUI.Popup(r, selectedBindingOptionValues[index], bindingOptions);
+					if (newSelectedBinding != selectedBindingOptionValues[index])
+					{
+						string id = bindingOptionValues[newSelectedBinding];
+						bindings.GetArrayElementAtIndex(index).FindPropertyRelative("bindingId").stringValue = id;
+						selectedBindingOptionValues[index] = newSelectedBinding;
+					}
+
+					r.x += rect.width / 2f + 2;
+					int newSelectedGroup = EditorGUI.Popup(r, selectedGroupOptionValues[index], groupOptions);
+					if (newSelectedGroup != selectedGroupOptionValues[index])
+					{
+						string id = groupOptionValues[newSelectedGroup];
+						bindings.GetArrayElementAtIndex(index).FindPropertyRelative("groups").stringValue = id;
+						selectedGroupOptionValues[index] = newSelectedGroup;
+					}
+				},
+				onAddCallback = list =>
+				{
+					int index = list.serializedProperty.arraySize;
+					list.serializedProperty.arraySize++;
+					list.serializedProperty.GetArrayElementAtIndex(index).FindPropertyRelative("bindingId").stringValue = bindingOptionValues[0];
+					list.serializedProperty.GetArrayElementAtIndex(index).FindPropertyRelative("groups").stringValue = groupOptionValues[0];
+
+					RefreshBindingOptions();
+					RefreshGroupOptions();
+				}
+			};
+
+			RefreshBindingOptions();
+			RefreshGroupOptions();
 		}
 
 		public override void OnInspectorGUI()
@@ -41,52 +96,59 @@ namespace Hertzole.Settings.Editor
 
 			EditorGUILayout.PropertyField(targetAction);
 
-			EditorGUILayout.PropertyField(bindings, true);
-			
-			// int newSelectedBinding = EditorGUILayout.Popup(bindingLabel, m_SelectedBindingOption, m_BindingOptions);
-			// if (newSelectedBinding != m_SelectedBindingOption)
-			// {
-			// 	string id = m_BindingOptionValues[newSelectedBinding];
-			// 	bindings.stringValue = id;
-			// 	m_SelectedBindingOption = newSelectedBinding;
-			// }
+			EditorGUILayout.Space();
+
+			if (targetAction.objectReferenceValue != null)
+			{
+				EditorGUILayout.HelpBox("Assign all the same bindings from different control schemes that the system should bind to.", MessageType.Info);
+
+				bindingsList.DoLayoutList();
+			}
+			else
+			{
+				EditorGUILayout.HelpBox("Please assign a target action.", MessageType.Info);
+			}
 
 			if (EditorGUI.EndChangeCheck())
 			{
+				RefreshBindingOptions();
+				RefreshGroupOptions();
 				serializedObject.ApplyModifiedProperties();
-				// RefreshBindingOptions();
 			}
 		}
 
-		protected void RefreshBindingOptions()
+		private void RefreshBindingOptions()
 		{
 			if (targetAction.objectReferenceValue == null)
 			{
-				m_BindingOptions = Array.Empty<GUIContent>();
-				m_BindingOptionValues = Array.Empty<string>();
-				m_SelectedBindingOption = -1;
+				bindingOptions = Array.Empty<GUIContent>();
+				bindingOptionValues = Array.Empty<string>();
+				selectedBindingOptionValues = Array.Empty<int>();
+
+				this.bindings.ClearArray();
+
 				return;
 			}
-			
+
 			InputActionReference actionReference = (InputActionReference) targetAction.objectReferenceValue;
 			InputAction action = actionReference.action;
 
 			if (action == null)
 			{
-				m_BindingOptions = Array.Empty<GUIContent>();
-				m_BindingOptionValues = Array.Empty<string>();
-				m_SelectedBindingOption = -1;
+				bindingOptions = Array.Empty<GUIContent>();
+				bindingOptionValues = Array.Empty<string>();
+				selectedBindingOptionValues = Array.Empty<int>();
 				return;
 			}
 
 			ReadOnlyArray<InputBinding> bindings = action.bindings;
 			int bindingCount = bindings.Count;
 
-			m_BindingOptions = new GUIContent[bindingCount];
-			m_BindingOptionValues = new string[bindingCount];
-			m_SelectedBindingOption = -1;
+			bindingOptions = new GUIContent[bindingCount];
+			bindingOptionValues = new string[bindingCount];
+			selectedBindingOptionValues = new int[this.bindings.arraySize];
 
-			string currentBindingId = this.bindings.stringValue;
+			// string currentBindingId = this.bindings.stringValue;
 			for (int i = 0; i < bindingCount; ++i)
 			{
 				InputBinding binding = bindings[i];
@@ -131,12 +193,50 @@ namespace Hertzole.Settings.Editor
 					}
 				}
 
-				m_BindingOptions[i] = new GUIContent(displayString);
-				m_BindingOptionValues[i] = id;
+				bindingOptions[i] = new GUIContent(displayString);
+				bindingOptionValues[i] = id;
 
-				if (currentBindingId == id)
+				for (int j = 0; j < this.bindings.arraySize; ++j)
 				{
-					m_SelectedBindingOption = i;
+					if (this.bindings.GetArrayElementAtIndex(j).FindPropertyRelative("bindingId").stringValue == id)
+					{
+						selectedBindingOptionValues[j] = i;
+						break;
+					}
+				}
+			}
+		}
+
+		private void RefreshGroupOptions()
+		{
+			if (targetAction.objectReferenceValue == null)
+			{
+				groupOptions = Array.Empty<GUIContent>();
+				groupOptionValues = Array.Empty<string>();
+				selectedGroupOptionValues = Array.Empty<int>();
+				return;
+			}
+
+			InputActionReference actionReference = (InputActionReference) targetAction.objectReferenceValue;
+
+			int count = actionReference.asset.controlSchemes.Count;
+
+			groupOptions = new GUIContent[count];
+			groupOptionValues = new string[count];
+			selectedGroupOptionValues = new int[bindings.arraySize];
+
+			for (int i = 0; i < count; i++)
+			{
+				groupOptions[i] = new GUIContent(actionReference.asset.controlSchemes[i].name);
+				groupOptionValues[i] = actionReference.asset.controlSchemes[i].bindingGroup;
+
+				for (int j = 0; j < bindings.arraySize; ++j)
+				{
+					if (bindings.GetArrayElementAtIndex(j).FindPropertyRelative("groups").stringValue == actionReference.asset.controlSchemes[i].bindingGroup)
+					{
+						selectedGroupOptionValues[j] = i;
+						break;
+					}
 				}
 			}
 		}

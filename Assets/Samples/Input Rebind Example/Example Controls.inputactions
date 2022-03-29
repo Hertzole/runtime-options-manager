@@ -33,7 +33,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Das Real Keyboardz",
+                    "groups": "Keyboard",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -44,7 +44,7 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Das Real Keyboardz",
+                    "groups": "Keyboard",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -55,7 +55,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Das Real Keyboardz",
+                    "groups": "Keyboard",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -66,7 +66,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Das Real Keyboardz",
+                    "groups": "Keyboard",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -131,8 +131,8 @@
     ],
     "controlSchemes": [
         {
-            "name": "Das Real Keyboardz",
-            "bindingGroup": "Das Real Keyboardz",
+            "name": "Keyboard",
+            "bindingGroup": "Keyboard",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",

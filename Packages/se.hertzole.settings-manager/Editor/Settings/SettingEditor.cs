@@ -46,6 +46,8 @@ namespace Hertzole.Settings.Editor
 #if HERTZ_SETTINGS_UIELEMENTS
 			EditorGUILayout.PropertyField(uiElement);
 #endif
+			
+			EditorGUILayout.Space();
 
 			serializedObject.ApplyModifiedProperties();
 		}
