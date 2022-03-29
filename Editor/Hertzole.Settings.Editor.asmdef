@@ -2,7 +2,8 @@
     "name": "Hertzole.Settings.Editor",
     "rootNamespace": "Hertzole.Settings.Editor",
     "references": [
-        "GUID:ad731d8366fe76c44b224fe1ea11f9ee"
+        "GUID:ad731d8366fe76c44b224fe1ea11f9ee",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
     "includePlatforms": [
         "Editor"
@@ -23,6 +24,11 @@
             "name": "com.unity.localization",
             "expression": "",
             "define": "HERTZ_SETTINGS_LOCALIZATION"
+        },
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.1",
+            "define": "HERTZ_SETTINGS_INPUTSYSTEM"
         }
     ],
     "noEngineReferences": false

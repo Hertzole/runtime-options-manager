@@ -22,6 +22,11 @@
       "displayName": "uGUI Example",
       "description": "Example scene with a simple uGUI setup.",
       "path": "Samples~/uGUI Example"
+    },
+    {
+      "displayName": "Input Rebind Example",
+      "description": "Example scene with a simple input rebinding setup.",
+      "path": "Samples~/Input Rebind Example"
     }
   ]
 }
