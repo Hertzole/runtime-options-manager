@@ -9,21 +9,8 @@ using UnityEngine.Audio;
 namespace Hertzole.Settings.Editor
 {
 	[CustomEditor(typeof(AudioSetting))]
-	public class AudioSettingEditor : UnityEditor.Editor
+	public class AudioSettingEditor : SettingEditor
 	{
-		// General Settings
-		private SerializedProperty displayName;
-#if HERTZ_SETTINGS_LOCALIZATION
-		private SerializedProperty displayNameLocalized;
-#endif
-		private SerializedProperty identifier;
-
-		// UI Settings
-		private SerializedProperty uiPrefab;
-#if HERTZ_SETTINGS_UIELEMENTS
-		private SerializedProperty uiElement;
-#endif
-
 		// Value Settings
 		private SerializedProperty defaultValue;
 		private SerializedProperty hasMinValue;
@@ -38,18 +25,9 @@ namespace Hertzole.Settings.Editor
 		private string[] exposedParameters;
 		private int selectedParameter;
 
-		private void OnEnable()
+		protected override void OnEnable()
 		{
-			displayName = serializedObject.FindProperty(nameof(displayName));
-#if HERTZ_SETTINGS_LOCALIZATION
-			displayNameLocalized = serializedObject.FindProperty(nameof(displayNameLocalized));
-#endif
-			identifier = serializedObject.FindProperty(nameof(identifier));
-			
-			uiPrefab = serializedObject.FindProperty(nameof(uiPrefab));
-#if HERTZ_SETTINGS_UIELEMENTS
-			uiElement = serializedObject.FindProperty(nameof(uiElement));
-#endif
+			base.OnEnable();
 			
 			defaultValue = serializedObject.FindProperty(nameof(defaultValue));
 			hasMinValue = serializedObject.FindProperty(nameof(hasMinValue));
@@ -66,19 +44,10 @@ namespace Hertzole.Settings.Editor
 
 		public override void OnInspectorGUI()
 		{
+			base.OnInspectorGUI();
+
 			serializedObject.Update();
-			
-			EditorGUILayout.PropertyField(displayName);
-#if HERTZ_SETTINGS_LOCALIZATION
-			EditorGUILayout.PropertyField(displayNameLocalized);
-#endif
-			EditorGUILayout.PropertyField(identifier);
-			
-			EditorGUILayout.PropertyField(uiPrefab);
-#if HERTZ_SETTINGS_UIELEMENTS
-			EditorGUILayout.PropertyField(uiElement);
-#endif
-			
+
 			EditorGUILayout.PropertyField(defaultValue);
 			EditorGUILayout.PropertyField(hasMinValue);
 			if (hasMinValue.boolValue)

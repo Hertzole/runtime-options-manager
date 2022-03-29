@@ -14,14 +14,14 @@ jobs:
       run: |
         git branch -d dev-package &> /dev/null || echo dev-package branch not found
         git subtree split -P "$PKG_ROOT" -b dev-package
-        mv "Assets/Samples/uGUI Example" /tmp/example
+        mv "Assets/Samples" /tmp/example
         mv README.md /tmp/README.md
         git checkout dev-package
         mv /tmp/README.md README.md
         git add README.md
         mkdir "Samples~"
-        mv /tmp/example "Samples~/uGUI Example"
-        git add "Samples~/uGUI Example"
+        mv /tmp/example "Samples~"
+        git add "Samples~"
         git config --global user.name 'github-bot'
         git config --global user.email 'github-bot@users.noreply.github.com'
         git commit -am "Packaged project"
