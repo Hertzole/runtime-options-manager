@@ -15,10 +15,7 @@ jobs:
         git branch -d dev-package &> /dev/null || echo dev-package branch not found
         git subtree split -P "$PKG_ROOT" -b dev-package
         mv "Assets/Samples" /tmp/example
-        mv README.md /tmp/README.md
         git checkout dev-package
-        mv /tmp/README.md README.md
-        git add README.md
         mkdir "Samples~"
         mv /tmp/example/* "Samples~/"
         git add "Samples~"
