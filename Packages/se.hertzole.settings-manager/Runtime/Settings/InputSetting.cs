@@ -40,7 +40,7 @@ namespace Hertzole.Settings
 				}
 
 				ReadOnlyArray<InputBinding> actionBindings = targetAction.action.bindings;
-				for (int i = 0; i < actionData.bindings.Length; i++)
+				for (int i = 0; i < actionData.bindings.Count; i++)
 				{
 					if (!actionData.bindings[i].isOverwritten)
 					{

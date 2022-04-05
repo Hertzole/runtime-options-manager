@@ -75,9 +75,9 @@ namespace Hertzole.Settings
 
 		private void OnEnable()
 		{
-			for (int i = 0; i < settings.Categories.Length; i++)
+			for (int i = 0; i < settings.Categories.Count; i++)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Length; j++)
+				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
 				{
 					settings.Categories[i].Settings[j].OnSettingChanged += OnAnySettingChanged;
 				}
@@ -86,9 +86,9 @@ namespace Hertzole.Settings
 
 		private void OnDisable()
 		{
-			for (int i = 0; i < settings.Categories.Length; i++)
+			for (int i = 0; i < settings.Categories.Count; i++)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Length; j++)
+				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
 				{
 					settings.Categories[i].Settings[j].OnSettingChanged -= OnAnySettingChanged;
 				}
@@ -153,9 +153,9 @@ namespace Hertzole.Settings
 
 		public void SetDefaultValues(IList<string> excluding = null)
 		{
-			for (int i = 0; i < settings.Categories.Length; i++)
+			for (int i = 0; i < settings.Categories.Count; i++)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Length; j++)
+				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
 				{
 					if (excluding == null || !excluding.Contains(settings.Categories[i].Settings[j].Identifier))
 					{

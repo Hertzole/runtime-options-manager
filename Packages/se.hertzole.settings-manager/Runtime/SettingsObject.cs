@@ -13,11 +13,11 @@ namespace Hertzole.Settings
 	public class SettingsObject : ScriptableObject
 	{
 		[SerializeField]
-		private SettingsCategory[] categories = default;
+		private List<SettingsCategory> categories = new List<SettingsCategory>();
 
 		private readonly Dictionary<string, Setting> cachedSettings = new Dictionary<string, Setting>();
 
-		public SettingsCategory[] Categories { get { return categories; } set { categories = value; } }
+		public List<SettingsCategory> Categories { get { return categories; } set { categories = value; } }
 
 		public bool TryGetSetting(string identifier, out Setting setting)
 		{
@@ -26,9 +26,9 @@ namespace Hertzole.Settings
 				return true;
 			}
 
-			for (int i = 0; i < categories.Length; i++)
+			for (int i = 0; i < categories.Count; i++)
 			{
-				for (int j = 0; j < categories[i].Settings.Length; j++)
+				for (int j = 0; j < categories[i].Settings.Count; j++)
 				{
 					if (categories[i].Settings[j].Identifier == identifier)
 					{
@@ -66,13 +66,13 @@ namespace Hertzole.Settings
 		[SerializeField] 
 		private Sprite icon = default;
 		[SerializeField]
-		private Setting[] settings = default;
+		private List<Setting> settings = new List<Setting>();
 
 		public string DisplayName { get { return displayName; } set { displayName = value; } }
 #if HERTZ_SETTINGS_LOCALIZATION
 		public LocalizedString DisplayNameLocalized { get { return displayNameLocalized; } set { displayNameLocalized = value; } }
 #endif
 		public Sprite Icon { get { return icon; } set { icon = value; } }
-		public Setting[] Settings { get { return settings; } set { settings = value; } }
+		public List<Setting> Settings { get { return settings; } set { settings = value; } }
 	}
 }
