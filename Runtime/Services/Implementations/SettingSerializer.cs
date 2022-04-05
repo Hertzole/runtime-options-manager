@@ -28,9 +28,9 @@ namespace Hertzole.Settings
 				dataToFill.Clear();
 			}
 
-			for (int i = 0; i < settings.Categories.Length; i++)
+			for (int i = 0; i < settings.Categories.Count; i++)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Length; j++)
+				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
 				{
 					if (!settings.Categories[i].Settings[j].CanSave)
 					{
