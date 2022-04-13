@@ -56,18 +56,14 @@ namespace Hertzole.Settings.Editor
 					int newSelectedBinding = EditorGUI.Popup(r, selectedBindingOptionValues[index], bindingOptions);
 					if (newSelectedBinding != selectedBindingOptionValues[index])
 					{
-						string id = bindingOptionValues[newSelectedBinding];
-						bindings.GetArrayElementAtIndex(index).FindPropertyRelative("bindingId").stringValue = id;
-						selectedBindingOptionValues[index] = newSelectedBinding;
+						UpdateItemBindingId(newSelectedBinding, index);
 					}
 
 					r.x += rect.width / 2f + 2;
 					int newSelectedGroup = EditorGUI.Popup(r, selectedGroupOptionValues[index], groupOptions);
 					if (newSelectedGroup != selectedGroupOptionValues[index])
 					{
-						string id = groupOptionValues[newSelectedGroup];
-						bindings.GetArrayElementAtIndex(index).FindPropertyRelative("groups").stringValue = id;
-						selectedGroupOptionValues[index] = newSelectedGroup;
+						UpdateItemGroup(newSelectedGroup, index);
 					}
 				},
 				onAddCallback = list =>
@@ -84,6 +80,20 @@ namespace Hertzole.Settings.Editor
 
 			RefreshBindingOptions();
 			RefreshGroupOptions();
+		}
+
+		private void UpdateItemGroup(int newSelectedGroup, int index)
+		{
+			string id = groupOptionValues[newSelectedGroup];
+			bindings.GetArrayElementAtIndex(index).FindPropertyRelative("groups").stringValue = id;
+			selectedGroupOptionValues[index] = newSelectedGroup;
+		}
+
+		private void UpdateItemBindingId(int newSelectedBinding, int index)
+		{
+			string id = bindingOptionValues[newSelectedBinding];
+			bindings.GetArrayElementAtIndex(index).FindPropertyRelative("bindingId").stringValue = id;
+			selectedBindingOptionValues[index] = newSelectedBinding;
 		}
 
 		public override void OnInspectorGUI()
@@ -204,6 +214,29 @@ namespace Hertzole.Settings.Editor
 						break;
 					}
 				}
+			}
+
+			for (int i = 0; i < this.bindings.arraySize; i++)
+			{
+				bool foundBinding = false;
+				
+				var prop = this.bindings.GetArrayElementAtIndex(i).FindPropertyRelative("bindingId");
+				for (int j = 0; j < bindingOptionValues.Length; j++)
+				{
+					if (prop.stringValue == bindingOptionValues[j])
+					{
+						foundBinding = true;
+						selectedBindingOptionValues[i] = j;
+						break;
+					}
+				}
+
+				if (foundBinding)
+				{
+					continue;
+				}
+
+				UpdateItemBindingId(0, i);
 			}
 		}
 

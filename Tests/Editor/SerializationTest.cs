@@ -41,11 +41,11 @@ namespace Hertzole.Settings.Tests.Editor
 			SettingsObject settings = ScriptableObject.CreateInstance<SettingsObject>();
 			TSetting setting = ScriptableObject.CreateInstance<TSetting>();
 
-			settings.Categories = new SettingsCategory[1]
+			settings.Categories = new List<SettingsCategory>()
 			{
 				new SettingsCategory()
 				{
-					Settings = new Setting[1]
+					Settings = new List<Setting>()
 					{
 						setting
 					}
