@@ -11,7 +11,7 @@ namespace Hertzole.SettingsManager
 	{
 		[SerializeField] 
 		private bool prettyPrint = false;
-		
+
 		private readonly JsonSerializerSettings serializerSettings;
 
 		public JsonSettingSerializer()

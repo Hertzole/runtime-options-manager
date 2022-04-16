@@ -15,8 +15,9 @@ namespace Hertzole.SettingsManager.Editor
 
 		public override void OnActivate(string searchContext, VisualElement rootElement)
 		{
-			VisualElement root = new ScrollView
+			ScrollView root = new ScrollView
 				{ style = { marginLeft = 9, marginTop = 1 } };
+			root.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
 
 			root.Add(new Label("Settings Manager") { style = { marginBottom = 12, fontSize = 19, unityFontStyleAndWeight = FontStyle.Bold } });
 			
@@ -44,7 +45,7 @@ namespace Hertzole.SettingsManager.Editor
 						emptySettings = null;
 					}
 
-					editor = new InspectorElement(settings);
+					editor = CreateEditor(settings);
 					root.Add(editor);
 				}
 				else
@@ -63,7 +64,7 @@ namespace Hertzole.SettingsManager.Editor
 
 			if (SettingsManagerEditorSettings.ActiveSettings != null)
 			{
-				editor = new InspectorElement(SettingsManagerEditorSettings.ActiveSettings);
+				editor = CreateEditor(SettingsManagerEditorSettings.ActiveSettings);
 				
 				root.Add(editor);
 			}
@@ -74,6 +75,19 @@ namespace Hertzole.SettingsManager.Editor
 			}
 
 			rootElement.Add(root);
+		}
+
+		private static InspectorElement CreateEditor(SettingsManager settings)
+		{
+			InspectorElement element = new InspectorElement(settings)
+			{
+				style =
+				{
+					paddingLeft = 0
+				}
+			};
+
+			return element;
 		}
 
 		private VisualElement CreateEmptySettingsUI()

@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: uGUI Settings
   m_EditorClassIdentifier: 
   autoSaveSettings: 1
+  loadSettingsOnBoot: 1
   saveLocation: 0
   savePath: Samples/uGUI Example
   fileName: settings.json
+  customPathProvider:
+    rid: -2
+  serializer:
+    rid: 4416338364373925948
   categories:
   - displayName: Audio
     displayNameLocalized:
@@ -45,16 +50,12 @@ MonoBehaviour:
     settings:
     - {fileID: 11400000, guid: c8451f7ab2ac8684f8550743bed82bae, type: 2}
     - {fileID: 11400000, guid: e7ef6c9c9d3df794e85409cafb7a55a2, type: 2}
-  <CustomPathProvider>k__BackingField:
-    rid: -2
-  <Serializer>k__BackingField:
-    rid: 4416338360989122565
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4416338360989122565
-      type: {class: JsonSettingSerializer, ns: Hertzole.Settings, asm: Hertzole.Settings}
+    - rid: 4416338364373925948
+      type: {class: JsonSettingSerializer, ns: Hertzole.SettingsManager, asm: Hertzole.SettingsManager}
       data:
-        prettyPrint: 1
+        prettyPrint: 0

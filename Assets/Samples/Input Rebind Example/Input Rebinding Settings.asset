@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: Input Rebinding Settings
   m_EditorClassIdentifier: 
   autoSaveSettings: 1
+  loadSettingsOnBoot: 1
   saveLocation: 0
   savePath: Samples/Input Rebinding
   fileName: settings.json
+  customPathProvider:
+    rid: -2
+  serializer:
+    rid: 4416338364373925946
   categories:
   - displayName: Input
     displayNameLocalized:
@@ -33,16 +38,12 @@ MonoBehaviour:
     - {fileID: 11400000, guid: bc7f1c5d864f5fb4f86f9a357323d583, type: 2}
     - {fileID: 11400000, guid: 11a1390ec2676b9428348efe2cdb3c1a, type: 2}
     - {fileID: 11400000, guid: e13f51b4a6c11b84d94b3c04f3688ef3, type: 2}
-  <CustomPathProvider>k__BackingField:
-    rid: -2
-  <Serializer>k__BackingField:
-    rid: 4416338361883820035
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4416338361883820035
-      type: {class: JsonSettingSerializer, ns: Hertzole.Settings, asm: Hertzole.Settings}
+    - rid: 4416338364373925946
+      type: {class: JsonSettingSerializer, ns: Hertzole.SettingsManager, asm: Hertzole.SettingsManager}
       data:
-        prettyPrint: 1
+        prettyPrint: 0

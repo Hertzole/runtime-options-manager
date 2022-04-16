@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: Settings Manager
   m_EditorClassIdentifier: 
   autoSaveSettings: 1
+  loadSettingsOnBoot: 1
   saveLocation: 0
-  saveName: settings.json
+  savePath: settings
+  fileName: settings.json
+  customPathProvider:
+    rid: -2
+  serializer:
+    rid: 4416338364373925950
   categories:
   - displayName: Audio
     displayNameLocalized:
@@ -43,12 +49,12 @@ MonoBehaviour:
     settings:
     - {fileID: 11400000, guid: c43d5922a54a92144b63f4c7391a0266, type: 2}
     - {fileID: 11400000, guid: 8eaef7a853a0d1849b677efe1ed0539e, type: 2}
-  serializer:
-    rid: 4416338298224246784
   references:
     version: 2
     RefIds:
-    - rid: 4416338298224246784
-      type: {class: JsonSettingSerializer, ns: Hertzole.Settings, asm: Hertzole.Settings}
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4416338364373925950
+      type: {class: JsonSettingSerializer, ns: Hertzole.SettingsManager, asm: Hertzole.SettingsManager}
       data:
-        prettyPrint: 0
+        prettyPrint: 1
