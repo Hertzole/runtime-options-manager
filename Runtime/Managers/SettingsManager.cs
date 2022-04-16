@@ -16,10 +16,10 @@ namespace Hertzole.SettingsManager
 	{
 		public enum SaveLocations
 		{
-			PersistentDataPath,
-			DataPath,
-			Documents,
-			Custom
+			PersistentDataPath = 0,
+			DataPath = 1,
+			Documents = 2,
+			Custom = 3
 		}
 
 		[SerializeField]
@@ -33,6 +33,10 @@ namespace Hertzole.SettingsManager
 		private string savePath = "settings";
 		[SerializeField]
 		private string fileName = "settings.json";
+		[SerializeReference] 
+		private ISettingPathProvider customPathProvider = null;
+		[SerializeReference] 
+		private ISettingSerializer serializer = new JsonSettingSerializer();
 
 		[SerializeField]
 		private List<SettingsCategory> categories = new List<SettingsCategory>();
@@ -44,17 +48,15 @@ namespace Hertzole.SettingsManager
 
 		private SettingsManagerBehavior behavior;
 
-		private readonly StringBuilder savePathBuilder = new StringBuilder();
+		private static readonly StringBuilder savePathBuilder = new StringBuilder();
 
 		public bool AutoSaveSettings { get { return autoSaveSettings; } set { autoSaveSettings = value; } }
 		public bool LoadSettingsOnBoot { get { return loadSettingsOnBoot; } set { loadSettingsOnBoot = value; } }
 		public SaveLocations SaveLocation { get { return saveLocation; } set { saveLocation = value; } }
 		public string SavePath { get { return savePath; } set { savePath = value; } }
 		public string FileName { get { return fileName; } set { fileName = value; } }
-		[field: SerializeReference]
-		public ISettingPathProvider CustomPathProvider { get; set; } = null;
-		[field: SerializeReference]
-		public ISettingSerializer Serializer { get; set; } = new JsonSettingSerializer();
+		public ISettingPathProvider CustomPathProvider { get { return customPathProvider; } set { customPathProvider = value; } }
+		public ISettingSerializer Serializer { get { return serializer; } set { serializer = value; } }
 		public List<SettingsCategory> Categories { get { return categories; } set { categories = value; } }
 
 		public static SettingsManager Instance
@@ -193,7 +195,7 @@ namespace Hertzole.SettingsManager
 			instance.behavior.Manager = instance;
 			instance.behavior.Serializer = instance.Serializer;
 			instance.behavior.AutoSaveSettings = instance.autoSaveSettings;
-			instance.behavior.SavePath = instance.GetSavePath();
+			instance.behavior.SavePath = GetSavePath(instance);
 
 			if (instance.loadSettingsOnBoot)
 			{
@@ -201,11 +203,11 @@ namespace Hertzole.SettingsManager
 			}
 		}
 
-		private string GetSavePath()
+		public static string GetSavePath(SettingsManager settings)
 		{
 			savePathBuilder.Clear();
 
-			switch (saveLocation)
+			switch (settings.saveLocation)
 			{
 				case SaveLocations.PersistentDataPath:
 					savePathBuilder.Append(Application.persistentDataPath);
@@ -217,21 +219,21 @@ namespace Hertzole.SettingsManager
 					savePathBuilder.Append(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
 					break;
 				case SaveLocations.Custom:
-					savePathBuilder.Append(CustomPathProvider.GetSettingsPath());
+					savePathBuilder.Append(settings.customPathProvider != null ? settings.customPathProvider.GetSettingsPath() : Application.persistentDataPath);
 					break;
 				default:
 					savePathBuilder.Append(Application.persistentDataPath);
 					break;
 			}
 
-			if (!string.IsNullOrWhiteSpace(savePath))
+			if (!string.IsNullOrWhiteSpace(settings.savePath))
 			{
-				savePathBuilder.Append($"/{savePath}");
+				savePathBuilder.Append($"/{settings.savePath}");
 			}
 
-			savePathBuilder.Append($"/{fileName}");
+			savePathBuilder.Append($"/{settings.fileName}");
 
-			return savePathBuilder.ToString();
+			return Path.GetFullPath(savePathBuilder.ToString());
 		}
 
 		internal class SettingsManagerBehavior : MonoBehaviour
