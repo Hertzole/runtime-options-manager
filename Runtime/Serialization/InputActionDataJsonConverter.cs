@@ -1,22 +1,9 @@
-﻿#if HERTZ_SETTINGS_INPUTSYSTEM
+﻿#if HERTZ_SETTINGS_INPUTSYSTEM // Only used when the new input system is installed.
 using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Hertzole.Settings
 {
-	public struct InputActionData
-	{
-		public readonly string id;
-		public readonly List<InputBindingData> bindings;
-
-		public InputActionData(string id, IEnumerable<InputBindingData> bindings)
-		{
-			this.id = id;
-			this.bindings = new List<InputBindingData>(bindings);
-		}
-	}
-
 	public class InputActionDataJsonConverter : JsonConverter<InputActionData>
 	{
 		public override void WriteJson(JsonWriter writer, InputActionData value, JsonSerializer serializer)
@@ -43,15 +30,17 @@ namespace Hertzole.Settings
 			{
 				if (reader.TokenType == JsonToken.PropertyName)
 				{
-					string propertyName = (string)reader.Value;
+					string propertyName = (string) reader.Value;
 
-					if (propertyName == "id")
+					switch (propertyName)
 					{
-						id = serializer.Deserialize<string>(reader);
-					}
-					else if (propertyName == "bindings")
-					{
-						bindings = serializer.Deserialize<InputBindingData[]>(reader);
+						case "id":
+							id = reader.ReadAsString();
+							break;
+						case "bindings":
+							reader.Read();
+							bindings = serializer.Deserialize<InputBindingData[]>(reader);
+							break;
 					}
 				}
 				else if (reader.TokenType == JsonToken.EndObject)

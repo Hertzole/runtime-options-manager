@@ -1,175 +1,413 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
+using System.Text;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Hertzole.Settings
 {
-	[DefaultExecutionOrder(-10000)]
-	public class SettingsManager : MonoBehaviour
+#if UNITY_EDITOR
+	[CreateAssetMenu(fileName = "New Settings Manager", menuName = "Hertzole/Settings/Settings Manager", order = -10000)]
+#endif
+	public class SettingsManager : ScriptableObject
 	{
-		[SerializeField]
-		private SettingsObject settings = default;
-		[SerializeField]
-		private bool singleton = true;
+		public enum SaveLocations
+		{
+			PersistentDataPath,
+			DataPath,
+			Documents,
+			Custom
+		}
 
-		[Header("Saving")]
 		[SerializeField]
 		private bool autoSaveSettings = true;
+		[SerializeField] 
+		private bool loadSettingsOnBoot = true;
+
 		[SerializeField]
-		private bool prettyPrint = false;
-
-		[Header("Loading")]
+		private SaveLocations saveLocation = default;
 		[SerializeField]
-		private bool loadOnStart = true;
+		private string savePath = "settings";
+		[SerializeField]
+		private string fileName = "settings.json";
 
-		private bool dirtySave;
+		[SerializeField]
+		private List<SettingsCategory> categories = new List<SettingsCategory>();
 
-		private readonly Dictionary<string, object> settingData = new Dictionary<string, object>();
-
-		private float saveTime;
-		
-		private readonly List<string> excludedSettings = new List<string>();
+		private bool isInitialized = false;
+		private readonly Dictionary<string, Setting> cachedSettings = new Dictionary<string, Setting>();
 
 		private static SettingsManager instance;
 
-		private Formatting JsonFormat { get { return prettyPrint ? Formatting.Indented : Formatting.None; } }
+		private SettingsManagerBehavior behavior;
 
-		public ISettingSerializer Serializer { get; set; } = new SettingSerializer();
+		private readonly StringBuilder savePathBuilder = new StringBuilder();
 
-		private void Awake()
+		public bool AutoSaveSettings { get { return autoSaveSettings; } set { autoSaveSettings = value; } }
+		public bool LoadSettingsOnBoot { get { return loadSettingsOnBoot; } set { loadSettingsOnBoot = value; } }
+		public SaveLocations SaveLocation { get { return saveLocation; } set { saveLocation = value; } }
+		public string SavePath { get { return savePath; } set { savePath = value; } }
+		public string FileName { get { return fileName; } set { fileName = value; } }
+		[field: SerializeReference]
+		public ISettingPathProvider CustomPathProvider { get; set; } = null;
+		[field: SerializeReference]
+		public ISettingSerializer Serializer { get; set; } = new JsonSettingSerializer();
+		public List<SettingsCategory> Categories { get { return categories; } set { categories = value; } }
+
+		public static SettingsManager Instance
 		{
-			if (singleton)
+			get
 			{
-				if (instance != null && instance != this)
+				if (instance == null)
 				{
-					Destroy(gameObject);
-					return;
+					instance = GetOrCreateSettings();
 				}
 
-				instance = this;
-				DontDestroyOnLoad(gameObject);
+				TryCreateBehavior();
+				return instance;
 			}
 		}
 
-		private void Start()
-		{
-			if (loadOnStart)
-			{
-				LoadSettings();
-			}
-			else
-			{
-				SetDefaultValues();
-			}
-		}
-
-		private void Update()
-		{
-			if (autoSaveSettings && dirtySave && Time.unscaledTime >= saveTime)
-			{
-				SaveSettings();
-			}
-		}
+		public const string CONFIG_NAME = "se.hertzole.settingsmanager.settings";
 
 		private void OnEnable()
 		{
-			for (int i = 0; i < settings.Categories.Count; i++)
+			if (instance == null)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
-				{
-					settings.Categories[i].Settings[j].OnSettingChanged += OnAnySettingChanged;
-				}
+				instance = this;
+				TryCreateBehavior();
 			}
+
+#if UNITY_EDITOR
+			EditorApplication.playModeStateChanged += OnPlayModeChanged;
+#endif
 		}
 
-		private void OnDisable()
+		public void Initialize()
 		{
-			for (int i = 0; i < settings.Categories.Count; i++)
+			if (isInitialized)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
-				{
-					settings.Categories[i].Settings[j].OnSettingChanged -= OnAnySettingChanged;
-				}
-			}
-		}
-
-		private void OnDestroy()
-		{
-			if (singleton && instance == this)
-			{
-				instance = null;
+				Debug.LogError($"{name} has already been initialized.");
+				return;
 			}
 
-			if (dirtySave)
-			{
-				SaveSettings();
-			}
-		}
-
-		private void OnAnySettingChanged()
-		{
-			dirtySave = true;
-			saveTime = Time.unscaledTime + 1f;
+			instance = this;
+			TryCreateBehavior();
 		}
 
 		public void SaveSettings()
 		{
-			if (!dirtySave)
-			{
-				return;
-			}
-
-			dirtySave = false;
-			Serializer.FillData(settings, settingData);
-			string json = Serializer.SerializeToJson(settingData, JsonFormat);
-
-			File.WriteAllText(Application.persistentDataPath + "/settings.json", json);
+			behavior.SaveSettings();
 		}
 
 		public void LoadSettings()
 		{
-			if (!File.Exists(Application.persistentDataPath + "/settings.json"))
+			behavior.LoadSettings();
+		}
+
+		public bool TryGetSetting(string identifier, out Setting setting)
+		{
+			if (cachedSettings.TryGetValue(identifier, out setting))
 			{
-				SetDefaultValues();
-				return;
+				return true;
 			}
 
-			excludedSettings.Clear();
-
-			Serializer.DeserializeFromJson(File.ReadAllText(Application.persistentDataPath + "/settings.json"), settingData);
-			foreach (KeyValuePair<string, object> setting in settingData)
+			for (int i = 0; i < categories.Count; i++)
 			{
-				if (settings.TryGetSetting(setting.Key, out Setting settingObject))
+				for (int j = 0; j < categories[i].Settings.Count; j++)
 				{
-					settingObject.SetSerializedValue(setting.Value);
-					excludedSettings.Add(setting.Key);
+					if (categories[i].Settings[j].Identifier == identifier)
+					{
+						cachedSettings.Add(categories[i].Settings[j].Identifier, categories[i].Settings[j]);
+						setting = categories[i].Settings[j];
+						return true;
+					}
 				}
 			}
 
-			SetDefaultValues(excludedSettings);
+			return false;
 		}
 
-		public void SetDefaultValues(IList<string> excluding = null)
+		private static SettingsManager GetOrCreateSettings()
 		{
-			for (int i = 0; i < settings.Categories.Count; i++)
+			if (instance != null)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
+				TryCreateBehavior();
+				return instance;
+			}
+
+			SettingsManager settings;
+
+#if UNITY_EDITOR
+			EditorBuildSettings.TryGetConfigObject(CONFIG_NAME, out settings);
+#else
+			settings = FindObjectOfType<SettingsManager>();
+#endif
+			if (settings == null)
+			{
+				Debug.LogWarning("Could not find settings manager. Default settings will be used.");
+
+				settings = CreateInstance<SettingsManager>();
+				settings.name = "Settings Manager";
+			}
+
+			return settings;
+		}
+
+		private static void TryCreateBehavior()
+		{
+			if (instance == null || instance.behavior != null)
+			{
+				return;
+			}
+
+			CreateBehavior();
+		}
+
+		private static void CreateBehavior()
+		{
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+			{
+				return;
+			}
+#endif
+
+			if (instance == null)
+			{
+				return;
+			}
+
+			if (instance.behavior != null)
+			{
+				Destroy(instance.behavior.gameObject);
+			}
+
+			GameObject behaviorObject = new GameObject("Settings Manager Behavior");
+			instance.behavior = behaviorObject.AddComponent<SettingsManagerBehavior>();
+			DontDestroyOnLoad(behaviorObject);
+
+			instance.behavior.Manager = instance;
+			instance.behavior.Serializer = instance.Serializer;
+			instance.behavior.AutoSaveSettings = instance.autoSaveSettings;
+			instance.behavior.SavePath = instance.GetSavePath();
+
+			if (instance.loadSettingsOnBoot)
+			{
+				instance.behavior.LoadSettings();
+			}
+		}
+
+		private string GetSavePath()
+		{
+			savePathBuilder.Clear();
+
+			switch (saveLocation)
+			{
+				case SaveLocations.PersistentDataPath:
+					savePathBuilder.Append(Application.persistentDataPath);
+					break;
+				case SaveLocations.DataPath:
+					savePathBuilder.Append(Application.dataPath);
+					break;
+				case SaveLocations.Documents:
+					savePathBuilder.Append(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+					break;
+				case SaveLocations.Custom:
+					savePathBuilder.Append(CustomPathProvider.GetSettingsPath());
+					break;
+				default:
+					savePathBuilder.Append(Application.persistentDataPath);
+					break;
+			}
+
+			if (!string.IsNullOrWhiteSpace(savePath))
+			{
+				savePathBuilder.Append($"/{savePath}");
+			}
+
+			savePathBuilder.Append($"/{fileName}");
+
+			return savePathBuilder.ToString();
+		}
+
+		internal class SettingsManagerBehavior : MonoBehaviour
+		{
+			private bool dirtySave;
+			private bool startedListeningForSave;
+
+			private readonly Dictionary<string, object> settingData = new Dictionary<string, object>();
+
+			private float saveTime;
+			private readonly HashSet<string> excludedSettings = new HashSet<string>();
+			private SettingsManager manager;
+
+			public SettingsManager Manager
+			{
+				get { return manager; }
+				internal set
 				{
-					if (excluding == null || !excluding.Contains(settings.Categories[i].Settings[j].Identifier))
+					manager = value;
+					if (startedListeningForSave)
 					{
-						settings.Categories[i].Settings[j].SetSerializedValue(settings.Categories[i].Settings[j].GetDefaultValue());
+						ToggleSettingsListening(false);
+					}
+
+					ToggleSettingsListening(true);
+				}
+			}
+			public ISettingSerializer Serializer { get; internal set; }
+
+			public bool AutoSaveSettings { get; internal set; }
+
+			public string SavePath { get; internal set; }
+
+			private void Update()
+			{
+				if (AutoSaveSettings && dirtySave && Time.unscaledTime >= saveTime)
+				{
+					SaveSettings();
+				}
+			}
+
+			private void OnDestroy()
+			{
+				if (AutoSaveSettings && dirtySave)
+				{
+					SaveSettings();
+				}
+			}
+
+			private void ToggleSettingsListening(bool listen)
+			{
+				for (int i = 0; i < Manager.categories.Count; i++)
+				{
+					for (int j = 0; j < Manager.categories[i].Settings.Count; j++)
+					{
+						if (listen)
+						{
+							Manager.categories[i].Settings[j].OnSettingChanged += OnSettingChanged;
+						}
+						else
+						{
+							Manager.categories[i].Settings[j].OnSettingChanged -= OnSettingChanged;
+						}
+					}
+				}
+
+				startedListeningForSave = listen;
+			}
+
+			private void OnSettingChanged()
+			{
+				dirtySave = true;
+				saveTime = Time.unscaledTime + 1f;
+			}
+
+			internal void SaveSettings()
+			{
+				dirtySave = false;
+
+				string directory = Path.GetDirectoryName(SavePath);
+				if (string.IsNullOrEmpty(directory))
+				{
+					return;
+				}
+
+				if (!Directory.Exists(directory))
+				{
+					Directory.CreateDirectory(directory);
+				}
+
+				FillData();
+
+				byte[] data = Serializer.Serialize(settingData);
+				File.WriteAllBytes(SavePath, data);
+			}
+
+			internal void LoadSettings()
+			{
+				if (!File.Exists(SavePath))
+				{
+					return;
+				}
+
+				settingData.Clear();
+				excludedSettings.Clear();
+
+				byte[] data = File.ReadAllBytes(SavePath);
+				Serializer.Deserialize(data, settingData);
+				Dictionary<string, object>.Enumerator enumerator = settingData.GetEnumerator();
+				while (enumerator.MoveNext())
+				{
+					KeyValuePair<string, object> current = enumerator.Current;
+					if (Manager.TryGetSetting(current.Key, out Setting setting))
+					{
+						setting.SetSerializedValue(current.Value, Serializer);
+						excludedSettings.Add(current.Key);
+					}
+				}
+
+				enumerator.Dispose();
+				SetDefaultValues(excludedSettings);
+			}
+
+			private void FillData()
+			{
+				settingData.Clear();
+
+				for (int i = 0; i < Manager.categories.Count; i++)
+				{
+					for (int j = 0; j < Manager.categories[i].Settings.Count; j++)
+					{
+						if (!Manager.categories[i].Settings[j].CanSave)
+						{
+							continue;
+						}
+
+						settingData.Add(Manager.categories[i].Settings[j].Identifier, Manager.categories[i].Settings[j].GetSerializeValue());
+					}
+				}
+			}
+
+			private void SetDefaultValues(ICollection<string> excluding)
+			{
+				for (int i = 0; i < manager.categories.Count; i++)
+				{
+					for (int j = 0; j < manager.categories[i].Settings.Count; j++)
+					{
+						if (!excluding.Contains(manager.categories[i].Settings[j].Identifier))
+						{
+							manager.categories[i].Settings[j].SetSerializedValue(manager.categories[i].Settings[j].GetDefaultValue(), Serializer);
+						}
 					}
 				}
 			}
 		}
 
 #if UNITY_EDITOR
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-		private static void ResetStatics()
+		private void OnDisable()
 		{
+			ResetState();
+			EditorApplication.playModeStateChanged -= OnPlayModeChanged;
+		}
+
+		private void OnPlayModeChanged(PlayModeStateChange state)
+		{
+			if (state == PlayModeStateChange.ExitingEditMode || state == PlayModeStateChange.ExitingPlayMode)
+			{
+				ResetState();
+			}
+		}
+
+		private void ResetState()
+		{
+			isInitialized = false;
 			instance = null;
+			cachedSettings.Clear();
 		}
 #endif
 	}

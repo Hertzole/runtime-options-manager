@@ -25,14 +25,10 @@ namespace Hertzole.Settings
 			return default;
 		}
 
-		public override void SetSerializedValue(object newValue)
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
-			if (newValue is JObject json)
-			{
-				InputActionData actionData = json.ToObject<InputActionData>();
-				SetSerializedValue(actionData);
-			}
-			else if (newValue is InputActionData actionData)
+			// Check if it's an InputActionData. If it isn't try to make it one.
+			if (newValue is InputActionData actionData)
 			{
 				if (targetAction.action.id.ToString() != actionData.id)
 				{
@@ -58,6 +54,11 @@ namespace Hertzole.Settings
 						}
 					}
 				}
+			}
+			else
+			{
+				InputActionData newData = serializer.DeserializeType<InputActionData>(newValue);
+				SetSerializedValue(newData, serializer);
 			}
 		}
 
