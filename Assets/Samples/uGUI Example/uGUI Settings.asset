@@ -9,9 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a031689759ec2c54e92342b175b51209, type: 3}
+  m_Script: {fileID: 11500000, guid: 78cc08335ea44e92a61ec2ada83b8cbf, type: 3}
   m_Name: uGUI Settings
   m_EditorClassIdentifier: 
+  autoSaveSettings: 1
+  saveLocation: 0
+  savePath: Samples/uGUI Example
+  fileName: settings.json
   categories:
   - displayName: Audio
     displayNameLocalized:
@@ -23,6 +27,7 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+    icon: {fileID: 0}
     settings:
     - {fileID: 11400000, guid: 5dfb5274caa4463498ccd30347f59c21, type: 2}
     - {fileID: 11400000, guid: 8ea39d970b5c4a34f8096415f8956b27, type: 2}
@@ -36,9 +41,20 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+    icon: {fileID: 0}
     settings:
     - {fileID: 11400000, guid: c8451f7ab2ac8684f8550743bed82bae, type: 2}
     - {fileID: 11400000, guid: e7ef6c9c9d3df794e85409cafb7a55a2, type: 2}
+  <CustomPathProvider>k__BackingField:
+    rid: -2
+  <Serializer>k__BackingField:
+    rid: 4416338360989122565
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4416338360989122565
+      type: {class: JsonSettingSerializer, ns: Hertzole.Settings, asm: Hertzole.Settings}
+      data:
+        prettyPrint: 1

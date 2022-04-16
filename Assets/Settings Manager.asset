@@ -9,9 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a031689759ec2c54e92342b175b51209, type: 3}
-  m_Name: My Settings
+  m_Script: {fileID: 11500000, guid: 78cc08335ea44e92a61ec2ada83b8cbf, type: 3}
+  m_Name: Settings Manager
   m_EditorClassIdentifier: 
+  autoSaveSettings: 1
+  saveLocation: 0
+  saveName: settings.json
   categories:
   - displayName: Audio
     displayNameLocalized:
@@ -23,6 +26,7 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+    icon: {fileID: 0}
     settings:
     - {fileID: 11400000, guid: 5e400f8bf98dc4142946774af455b19f, type: 2}
   - displayName: Video
@@ -35,12 +39,16 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+    icon: {fileID: 0}
     settings:
-    - {fileID: 11400000, guid: d2d5cbd06f118db45bb1327e768fc694, type: 2}
-    - {fileID: 11400000, guid: 8eaef7a853a0d1849b677efe1ed0539e, type: 2}
-    - {fileID: 11400000, guid: 002cf5aaa7060884eaec86d1dba3ae14, type: 2}
     - {fileID: 11400000, guid: c43d5922a54a92144b63f4c7391a0266, type: 2}
-    - {fileID: 11400000, guid: 7deacee82142d8e4495fcf3d7d39040d, type: 2}
+    - {fileID: 11400000, guid: 8eaef7a853a0d1849b677efe1ed0539e, type: 2}
+  serializer:
+    rid: 4416338298224246784
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4416338298224246784
+      type: {class: JsonSettingSerializer, ns: Hertzole.Settings, asm: Hertzole.Settings}
+      data:
+        prettyPrint: 0

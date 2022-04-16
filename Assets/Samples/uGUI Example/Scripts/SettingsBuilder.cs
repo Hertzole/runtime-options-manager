@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class SettingsBuilder : MonoBehaviour
 {
 	[SerializeField]
-	private SettingsObject settings = default;
+	private SettingsManager settings = default;
 
 	[Space]
 	[SerializeField]
@@ -15,6 +15,17 @@ public class SettingsBuilder : MonoBehaviour
 
 	private void Start()
 	{
+		// If no settings have been assigned, use the global one.
+		if (settings == null)
+		{
+			settings = SettingsManager.Instance;
+		}
+		else
+		{
+			// When you have custom settings, it's important to initialize them.
+			settings.Initialize();
+		}
+		
 		BuildSettingsUI();
 	}
 

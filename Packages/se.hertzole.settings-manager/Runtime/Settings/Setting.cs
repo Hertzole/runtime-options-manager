@@ -47,7 +47,7 @@ namespace Hertzole.Settings
 
 		public abstract object GetDefaultValue();
 
-		public abstract void SetSerializedValue(object newValue);
+		public abstract void SetSerializedValue(object newValue, ISettingSerializer serializer);
 
 		public virtual object GetSerializeValue()
 		{
@@ -109,7 +109,7 @@ namespace Hertzole.Settings
 			return defaultValue;
 		}
 
-		public override void SetSerializedValue(object newValue)
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
 			if (newValue is T convertedValue)
 			{
@@ -117,7 +117,14 @@ namespace Hertzole.Settings
 			}
 			else
 			{
-				value = TryConvertValue(newValue);
+				try
+				{
+					value = serializer.DeserializeType<T>(newValue);
+				}
+				catch (ArgumentException)
+				{
+					value = TryConvertValue(newValue);
+				}
 			}
 		}
 

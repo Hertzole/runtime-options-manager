@@ -4,15 +4,26 @@ using UnityEngine.InputSystem;
 
 public class RebindSettings : MonoBehaviour
 {
+	[SerializeField]
+	private SettingsManager settings = default;
 	[SerializeField] 
 	private PlayerInput playerInput = default;
-	[SerializeField]
-	private SettingsObject settings = default;
 	[SerializeField]
 	private RectTransform settingsContent = default;
 
 	private void Start()
 	{
+		// If no settings are assigned, use the global one.
+		if (settings == null)
+		{
+			settings = SettingsManager.Instance;
+		}
+		else
+		{
+			// When you have custom settings, it's important to initialize them.
+			settings.Initialize();
+		}
+		
 		CreateSettings();
 	}
 

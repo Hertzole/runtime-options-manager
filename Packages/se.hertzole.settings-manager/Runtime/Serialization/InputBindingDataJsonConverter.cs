@@ -1,23 +1,9 @@
-﻿#if HERTZ_SETTINGS_INPUTSYSTEM
+﻿#if HERTZ_SETTINGS_INPUTSYSTEM // Only used when the new input system is installed.
 using System;
 using Newtonsoft.Json;
 
 namespace Hertzole.Settings
 {
-	public struct InputBindingData
-	{
-		public readonly string id;
-		public readonly string path;
-		public readonly bool isOverwritten;
-
-		public InputBindingData(string id, string path, bool isOverwritten)
-		{
-			this.id = id;
-			this.path = path;
-			this.isOverwritten = isOverwritten;
-		}
-	}
-	
 	public class InputBindingDataJsonConverter : JsonConverter<InputBindingData>
 	{
 		public override void WriteJson(JsonWriter writer, InputBindingData value, JsonSerializer serializer)
@@ -41,30 +27,30 @@ namespace Hertzole.Settings
 
 			string id = null;
 			string path = null;
-			bool isOverwritten = false;
+			bool? isOverwritten = false;
 
 			while (reader.Read())
 			{
 				if (reader.TokenType == JsonToken.PropertyName)
 				{
-					string propertyName = (string)reader.Value;
+					string propertyName = (string) reader.Value;
 
-					if (propertyName == "id")
+					switch (propertyName)
 					{
-						id = serializer.Deserialize<string>(reader);
-					}
-					else if (propertyName == "path")
-					{
-						path = serializer.Deserialize<string>(reader);
-					}
-					else if (propertyName == "isOverwritten")
-					{
-						isOverwritten = serializer.Deserialize<bool>(reader);
+						case "id":
+							id = reader.ReadAsString();
+							break;
+						case "path":
+							path = reader.ReadAsString();
+							break;
+						case "isOverwritten":
+							isOverwritten = reader.ReadAsBoolean();
+							break;
 					}
 				}
 				else if (reader.TokenType == JsonToken.EndObject)
 				{
-					return new InputBindingData(id, path, isOverwritten);
+					return new InputBindingData(id, path, isOverwritten ?? false);
 				}
 			}
 

@@ -64,9 +64,9 @@ namespace Hertzole.Settings
 			return Convert.ToInt32(newValue);
 		}
 
-		public override void SetSerializedValue(object newValue)
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
-			base.SetSerializedValue(newValue);
+			base.SetSerializedValue(newValue, serializer);
 			UpdateVolume(value);
 		}
 
