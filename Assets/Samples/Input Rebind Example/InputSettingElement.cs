@@ -1,5 +1,5 @@
 using System;
-using Hertzole.Settings;
+using Hertzole.SettingsManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;

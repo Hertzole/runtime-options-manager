@@ -1,10 +1,10 @@
 {
-    "name": "Hertzole.Settings.Tests.Editor",
-    "rootNamespace": "Hertzole.Settings.Tests.Editor",
+    "name": "Hertzole.SettingsManager.Tests.Editor",
+    "rootNamespace": "Hertzole.SettingsManager.Tests.Editor",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Hertzole.Settings"
+        "Hertzole.SettingsManager"
     ],
     "includePlatforms": [
         "Editor"

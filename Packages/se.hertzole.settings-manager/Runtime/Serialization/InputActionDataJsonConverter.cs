@@ -2,7 +2,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 	public class InputActionDataJsonConverter : JsonConverter<InputActionData>
 	{

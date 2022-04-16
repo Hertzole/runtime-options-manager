@@ -1,5 +1,5 @@
 using System.Globalization;
-using Hertzole.Settings;
+using Hertzole.SettingsManager;
 using UnityEngine;
 using UnityEngine.UI;
 

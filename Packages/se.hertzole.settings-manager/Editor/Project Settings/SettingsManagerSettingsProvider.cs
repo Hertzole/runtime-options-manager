@@ -3,7 +3,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Hertzole.Settings.Editor
+namespace Hertzole.SettingsManager.Editor
 {
 	public class SettingsManagerSettingsProvider : AssetSettingsProvider
 	{

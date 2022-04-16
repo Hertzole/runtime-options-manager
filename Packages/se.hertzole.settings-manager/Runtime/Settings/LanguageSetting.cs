@@ -8,7 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 #endif
 
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Language Setting", menuName = "Hertzole/Settings/Language Setting")]

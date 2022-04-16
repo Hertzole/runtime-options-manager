@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 	[Serializable]
 	public class JsonSettingSerializer : ISettingSerializer

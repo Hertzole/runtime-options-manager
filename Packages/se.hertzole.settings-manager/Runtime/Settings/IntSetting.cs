@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Int Setting", menuName = "Hertzole/Settings/Int Setting")]

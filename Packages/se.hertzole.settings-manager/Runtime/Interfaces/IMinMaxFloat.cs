@@ -1,4 +1,4 @@
-﻿namespace Hertzole.Settings
+﻿namespace Hertzole.SettingsManager
 {
 	public interface IMinMaxFloat : IMinMax<float> { }
 }
