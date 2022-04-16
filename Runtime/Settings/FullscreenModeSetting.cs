@@ -9,7 +9,7 @@ using UnityEngine.Localization;
 using UnityEngine.UIElements;
 #endif
 
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Fullscreen Mode Setting", menuName = "Hertzole/Settings/Fullscreen Mode Setting")]

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 	public interface IDropdownValues
 	{

@@ -4,7 +4,7 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-namespace Hertzole.Settings.Editor
+namespace Hertzole.SettingsManager.Editor
 {
 	// Mostly stolen from Unity's localization package.
 	public class SettingsManagerBuildPlayer : IPreprocessBuildWithReport, IPostprocessBuildWithReport

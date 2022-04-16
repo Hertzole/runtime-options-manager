@@ -1,5 +1,5 @@
 ﻿#if HERTZ_SETTINGS_INPUTSYSTEM // Only used when the new input system is installed.
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 	public struct InputBindingData
 	{

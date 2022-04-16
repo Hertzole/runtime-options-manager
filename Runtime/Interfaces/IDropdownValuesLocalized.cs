@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
 
-namespace Hertzole.Settings
+namespace Hertzole.SettingsManager
 {
 	public interface IDropdownValuesLocalized : IDropdownValues
 	{
