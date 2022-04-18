@@ -1,5 +1,5 @@
 {
-  "name": "se.hertzole.settings",
+  "name": "se.hertzole.settingsmanager",
   "version": "0.1.0-preview",
   "displayName": "Settings Manager",
   "description": "Settings package",

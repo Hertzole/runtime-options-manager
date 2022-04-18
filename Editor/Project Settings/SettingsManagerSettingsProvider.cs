@@ -15,9 +15,17 @@ namespace Hertzole.SettingsManager.Editor
 
 		public override void OnActivate(string searchContext, VisualElement rootElement)
 		{
+			rootElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/se.hertzole.settingsmanager/Editor/Templates/ProjectSettings.uss"));
+			
 			ScrollView root = new ScrollView
-				{ style = { marginLeft = 9, marginTop = 1 } };
-			root.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+			{ 
+				style =
+				{
+					marginLeft = 9,
+					marginTop = 1
+				},
+				horizontalScrollerVisibility = ScrollerVisibility.Hidden
+			};
 
 			root.Add(new Label("Settings Manager") { style = { marginBottom = 12, fontSize = 19, unityFontStyleAndWeight = FontStyle.Bold } });
 			
