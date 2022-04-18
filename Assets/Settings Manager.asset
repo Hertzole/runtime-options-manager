@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Settings Manager
   m_EditorClassIdentifier: 
   autoSaveSettings: 1
-  loadSettingsOnBoot: 1
+  loadSettingsOnBoot: 0
   saveLocation: 0
   savePath: settings
   fileName: settings.json
@@ -47,8 +47,8 @@ MonoBehaviour:
       m_LocalVariables: []
     icon: {fileID: 0}
     settings:
-    - {fileID: 11400000, guid: c43d5922a54a92144b63f4c7391a0266, type: 2}
     - {fileID: 11400000, guid: 8eaef7a853a0d1849b677efe1ed0539e, type: 2}
+    - {fileID: 11400000, guid: c43d5922a54a92144b63f4c7391a0266, type: 2}
   references:
     version: 2
     RefIds:

@@ -108,7 +108,7 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
-    "se.hertzole.settings": {
+    "se.hertzole.settingsmanager": {
       "version": "file:se.hertzole.settings-manager",
       "depth": 0,
       "source": "embedded",
