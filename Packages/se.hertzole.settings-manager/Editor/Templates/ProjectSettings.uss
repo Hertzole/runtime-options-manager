@@ -1,8 +1,13 @@
 .unity-base-field__label {
-    min-width: 250px;
+    min-width: 250px !important;
     max-width: 250px !important;
 }
 
-.unity-base-field__input {
-    min-width: 0px;
+.unity-foldout__content .unity-base-field__label {
+    min-width: 235px !important;
+    max-width: 235px !important;
+}
+
+.unity-base-field {
+    margin-left: 1px;
 }

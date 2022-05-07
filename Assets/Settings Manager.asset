@@ -20,7 +20,7 @@ MonoBehaviour:
   customPathProvider:
     rid: -2
   serializer:
-    rid: 4416338364373925950
+    rid: 8729629915173617764
   categories:
   - displayName: Audio
     displayNameLocalized:
@@ -54,7 +54,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4416338364373925950
+    - rid: 8729629915173617764
       type: {class: JsonSettingSerializer, ns: Hertzole.SettingsManager, asm: Hertzole.SettingsManager}
       data:
-        prettyPrint: 1
+        prettyPrint: 0

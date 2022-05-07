@@ -10,14 +10,13 @@ namespace Hertzole.SettingsManager.Editor
 	[CustomEditor(typeof(SettingsManager))]
 	public class SettingsManagerEditor : UnityEditor.Editor
 	{
-		private Foldout serializerSettingsFoldout;
 		private Label finalPathLabel;
 		private readonly List<Type> availablePathProviders = new List<Type>();
 
 		private readonly List<Type> availableSerializers = new List<Type>();
-		private PopupField<Type> pathProviderField;
+		private FoldoutPopupField<Type> pathProviderField;
 
-		private PopupField<Type> serializerField;
+		private FoldoutPopupField<Type> serializerField;
 		private SerializedProperty autoSaveSettings;
 		private SerializedProperty categories;
 		private SerializedProperty customPathProvider;
@@ -28,10 +27,11 @@ namespace Hertzole.SettingsManager.Editor
 		private SerializedProperty serializer;
 
 		private SettingsManager settingsManager;
-		private Type selectedPathProvider;
+		private int selectedPathProvider;
 
 		private Type selectedSerializer;
 		private VisualElement serializerSettings;
+		private VisualElement pathProviderSettings;
 
 		private void OnEnable()
 		{
@@ -60,7 +60,11 @@ namespace Hertzole.SettingsManager.Editor
 		{
 			VisualElement root = new VisualElement();
 
-			serializerField = new PopupField<Type>("Serializer", availableSerializers, selectedSerializer, FormatTypeName, FormatTypeName);
+			serializerField = new FoldoutPopupField<Type>("Serializer", availableSerializers, selectedSerializer, FormatTypeName, FormatTypeName)
+			{
+				IsExpanded = serializer.isExpanded,
+			};
+			
 			serializerField.RegisterValueChangedCallback(ctx =>
 			{
 				serializer.managedReferenceValue = Activator.CreateInstance(ctx.newValue);
@@ -69,28 +73,33 @@ namespace Hertzole.SettingsManager.Editor
 
 				UpdateSerializerSettings();
 			});
+			
+			serializerField.RegisterFoldoutCallback(ctx =>
+			{
+				serializer.isExpanded = ctx.newValue;
+			});
 
-			pathProviderField = new PopupField<Type>("Path Provider", availablePathProviders, 0, FormatTypeName, FormatTypeName);
+			pathProviderField = new FoldoutPopupField<Type>("Path Provider", availablePathProviders, selectedPathProvider, FormatTypeName, FormatTypeName)
+			{
+				IsExpanded = customPathProvider.isExpanded
+			};
+			
 			pathProviderField.RegisterValueChangedCallback(ctx =>
 			{
 				customPathProvider.managedReferenceValue = ctx.newValue == null ? null : Activator.CreateInstance(ctx.newValue);
 				serializedObject.ApplyModifiedProperties();
-				selectedPathProvider = ctx.newValue;
+				selectedPathProvider = availablePathProviders.IndexOf(ctx.newValue);
+				
+				UpdatePathProviderSettings();
+				UpdateFinalPath();
+			});
+			
+			pathProviderField.RegisterFoldoutCallback(ctx =>
+			{
+				customPathProvider.isExpanded = ctx.newValue;
 			});
 
 			pathProviderField.style.display = saveLocation.enumValueIndex == 3 ? DisplayStyle.Flex : DisplayStyle.None;
-
-			serializerSettingsFoldout = new Foldout
-			{
-				text = "Settings",
-				value = serializer.isExpanded,
-				style =
-				{
-					marginLeft = 16
-				}
-			};
-
-			serializerSettingsFoldout.RegisterValueChangedCallback(ctx => { serializer.isExpanded = ctx.newValue; });
 
 			Toggle autoSaveSettingsField = new Toggle(autoSaveSettings.displayName);
 			autoSaveSettingsField.BindProperty(autoSaveSettings);
@@ -103,7 +112,7 @@ namespace Hertzole.SettingsManager.Editor
 			saveLocationField.RegisterValueChangedCallback(ctx =>
 			{
 				UpdateFinalPath();
-
+				
 				SettingsManager.SaveLocations newValue = (SettingsManager.SaveLocations) ctx.newValue;
 
 				pathProviderField.style.display = newValue == SettingsManager.SaveLocations.Custom ? DisplayStyle.Flex : DisplayStyle.None;
@@ -144,6 +153,14 @@ namespace Hertzole.SettingsManager.Editor
 			// };
 			// categoriesList.BindProperty(categories);
 
+			MakePropertyField(autoSaveSettingsField);
+			MakePropertyField(loadSettingsOnBootField);
+			MakePropertyField(saveLocationField);
+			MakePropertyField(pathProviderField);
+			MakePropertyField(savePathField);
+			MakePropertyField(fileNameField);
+			MakePropertyField(serializerField);
+			
 			UpdateFinalPath();
 			root.Add(CreateHeader("Saving And Loading"));
 			root.Add(autoSaveSettingsField);
@@ -154,16 +171,23 @@ namespace Hertzole.SettingsManager.Editor
 			root.Add(fileNameField);
 			root.Add(finalPathLabel);
 			root.Add(serializerField);
-			root.Add(serializerSettingsFoldout);
 
 			root.Add(CreateSpace());
 
 			// root.Add(categoriesList);
 			root.Add(new IMGUIContainer(() => { EditorGUILayout.PropertyField(categories, true); }));
 
+			root.Add(CreateSpace(16));
+
 			UpdateSerializerSettings();
+			UpdatePathProviderSettings();
 
 			return root;
+		}
+
+		private static void MakePropertyField(VisualElement element)
+		{
+			element.AddToClassList("unity-base-field__aligned");
 		}
 
 		private void UpdateSerializerSettings()
@@ -175,7 +199,34 @@ namespace Hertzole.SettingsManager.Editor
 			}
 
 			serializerSettings = CreateSerializerEditor(serializer);
-			serializerSettingsFoldout.Add(serializerSettings);
+
+			if (serializerSettings != null)
+			{
+				serializerField.AddToFoldout(serializerSettings);
+			}
+
+			serializerField.ShowFoldout = serializerSettings != null;
+		}
+
+		private void UpdatePathProviderSettings()
+		{
+			if (pathProviderSettings != null)
+			{
+				pathProviderSettings.RemoveFromHierarchy();
+				pathProviderSettings = null;
+			}
+
+			pathProviderSettings = CreateSerializerEditor(customPathProvider, evt =>
+			{
+				UpdateFinalPath();
+			});
+			
+			if (pathProviderSettings != null)
+			{
+				pathProviderField.AddToFoldout(pathProviderSettings);
+			}
+			
+			pathProviderField.ShowFoldout = pathProviderSettings != null;
 		}
 
 		private void UpdateFinalPath()
@@ -208,12 +259,18 @@ namespace Hertzole.SettingsManager.Editor
 			};
 		}
 
-		private static VisualElement CreateSerializerEditor(SerializedProperty property)
+		private static VisualElement CreateSerializerEditor(SerializedProperty property, EventCallback<SerializedPropertyChangeEvent> onAnyValueChanged = null)
 		{
-			VisualElement root = new VisualElement();
+			VisualElement root = new VisualElement
+			{
+				name = property.type + "-settings"
+			};
+
 
 			SerializedProperty propertyFields = property.Copy();
 			SerializedProperty lastProperty = propertyFields.GetEndProperty();
+
+			int count = 0;
 
 			while (propertyFields.NextVisible(true))
 			{
@@ -225,9 +282,14 @@ namespace Hertzole.SettingsManager.Editor
 				PropertyField propField = new PropertyField(propertyFields, propertyFields.displayName);
 				propField.Bind(property.serializedObject);
 				root.Add(propField);
+				if (onAnyValueChanged != null)
+				{
+					propField.RegisterValueChangeCallback(onAnyValueChanged);
+				}
+				count++;
 			}
 
-			return root;
+			return count == 0 ? null : root;
 		}
 
 		private static string FormatTypeName(Type arg)
@@ -272,7 +334,7 @@ namespace Hertzole.SettingsManager.Editor
 				{
 					if (pathProviders[i] == customPathProvider.managedReferenceValue.GetType())
 					{
-						selectedPathProvider = pathProviders[i];
+						selectedPathProvider = i + 1;
 						break;
 					}
 				}
