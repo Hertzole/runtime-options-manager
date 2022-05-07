@@ -52,6 +52,11 @@ namespace Hertzole.SettingsManager
 
 		public T DeserializeType<T>(object data)
 		{
+			if (data == null)
+			{
+				return default;
+			}
+		
 			string json;
 			switch (data)
 			{
