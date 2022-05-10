@@ -17,8 +17,8 @@ namespace Hertzole.SettingsManager
 		[SerializeField]
 		private BindingInfo[] bindings = default;
 
-		public InputActionReference TargetAction { get { return targetAction; } }
-		public BindingInfo[] Bindings { get { return bindings; } }
+		public InputActionReference TargetAction { get { return targetAction; } set {targetAction = value; } }
+		public BindingInfo[] Bindings { get { return bindings; } set { bindings = value; } }
 
 		public override object GetDefaultValue()
 		{
@@ -70,7 +70,7 @@ namespace Hertzole.SettingsManager
 
 			for (int i = 0; i < bindings.Length; i++)
 			{
-				string bindingId = bindings[i].bindingId;
+				string bindingId = bindings[i].BindingId;
 				string path = string.Empty;
 				ReadOnlyArray<InputBinding> actionBindings = targetAction.action.bindings;
 				bool hasOverrides = false;
@@ -141,9 +141,9 @@ namespace Hertzole.SettingsManager
 		{
 			for (int i = 0; i < bindings.Length; i++)
 			{
-				if (bindings[i].groups == input.currentControlScheme)
+				if (bindings[i].Groups == input.currentControlScheme)
 				{
-					return bindings[i].bindingId;
+					return bindings[i].BindingId;
 				}
 			}
 
@@ -158,13 +158,13 @@ namespace Hertzole.SettingsManager
 
 			for (int i = 0; i < bindings.Length; i++)
 			{
-				if (bindings[i].groups == input.currentControlScheme)
+				if (bindings[i].Groups == input.currentControlScheme)
 				{
-					Guid id = new Guid(bindings[i].bindingId);
+					Guid id = new Guid(bindings[i].BindingId);
 					bindingIndex = action.bindings.IndexOf(x => x.id == id);
 					if (bindingIndex == -1)
 					{
-						Debug.LogError($"Cannot find binding with ID '{bindings[i].bindingId}' in action '{action.name}'.", this);
+						Debug.LogError($"Cannot find binding with ID '{bindings[i].BindingId}' in action '{action.name}'.", this);
 						return false;
 					}
 
@@ -179,8 +179,19 @@ namespace Hertzole.SettingsManager
 		[Serializable]
 		public struct BindingInfo
 		{
-			public string bindingId;
-			public string groups;
+			[SerializeField]
+			private string bindingId;
+			[SerializeField]
+			private string groups;
+
+			public string BindingId { get { return bindingId; } set { bindingId = value; } }
+			public string Groups { get { return groups; } set { groups = value; } }
+
+			public BindingInfo(string bindingId, string groups)
+			{
+				this.bindingId = bindingId;
+				this.groups = groups;
+			}
 		}
 	}
 }

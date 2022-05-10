@@ -133,6 +133,14 @@ namespace Hertzole.SettingsManager
 			return false;
 		}
 
+		public void GetSerializeData(Dictionary<string, object> dataBuffer)
+		{
+			if (behavior != null)
+			{
+				behavior.GetSerializeData(dataBuffer);
+			}
+		}
+
 		private static SettingsManager GetOrCreateSettings()
 		{
 			if (instance != null)
@@ -324,7 +332,8 @@ namespace Hertzole.SettingsManager
 					Directory.CreateDirectory(directory);
 				}
 
-				FillData();
+				settingData.Clear();
+				GetSerializeData(settingData);
 
 				byte[] data = Serializer.Serialize(settingData);
 				File.WriteAllBytes(SavePath, data);
@@ -357,10 +366,8 @@ namespace Hertzole.SettingsManager
 				SetDefaultValues(excludedSettings);
 			}
 
-			private void FillData()
+			internal void GetSerializeData(Dictionary<string, object> dataBuffer)
 			{
-				settingData.Clear();
-
 				for (int i = 0; i < Manager.categories.Count; i++)
 				{
 					for (int j = 0; j < Manager.categories[i].Settings.Count; j++)
@@ -370,7 +377,7 @@ namespace Hertzole.SettingsManager
 							continue;
 						}
 
-						settingData.Add(Manager.categories[i].Settings[j].Identifier, Manager.categories[i].Settings[j].GetSerializeValue());
+						dataBuffer[Manager.categories[i].Settings[j].Identifier] = Manager.categories[i].Settings[j].GetSerializeValue();
 					}
 				}
 			}

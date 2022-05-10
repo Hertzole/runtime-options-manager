@@ -40,7 +40,6 @@ namespace Hertzole.SettingsManager
 			Toggle toggle = ui.Q<Toggle>();
 			toggle.label = DisplayName;
 			toggle.SetValueWithoutNotify(Value);
-			Debug.Log(Value);
 
 			toggle.RegisterValueChangedCallback(evt => { Value = evt.newValue; });
 

@@ -30,14 +30,33 @@ namespace Hertzole.SettingsManager
 		
 		public byte[] Serialize(Dictionary<string, object> data)
 		{
+			if (data == null)
+			{
+				return Array.Empty<byte>();
+			}
+			
 			string json = JsonConvert.SerializeObject(data, prettyPrint ? Formatting.Indented : Formatting.None, serializerSettings);
 			return System.Text.Encoding.UTF8.GetBytes(json);
 		}
 
 		public void Deserialize(byte[] data, Dictionary<string, object> dataToFill)
 		{
+			if (data == null || data.Length == 0)
+			{
+				return;
+			}
+			
 			string json = System.Text.Encoding.UTF8.GetString(data);
-			Dictionary<string, object> deserializedData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json, serializerSettings);
+			Dictionary<string, object> deserializedData = null;
+			try
+			{
+				deserializedData = JsonConvert.DeserializeObject<Dictionary<string, object>>(json, serializerSettings);
+			}
+			catch (JsonException e)
+			{
+				deserializedData = null;
+				Debug.LogError($"Failed to deserialize JSON data: {e.Message}");
+			}
 
 			if(deserializedData == null)
 			{
