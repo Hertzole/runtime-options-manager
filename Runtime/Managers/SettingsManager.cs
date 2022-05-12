@@ -410,12 +410,16 @@ namespace Hertzole.SettingsManager
 			{
 				ResetState();
 			}
+
+			if (state == PlayModeStateChange.EnteredPlayMode || state == PlayModeStateChange.ExitingEditMode)
+			{
+				TryCreateBehavior();
+			}
 		}
 
 		private void ResetState()
 		{
 			isInitialized = false;
-			instance = null;
 			cachedSettings.Clear();
 		}
 #endif
