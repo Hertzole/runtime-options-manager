@@ -86,7 +86,9 @@ jobs:
           apt install -y openjdk-11-jre-headless
 
       - name: Generate Solution
-        run: unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod UnityEditor.SyncVS.SyncSolution -quit
+        run: |
+          unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod UnityEditor.SyncVS.SyncSolution -quit
+          ls
 
       # - name: Get test reports
       #   uses: actions/download-artifact@v3
