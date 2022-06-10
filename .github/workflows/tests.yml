@@ -52,9 +52,9 @@ jobs:
     needs: [tests]
     name: SonarScan
     runs-on: ubuntu-latest
-    container: unityci/editor:ubuntu-2021.3.0f1-base-1.0.1
+    container: unityci/editor:ubuntu-2020.3.35f1-base-1.0.1
     env:
-      DOTNET: '/opt/unity/Editor/Data/NetCoreRuntime'
+      DOTNET: '/opt/unity/Editor/Data/NetCore/Sdk-2.2.107'
     steps:
       - name: Activate Unity
         continue-on-error: true
