@@ -81,7 +81,7 @@ jobs:
 
       - name: Install scanner
         run: |
-          $DOTNET/dotnet tool install dotnet-sonarscanner --tool-path . --version 5.4.0
+          dotnet tool install dotnet-sonarscanner --tool-path . --version 5.4.0
           apt update
           apt install -y openjdk-11-jre-headless
 
@@ -115,5 +115,5 @@ jobs:
            /d:sonar.cpd.exclusions=Assets/Tests/** \
            /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
            /d:sonar.cs.opencover.reportsPaths="Coverage/Settings Manager-opencov/PlayMode/TestCoverageResults_0000.xml"
-          $DOTNET/dotnet build unity-runtime-settings.sln
+          dotnet build unity-runtime-settings.sln
           ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN
