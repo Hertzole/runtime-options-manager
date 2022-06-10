@@ -1,6 +1,9 @@
 name: Devlopment Package
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - '.github/**'
 
 jobs:
   package:

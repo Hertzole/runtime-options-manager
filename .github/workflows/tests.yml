@@ -52,17 +52,17 @@ jobs:
     needs: [tests]
     name: SonarScan
     runs-on: ubuntu-latest
-    container: unityci/editor:ubuntu-2020.3.35f1-base-1.0.1
+    container: unityci/editor:ubuntu-2021.3.0f1-base-1.0.1
     env:
-      DOTNET: '/opt/unity/Editor/Data/NetCore/Sdk-2.2.107'
+      DOTNET: '/opt/unity/Editor/Data/NetCoreRuntime'
     steps:
       - name: Activate Unity
         continue-on-error: true
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         run: |
-          echo "$UNITY_LICENSE" | tr -d '\r' > UnityLicenseFile.ulf
-          unity-editor -nographics -logFile /dev/stdout -manualLicenseFile UnityLicenseFile.ulf -quit 
+          echo "$UNITY_LICENSE" | tr -d '\r' > License.ulf
+          unity-editor -nographics -logFile /dev/stdout -manualLicenseFile License.ulf -quit 
       - name: Checkout repository
         uses: actions/checkout@v1
 
@@ -72,6 +72,12 @@ jobs:
         with:
           path: Library
           key: Library-2021-Scan
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v2.1.0
+        with:
+          dotnet-version: |
+            6.0.x
 
       - name: Install scanner
         run: |
