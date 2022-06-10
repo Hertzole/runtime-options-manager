@@ -121,6 +121,6 @@ jobs:
            /d:sonar.verbose=false \
            /d:sonar.login=$SONAR_TOKEN \
            /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
-           /d:sonar.cs.opencover.reportsPaths=Coverage/workspace-opencov/PlayMode/TestCoverageResults_0000.xml
+           /d:sonar.cs.opencover.reportsPaths=Coverage/unity-runtime-settings-opencov/PlayMode/TestCoverageResults_0000.xml
           dotnet build unity-runtime-settings.sln
           ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN
