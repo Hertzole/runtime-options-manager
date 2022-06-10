@@ -1,0 +1,42 @@
+name: Unity Tests
+on:
+  push:
+    branch:
+    - development
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  build:
+    name: Run Unity 2021.3 tests
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        lfs: true
+
+    # Cache
+    - name: Cache library
+      id: cache-library
+      uses: actions/cache@v3
+      with:
+        path: Library
+        key: Settings-Library
+
+    # Run the tests
+    - name: Run tests
+      uses: game-ci/unity-test-runner@v2
+      id: run-tests
+      with:
+        unityVersion: "2021.3.0f1"
+
+    # Upload test results
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: Test results
+        path: ${{ steps.run-tests.outputs.artifactsPath }}
