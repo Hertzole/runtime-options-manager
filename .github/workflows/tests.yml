@@ -11,7 +11,16 @@ jobs:
   tests:
     name: Run Unity 2021.3 tests
     runs-on: ubuntu-latest
+    container: unityci/editor:ubuntu-2021.3.0f1-base-1.0.1
     steps:
+    - name: Activate Unity
+      continue-on-error: true
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      run: |
+        echo "$UNITY_LICENSE" | tr -d '\r' > License.ulf
+        unity-editor -nographics -logFile /dev/stdout -manualLicenseFile License.ulf -quit 
+
     # Checkout
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -27,12 +36,8 @@ jobs:
         key: Library-2021
 
     # Run the tests
-    - name: Run tests
-      uses: game-ci/unity-test-runner@v2.0.2
-      id: run-tests
-      with:
-        unityVersion: "2021.3.0f1"
-        coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.*'
+    - name: Run play mode tests
+      run: unity-editor -nographics -logFile /dev/stdout -runTests -testPlatform playmode -testResults Tests/playmode.xml -enableCodeCoverage -coverageResultsPath TestCoverage -debugCodeOptimization -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.*"
 
     # Upload test results
     - name: Upload test results
@@ -40,7 +45,7 @@ jobs:
       if: always()
       with:
         name: Test results
-        path: ${{ steps.run-tests.outputs.artifactsPath }}
+        path: Tests
 
     # Upload test coverage results
     - name: Upload coverage results
@@ -48,10 +53,8 @@ jobs:
       if: always()
       with: 
         name: Coverage results
-        path: ${{ steps.run-tests.outputs.coveragePath }}
-
-    - name: Post check
-      run: ls
+        path: TestCoverage
+        
   sonarscan:
     needs: [tests]
     name: SonarScan
@@ -67,6 +70,7 @@ jobs:
         run: |
           echo "$UNITY_LICENSE" | tr -d '\r' > License.ulf
           unity-editor -nographics -logFile /dev/stdout -manualLicenseFile License.ulf -quit 
+
       - name: Checkout repository
         uses: actions/checkout@v1
 
@@ -116,7 +120,6 @@ jobs:
            /d:sonar.host.url=https://sonarcloud.io \
            /d:sonar.verbose=false \
            /d:sonar.login=$SONAR_TOKEN \
-           /d:sonar.cpd.exclusions=Assets/Tests/** \
            /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
            /d:sonar.cs.opencover.reportsPaths=Coverage/workspace-opencov/PlayMode/TestCoverageResults_0000.xml
           dotnet build unity-runtime-settings.sln
