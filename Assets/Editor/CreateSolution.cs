@@ -7,7 +7,6 @@ namespace GitTools
 {
 	public static class Solution
 	{
-		[MenuItem("Tools/Sync")]
 		public static void Sync()
 		{
 			ProjectGeneration projectGeneration = new ProjectGeneration();
