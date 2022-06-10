@@ -89,9 +89,7 @@ jobs:
           apt install -y openjdk-11-jre-headless
 
       - name: Generate Solution
-        run: |
-          unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod GitTools.Solution.Sync -quit
-          ls
+        run: unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod GitTools.Solution.Sync -quit
 
       - name: Get test reports
         uses: actions/download-artifact@v3
@@ -110,7 +108,7 @@ jobs:
           FrameworkPathOverride: /opt/unity/Editor/Data/MonoBleedingEdge/
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ls
+          ls Coverage
           ./dotnet-sonarscanner begin \
            /o:hertzole \
            /k:unity-runtime-settings \
@@ -119,6 +117,6 @@ jobs:
            /d:sonar.login=$SONAR_TOKEN \
            /d:sonar.cpd.exclusions=Assets/Tests/** \
            /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
-           /d:sonar.cs.opencover.reportsPaths="Coverage/workspace-opencov/PlayMode/TestCoverageResults_0000.xml"
+           /d:sonar.cs.opencover.reportsPaths=Coverage/workspace-opencov/PlayMode/TestCoverageResults_0000.xml
           dotnet build unity-runtime-settings.sln
           ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN
