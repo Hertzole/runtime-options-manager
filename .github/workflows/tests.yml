@@ -51,74 +51,74 @@ jobs:
 
     - name: Post check
       run: ls
-  # sonarscan:
-  #   #needs: [tests]
-  #   name: SonarScan
-  #   runs-on: ubuntu-latest
-  #   container: unityci/editor:ubuntu-2021.3.0f1-base-1.0.1
-  #   env:
-  #     DOTNET: '/opt/unity/Editor/Data/NetCoreRuntime'
-  #   steps:
-  #     - name: Activate Unity
-  #       continue-on-error: true
-  #       env:
-  #         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-  #       run: |
-  #         echo "$UNITY_LICENSE" | tr -d '\r' > License.ulf
-  #         unity-editor -nographics -logFile /dev/stdout -manualLicenseFile License.ulf -quit 
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v1
+  sonarscan:
+    #needs: [tests]
+    name: SonarScan
+    runs-on: ubuntu-latest
+    container: unityci/editor:ubuntu-2021.3.0f1-base-1.0.1
+    env:
+      DOTNET: '/opt/unity/Editor/Data/NetCoreRuntime'
+    steps:
+      - name: Activate Unity
+        continue-on-error: true
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          echo "$UNITY_LICENSE" | tr -d '\r' > License.ulf
+          unity-editor -nographics -logFile /dev/stdout -manualLicenseFile License.ulf -quit 
+      - name: Checkout repository
+        uses: actions/checkout@v1
 
-  #     - name: Cache library
-  #       id: cache-library
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: Library
-  #         key: Library-2021-Scan
+      - name: Cache library
+        id: cache-library
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-2021-Scan
 
-  #     - name: Install .NET
-  #       uses: actions/setup-dotnet@v2.1.0
-  #       with:
-  #         dotnet-version: |
-  #           6.0.x
+      - name: Install .NET
+        uses: actions/setup-dotnet@v2.1.0
+        with:
+          dotnet-version: |
+            6.0.x
 
-  #     - name: Install scanner
-  #       run: |
-  #         dotnet tool install dotnet-sonarscanner --tool-path . --version 5.4.0
-  #         apt update
-  #         apt install -y openjdk-11-jre-headless
+      - name: Install scanner
+        run: |
+          dotnet tool install dotnet-sonarscanner --tool-path . --version 5.4.0
+          apt update
+          apt install -y openjdk-11-jre-headless
 
-  #     - name: Generate Solution
-  #       run: |
-  #         unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod GitTools.CreateSolution.Sync -quit
-  #         ls
+      - name: Generate Solution
+        run: |
+          unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod GitTools.Solution.Sync -quit
+          ls
 
-  #     # - name: Get test reports
-  #     #   uses: actions/download-artifact@v3
-  #     #   with:
-  #     #     name: Test results
-  #     #     path: Tests
+      - name: Get test reports
+        uses: actions/download-artifact@v3
+        with:
+          name: Test results
+          path: Tests
       
-  #     # - name: Get test coverage
-  #     #   uses: actions/download-artifact@v3
-  #     #   with:
-  #     #     name: Coverage results
-  #     #     path: Coverage
+      - name: Get test coverage
+        uses: actions/download-artifact@v3
+        with:
+          name: Coverage results
+          path: Coverage
 
-  #     - name: SonarQube analysis
-  #       env:
-  #         FrameworkPathOverride: /opt/unity/Editor/Data/MonoBleedingEdge/
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #       run: |
-  #         ls
-  #         ./dotnet-sonarscanner begin \
-  #          /o:hertzole \
-  #          /k:unity-runtime-settings \
-  #          /d:sonar.host.url=https://sonarcloud.io \
-  #          /d:sonar.verbose=false \
-  #          /d:sonar.login=$SONAR_TOKEN \
-  #          /d:sonar.cpd.exclusions=Assets/Tests/** \
-  #          /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
-  #          /d:sonar.cs.opencover.reportsPaths="Coverage/Settings Manager-opencov/PlayMode/TestCoverageResults_0000.xml"
-  #         dotnet build unity-runtime-settings.sln
-  #         ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN
+      - name: SonarQube analysis
+        env:
+          FrameworkPathOverride: /opt/unity/Editor/Data/MonoBleedingEdge/
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          ls
+          ./dotnet-sonarscanner begin \
+           /o:hertzole \
+           /k:unity-runtime-settings \
+           /d:sonar.host.url=https://sonarcloud.io \
+           /d:sonar.verbose=false \
+           /d:sonar.login=$SONAR_TOKEN \
+           /d:sonar.cpd.exclusions=Assets/Tests/** \
+           /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
+           /d:sonar.cs.opencover.reportsPaths="Coverage/Settings Manager-opencov/PlayMode/TestCoverageResults_0000.xml"
+          dotnet build unity-runtime-settings.sln
+          ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN
