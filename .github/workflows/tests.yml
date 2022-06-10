@@ -23,7 +23,7 @@ jobs:
 
     # Checkout
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v1
       with:
         lfs: true
 
@@ -54,7 +54,7 @@ jobs:
       with: 
         name: Coverage results
         path: TestCoverage
-        
+
   sonarscan:
     needs: [tests]
     name: SonarScan
