@@ -52,7 +52,7 @@ jobs:
     - name: Post check
       run: ls
   sonarscan:
-    #needs: [tests]
+    needs: [tests]
     name: SonarScan
     runs-on: ubuntu-latest
     container: unityci/editor:ubuntu-2021.3.0f1-base-1.0.1
@@ -119,6 +119,6 @@ jobs:
            /d:sonar.login=$SONAR_TOKEN \
            /d:sonar.cpd.exclusions=Assets/Tests/** \
            /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
-           /d:sonar.cs.opencover.reportsPaths="Coverage/Settings Manager-opencov/PlayMode/TestCoverageResults_0000.xml"
+           /d:sonar.cs.opencover.reportsPaths="Coverage/workspace-opencov/PlayMode/TestCoverageResults_0000.xml"
           dotnet build unity-runtime-settings.sln
           ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN
