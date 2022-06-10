@@ -108,7 +108,7 @@ jobs:
           ./dotnet-sonarscanner begin \
            /o:hertzole \
            /k:unity-runtime-settings \
-           /d:sonar.host.url=https://sonarcloud.io
+           /d:sonar.host.url=https://sonarcloud.io \
            /d:sonar.verbose=false \
            /d:sonar.login=$SONAR_TOKEN \
            /d:sonar.cpd.exclusions=Assets/Tests/** \
