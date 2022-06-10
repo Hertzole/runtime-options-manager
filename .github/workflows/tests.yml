@@ -32,6 +32,7 @@ jobs:
       id: run-tests
       with:
         unityVersion: "2021.3.0f1"
+        coverageOptions: 'generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:Hertzole.*'
 
     # Upload test results
     - name: Upload test results
