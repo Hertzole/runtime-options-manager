@@ -49,7 +49,7 @@ jobs:
         name: Coverage results
         path: ${{ steps.run-tests.outputs.coveragePath }}
   sonarscan:
-    needs: [tests]
+    #needs: [tests]
     name: SonarScan
     runs-on: ubuntu-latest
     container: unityci/editor:ubuntu-2021.3.0f1-base-1.0.1
@@ -88,23 +88,24 @@ jobs:
       - name: Generate Solution
         run: unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod UnityEditor.SyncVS.SyncSolution -quit
 
-      - name: Get test reports
-        uses: actions/download-artifact@v3
-        with:
-          name: Test results
-          path: Tests
+      # - name: Get test reports
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: Test results
+      #     path: Tests
       
-      - name: Get test coverage
-        uses: actions/download-artifact@v3
-        with:
-          name: Coverage results
-          path: Coverage
+      # - name: Get test coverage
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: Coverage results
+      #     path: Coverage
 
       - name: SonarQube analysis
         env:
           FrameworkPathOverride: /opt/unity/Editor/Data/MonoBleedingEdge/
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          ls
           ./dotnet-sonarscanner begin \
            /o:hertzole \
            /k:unity-runtime-settings \
