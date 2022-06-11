@@ -25,6 +25,10 @@ MonoBehaviour:
   identifier: move_down
   uiPrefab: {fileID: 607000209400603388, guid: 1f7271c14f4cf6546810acfe75cc30dd, type: 3}
   uiElement: {fileID: 0}
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
   targetAction: {fileID: -1721885394449788270, guid: 69a5d0f6ac31e854f8aec66d8db59f70, type: 3}
   bindings:
   - bindingId: f0f91576-e75b-4987-a47b-08d76865bbc2

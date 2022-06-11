@@ -105,7 +105,7 @@ namespace Hertzole.SettingsManager.Tests
 
 			Dictionary<string, object> serializedData = new Dictionary<string, object>();
 
-			settings.GetSerializeData(serializedData);
+			settings.GetSerializeData(serializedData, new Setting[] {setting});
 
 			byte[] savedData = serializer.Serialize(serializedData);
 

@@ -7,7 +7,7 @@ namespace Hertzole.SettingsManager.Tests
 	public class BaseTest
 	{
 		protected SettingsManager settings;
-		protected List<GameObject> objects = new List<GameObject>();
+		protected readonly List<GameObject> objects = new List<GameObject>();
 
 		[SetUp]
 		public void Setup()

@@ -42,6 +42,7 @@ namespace Hertzole.SettingsManager
 		private List<SettingsCategory> categories = new List<SettingsCategory>();
 
 		private bool isInitialized = false;
+
 		private readonly Dictionary<string, Setting> cachedSettings = new Dictionary<string, Setting>();
 
 		private static SettingsManager instance;
@@ -52,9 +53,57 @@ namespace Hertzole.SettingsManager
 
 		public bool AutoSaveSettings { get { return autoSaveSettings; } set { autoSaveSettings = value; } }
 		public bool LoadSettingsOnBoot { get { return loadSettingsOnBoot; } set { loadSettingsOnBoot = value; } }
-		public SaveLocations SaveLocation { get { return saveLocation; } set { saveLocation = value; } }
-		public string SavePath { get { return savePath; } set { savePath = value; } }
-		public string FileName { get { return fileName; } set { fileName = value; } }
+		public SaveLocations SaveLocation
+		{
+			get { return saveLocation; }
+			set
+			{
+				if (saveLocation != value)
+				{
+					saveLocation = value;
+					ComputedSavePath = GetSavePath(this);
+					if (behavior != null)
+					{
+						behavior.SavePath = ComputedSavePath;
+					}
+				}
+			}
+		}
+		public string SavePath
+		{
+			get { return savePath; }
+			set
+			{
+				if (savePath != value)
+				{
+					savePath = value;
+					ComputedSavePath = GetSavePath(this);
+					if (behavior != null)
+					{
+						behavior.SavePath = ComputedSavePath;
+					}
+				}
+			}
+		}
+		public string FileName
+		{
+			get { return fileName; }
+			set
+			{
+				if (fileName != value)
+				{
+					fileName = value;
+					ComputedSavePath = GetSavePath(this);
+					if (behavior != null)
+					{
+						behavior.SavePath = ComputedSavePath;
+					}
+				}
+			}
+		}
+
+		public string ComputedSavePath { get; private set; }
+
 		public ISettingPathProvider CustomPathProvider { get { return customPathProvider; } set { customPathProvider = value; } }
 		public ISettingSerializer Serializer { get { return serializer; } set { serializer = value; } }
 		public List<SettingsCategory> Categories { get { return categories; } set { categories = value; } }
@@ -133,11 +182,11 @@ namespace Hertzole.SettingsManager
 			return false;
 		}
 
-		public void GetSerializeData(Dictionary<string, object> dataBuffer)
+		public void GetSerializeData(Dictionary<string, object> dataBuffer, IEnumerable<Setting> settings)
 		{
 			if (behavior != null)
 			{
-				behavior.GetSerializeData(dataBuffer);
+				SettingsManagerBehavior.GetSerializeData(dataBuffer, settings);
 			}
 		}
 
@@ -215,24 +264,7 @@ namespace Hertzole.SettingsManager
 		{
 			savePathBuilder.Clear();
 
-			switch (settings.saveLocation)
-			{
-				case SaveLocations.PersistentDataPath:
-					savePathBuilder.Append(Application.persistentDataPath);
-					break;
-				case SaveLocations.DataPath:
-					savePathBuilder.Append(Application.dataPath);
-					break;
-				case SaveLocations.Documents:
-					savePathBuilder.Append(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-					break;
-				case SaveLocations.Custom:
-					savePathBuilder.Append(settings.customPathProvider != null ? settings.customPathProvider.GetSettingsPath() : Application.persistentDataPath);
-					break;
-				default:
-					savePathBuilder.Append(Application.persistentDataPath);
-					break;
-			}
+			savePathBuilder.Append(GetSaveLocation(settings.saveLocation, settings.customPathProvider));
 
 			if (!string.IsNullOrWhiteSpace(settings.savePath))
 			{
@@ -242,6 +274,26 @@ namespace Hertzole.SettingsManager
 			savePathBuilder.Append($"/{settings.fileName}");
 
 			return Path.GetFullPath(savePathBuilder.ToString());
+		}
+
+		public static string GetSaveLocation(SaveLocations location, ISettingPathProvider pathProvider)
+		{
+			switch (location)
+			{
+				case SaveLocations.PersistentDataPath:
+					return Application.persistentDataPath;
+				case SaveLocations.DataPath:
+					return Application.dataPath;
+				case SaveLocations.Documents:
+					return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+				case SaveLocations.Custom:
+					return pathProvider != null ? pathProvider.GetSettingsPath() : Application.persistentDataPath;
+				default:
+#if DEBUG
+					Debug.LogError($"{location} is an invalid save location. Returning persistent data path instead.");
+#endif
+					return Application.persistentDataPath;
+			}
 		}
 
 		internal class SettingsManagerBehavior : MonoBehaviour
@@ -254,6 +306,8 @@ namespace Hertzole.SettingsManager
 			private float saveTime;
 			private readonly HashSet<string> excludedSettings = new HashSet<string>();
 			private SettingsManager manager;
+
+			private static readonly StringBuilder pathBuilder = new StringBuilder();
 
 			public SettingsManager Manager
 			{
@@ -317,26 +371,29 @@ namespace Hertzole.SettingsManager
 				saveTime = Time.unscaledTime + 1f;
 			}
 
+			private readonly Dictionary<string, List<Setting>> settingPaths = new Dictionary<string, List<Setting>>();
+
 			internal void SaveSettings()
 			{
 				dirtySave = false;
 
-				string directory = Path.GetDirectoryName(SavePath);
-				if (string.IsNullOrEmpty(directory))
+				GetSavePaths();
+
+				foreach (KeyValuePair<string,List<Setting>> settingPath in settingPaths)
 				{
-					return;
+					string directory = Path.GetDirectoryName(settingPath.Key);
+
+					if (!Directory.Exists(directory))
+					{
+						Directory.CreateDirectory(directory!);
+					}
+					
+					settingData.Clear();
+					GetSerializeData(settingData, settingPath.Value);
+					
+					byte[] data = Serializer.Serialize(settingData);
+					File.WriteAllBytes(settingPath.Key, data);
 				}
-
-				if (!Directory.Exists(directory))
-				{
-					Directory.CreateDirectory(directory);
-				}
-
-				settingData.Clear();
-				GetSerializeData(settingData);
-
-				byte[] data = Serializer.Serialize(settingData);
-				File.WriteAllBytes(SavePath, data);
 			}
 
 			internal void LoadSettings()
@@ -366,19 +423,36 @@ namespace Hertzole.SettingsManager
 				SetDefaultValues(excludedSettings);
 			}
 
-			internal void GetSerializeData(Dictionary<string, object> dataBuffer)
+			private void GetSavePaths()
 			{
-				for (int i = 0; i < Manager.categories.Count; i++)
+				settingPaths.Clear();
+				
+				foreach (SettingsCategory category in Manager.categories)
 				{
-					for (int j = 0; j < Manager.categories[i].Settings.Count; j++)
+					foreach (Setting setting in category.Settings)
 					{
-						if (!Manager.categories[i].Settings[j].CanSave)
+						if (!setting.CanSave)
 						{
 							continue;
 						}
 
-						dataBuffer[Manager.categories[i].Settings[j].Identifier] = Manager.categories[i].Settings[j].GetSerializeValue();
+						string savePath = GetSettingSavePath(setting);
+						if (!settingPaths.TryGetValue(savePath, out List<Setting> list))
+						{
+							list = new List<Setting>(1);
+							settingPaths.Add(savePath, list);
+						}
+
+						list.Add(setting);
 					}
+				}
+			}
+
+			internal static void GetSerializeData(Dictionary<string, object> dataBuffer, IEnumerable<Setting> settings)
+			{
+				foreach (Setting setting in settings)
+				{
+					dataBuffer[setting.Identifier] = setting.GetSerializeValue();
 				}
 			}
 
@@ -394,6 +468,25 @@ namespace Hertzole.SettingsManager
 						}
 					}
 				}
+			}
+
+			private string GetSettingSavePath(Setting setting)
+			{
+				if (!setting.OverwriteSavePath && !setting.OverwriteFileName)
+				{
+					return SavePath;
+				}
+				
+				pathBuilder.Clear();
+
+				pathBuilder.Append(GetSaveLocation(manager.saveLocation, manager.customPathProvider));
+				pathBuilder.Append('/');
+
+				pathBuilder.Append(setting.OverwriteSavePath ? setting.OverriddenSavePath : manager.savePath);
+				pathBuilder.Append('/');
+				pathBuilder.Append(setting.OverwriteFileName ? setting.OverriddenFileName : manager.fileName);
+
+				return Path.GetFullPath(pathBuilder.ToString());
 			}
 		}
 

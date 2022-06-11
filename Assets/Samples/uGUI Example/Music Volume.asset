@@ -25,6 +25,10 @@ MonoBehaviour:
   identifier: music_volume
   uiPrefab: {fileID: 3833867431636445629, guid: 347918e2843cc8b47a0f5088f27a7c1a, type: 3}
   uiElement: {fileID: 0}
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
   defaultValue: 100
   hasMinValue: 1
   minValue: 0
