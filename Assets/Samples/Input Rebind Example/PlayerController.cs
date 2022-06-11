@@ -1,42 +1,44 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+namespace Hertzole.SettingsManager.Samples.InputRebinding
 {
-	[SerializeField]
-	private InputActionReference moveInput = default;
-	[SerializeField] 
-	private float moveSpeed = 8;
-
-	private PlayerInput input;
-
-	private Vector2 move;
-
-	private void Awake()
+	public class PlayerController : MonoBehaviour
 	{
-		input = GetComponent<PlayerInput>();
-	}
+		[SerializeField]
+		private InputActionReference moveInput = default;
+		[SerializeField]
+		private float moveSpeed = 8;
 
-	private void OnEnable()
-	{
-		input.actions.FindAction(moveInput.action.id).performed += OnMovePerformed;
-		input.actions.FindAction(moveInput.action.id).canceled += OnMovePerformed;
-	}
+		private PlayerInput input;
 
-	private void OnDisable()
-	{
-		input.actions.FindAction(moveInput.action.id).performed -= OnMovePerformed;
-		input.actions.FindAction(moveInput.action.id).canceled += OnMovePerformed;
-	}
+		private Vector2 move;
 
-	private void OnMovePerformed(InputAction.CallbackContext obj)
-	{
-		move = obj.ReadValue<Vector2>();
-	}
+		private void Awake()
+		{
+			input = GetComponent<PlayerInput>();
+		}
 
-	private void Update()
-	{
-		transform.Translate(new Vector3(move.x, move.y, 0) * moveSpeed * Time.deltaTime);
+		private void Update()
+		{
+			transform.Translate(new Vector3(move.x, move.y, 0) * moveSpeed * Time.deltaTime);
+		}
+
+		private void OnEnable()
+		{
+			input.actions.FindAction(moveInput.action.id).performed += OnMovePerformed;
+			input.actions.FindAction(moveInput.action.id).canceled += OnMovePerformed;
+		}
+
+		private void OnDisable()
+		{
+			input.actions.FindAction(moveInput.action.id).performed -= OnMovePerformed;
+			input.actions.FindAction(moveInput.action.id).canceled += OnMovePerformed;
+		}
+
+		private void OnMovePerformed(InputAction.CallbackContext obj)
+		{
+			move = obj.ReadValue<Vector2>();
+		}
 	}
 }

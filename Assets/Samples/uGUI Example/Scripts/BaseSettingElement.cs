@@ -1,18 +1,20 @@
-using Hertzole.SettingsManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class BaseSettingElement : MonoBehaviour
+namespace Hertzole.SettingsManager.Samples.UI
 {
-	[SerializeField] 
-	private Text label = default;
-
-	public void BindSetting(Setting setting)
+	public abstract class BaseSettingElement : MonoBehaviour
 	{
-		label.text = setting.DisplayName;
-		
-		OnBindSetting(setting);
-	}
+		[SerializeField] 
+		private Text label = default;
 
-	protected abstract void OnBindSetting(Setting setting);
+		public void BindSetting(Setting setting)
+		{
+			label.text = setting.DisplayName;
+		
+			OnBindSetting(setting);
+		}
+
+		protected abstract void OnBindSetting(Setting setting);
+	}
 }

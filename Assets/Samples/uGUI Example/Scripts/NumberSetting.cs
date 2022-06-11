@@ -1,63 +1,73 @@
 using System.Globalization;
-using Hertzole.SettingsManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NumberSetting : BaseSettingElement
+namespace Hertzole.SettingsManager.Samples.UI
 {
-	[SerializeField]
-	private Slider slider = default;
-	[SerializeField]
-	private Text sliderText = default;
-
-	protected override void OnBindSetting(Setting setting)
+	public class NumberSetting : BaseSettingElement
 	{
-		if (setting is ICanHaveSlider canSlide)
-		{
-			slider.gameObject.SetActive(canSlide.EnableSlider);
-			slider.wholeNumbers = canSlide.WholeSliderNumbers;
-			slider.onValueChanged.RemoveAllListeners();
-		}
-		else
-		{
-			slider.gameObject.SetActive(false);
-		}
+		[SerializeField]
+		private Slider slider = default;
+		[SerializeField]
+		private Text sliderText = default;
 
-		if (sliderText != null)
-		{
-			slider.onValueChanged.AddListener(x => { sliderText.text = x.ToString(CultureInfo.InvariantCulture); });
-		}
+		// Cache these to avoid closure allocations.
+		private Setting<float> floatSetting;
+		private Setting<int> intSetting;
 
-		if (setting is IMinMaxFloat minMaxFloat)
+		protected override void OnBindSetting(Setting setting)
 		{
-			slider.minValue = minMaxFloat.MinValue;
-			slider.maxValue = minMaxFloat.MaxValue;
-		}
-		else if (setting is IMinMaxInt minMaxInt)
-		{
-			slider.minValue = minMaxInt.MinValue;
-			slider.maxValue = minMaxInt.MaxValue;
-		}
-
-		if (setting is Setting<float> floatSetting)
-		{
-			slider.SetValueWithoutNotify(floatSetting.Value);
-			if (sliderText != null)
+			if (setting is ICanHaveSlider canSlide)
 			{
-				sliderText.text = floatSetting.Value.ToString(CultureInfo.InvariantCulture);
+				slider.gameObject.SetActive(canSlide.EnableSlider);
+				slider.wholeNumbers = canSlide.WholeSliderNumbers;
+				slider.onValueChanged.RemoveAllListeners();
+			}
+			else
+			{
+				slider.gameObject.SetActive(false);
 			}
 
-			slider.onValueChanged.AddListener(x => { floatSetting.Value = x; });
-		}
-		else if (setting is Setting<int> intSetting)
-		{
-			slider.SetValueWithoutNotify(intSetting.Value);
 			if (sliderText != null)
 			{
-				sliderText.text = intSetting.Value.ToString();
+				slider.onValueChanged.AddListener(x => { sliderText.text = x.ToString(CultureInfo.InvariantCulture); });
 			}
 
-			slider.onValueChanged.AddListener(x => { intSetting.Value = (int) x; });
+			if (setting is IMinMaxFloat minMaxFloat)
+			{
+				slider.minValue = minMaxFloat.MinValue;
+				slider.maxValue = minMaxFloat.MaxValue;
+			}
+			else if (setting is IMinMaxInt minMaxInt)
+			{
+				slider.minValue = minMaxInt.MinValue;
+				slider.maxValue = minMaxInt.MaxValue;
+			}
+
+			if (setting is Setting<float> newFloatSetting)
+			{
+				floatSetting = newFloatSetting;
+				
+				slider.SetValueWithoutNotify(floatSetting.Value);
+				if (sliderText != null)
+				{
+					sliderText.text = floatSetting.Value.ToString(CultureInfo.InvariantCulture);
+				}
+
+				slider.onValueChanged.AddListener(x => { floatSetting.Value = x; });
+			}
+			else if (setting is Setting<int> newIntSetting)
+			{
+				intSetting = newIntSetting;
+				
+				slider.SetValueWithoutNotify(intSetting.Value);
+				if (sliderText != null)
+				{
+					sliderText.text = intSetting.Value.ToString();
+				}
+
+				slider.onValueChanged.AddListener(x => { intSetting.Value = (int) x; });
+			}
 		}
 	}
 }

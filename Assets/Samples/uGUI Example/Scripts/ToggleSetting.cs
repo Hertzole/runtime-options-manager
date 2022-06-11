@@ -1,21 +1,23 @@
-using Hertzole.SettingsManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ToggleSetting : BaseSettingElement
+namespace Hertzole.SettingsManager.Samples.UI
 {
-	[SerializeField]
-	private Toggle toggle = default;
-
-	protected override void OnBindSetting(Setting setting)
+	public class ToggleSetting : BaseSettingElement
 	{
-		if (!(setting is Setting<bool> toggleSetting))
-		{
-			Debug.LogError("ToggleSetting only supports settings of type Setting<bool>.");
-			return;
-		}
+		[SerializeField]
+		private Toggle toggle = default;
 
-		toggle.SetIsOnWithoutNotify(toggleSetting.Value);
-		toggle.onValueChanged.AddListener(x => toggleSetting.Value = x);
+		protected override void OnBindSetting(Setting setting)
+		{
+			if (!(setting is Setting<bool> toggleSetting))
+			{
+				Debug.LogError("ToggleSetting only supports settings of type Setting<bool>.");
+				return;
+			}
+
+			toggle.SetIsOnWithoutNotify(toggleSetting.Value);
+			toggle.onValueChanged.AddListener(x => toggleSetting.Value = x);
+		}
 	}
 }

@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class CubeSpin : MonoBehaviour
+namespace Hertzole.SettingsManager.Samples.UI
 {
-	public bool Spin { get; set; } = true;
-
-	public float SpinSpeed { get; set; } = 90;
-
-	private void Update()
+	public class CubeSpin : MonoBehaviour
 	{
-		if (Spin)
+		public bool Spin { get; set; } = true;
+
+		public float SpinSpeed { get; set; } = 90;
+
+		private void Update()
 		{
-			transform.Rotate(Vector3.up * SpinSpeed * Time.deltaTime);
+			if (Spin)
+			{
+				transform.Rotate(Vector3.up * SpinSpeed * Time.deltaTime);
+			}
 		}
 	}
 }
