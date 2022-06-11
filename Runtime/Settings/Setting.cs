@@ -32,6 +32,18 @@ namespace Hertzole.SettingsManager
 		[SerializeField]
 		protected VisualTreeAsset uiElement = default;
 #endif
+		
+#if UNITY_EDITOR
+		[Header("Saving")]
+#endif
+		[SerializeField] 
+		private bool overwriteSavePath = false;
+		[SerializeField] 
+		private string overriddenSavePath = default;
+		[SerializeField] 
+		private bool overwriteFileName = false;
+		[SerializeField] 
+		private string overriddenFileName = default;
 
 		public string DisplayName { get { return displayName; } set { displayName = value; } }
 #if HERTZ_SETTINGS_LOCALIZATION
@@ -40,7 +52,12 @@ namespace Hertzole.SettingsManager
 		public string Identifier { get { return identifier; } set { identifier = value; } }
 		
 		public GameObject UiPrefab { get { return uiPrefab; } set { uiPrefab = value; } }
-		
+
+		public bool OverwriteSavePath { get { return overwriteSavePath; } set { overwriteSavePath = value; } }
+		public string OverriddenSavePath { get { return overriddenSavePath; } set { overriddenSavePath = value; } }
+		public bool OverwriteFileName { get { return overwriteFileName; } set { overwriteFileName = value; } }
+		public string OverriddenFileName { get { return overriddenFileName; } set { overriddenFileName = value; } }
+
 		public virtual bool CanSave { get { return true; } }
 
 		public event Action OnSettingChanged;
