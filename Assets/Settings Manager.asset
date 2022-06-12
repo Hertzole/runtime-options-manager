@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Settings Manager
   m_EditorClassIdentifier: 
   autoSaveSettings: 1
-  loadSettingsOnBoot: 0
+  loadSettingsOnBoot: 1
   saveLocation: 0
   savePath: settings
   fileName: settings.json
@@ -58,4 +58,4 @@ MonoBehaviour:
     - rid: 8729629915173617764
       type: {class: JsonSettingSerializer, ns: Hertzole.SettingsManager, asm: Hertzole.SettingsManager}
       data:
-        prettyPrint: 0
+        prettyPrint: 1

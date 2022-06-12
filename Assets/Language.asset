@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1733b69937f84c0990b3a245c3a43003, type: 3}
-  m_Name: New Fullscreen Mode Setting
+  m_Script: {fileID: 11500000, guid: ea58189d66ecb5a4f9ef2a773ac8bfe0, type: 3}
+  m_Name: Language
   m_EditorClassIdentifier: 
-  displayName: Fullscreen Mode
+  displayName: Language
   displayNameLocalized:
     m_TableReference:
       m_TableCollectionName: 
@@ -22,9 +22,14 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  identifier: fullscreen_mode
+  identifier: language
+  uiPrefab: {fileID: 0}
   uiElement: {fileID: 9197481963319205126, guid: 68a54ba21f269944bb6169a2babbfc68, type: 3}
-  defaultValue: 0
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
+  defaultValue: {fileID: 11400000, guid: 385e3ad51888eb947af48e5e4e4cb1d8, type: 2}
   references:
     version: 2
     RefIds: []
