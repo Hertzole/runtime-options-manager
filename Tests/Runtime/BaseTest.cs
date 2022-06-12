@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -12,12 +13,24 @@ namespace Hertzole.SettingsManager.Tests
 		[SetUp]
 		public void Setup()
 		{
+			OnPreSetup();
+			
 			settings = ScriptableObject.CreateInstance<SettingsManager>();
+			settings.name = "[TEST ONLY] Settings Manager";
 			settings.LoadSettingsOnBoot = false;
 			settings.AutoSaveSettings = false;
+			settings.SaveLocation = SettingsManager.SaveLocations.DataPath;
+			settings.SavePath = "test_settings";
+			settings.FileName = "settings_test_file.json";
 			settings.Categories.Add(new SettingsCategory());
 			
 			settings.Initialize();
+
+			string directory = Path.GetDirectoryName(settings.ComputedSavePath);
+			if (Directory.Exists(directory))
+			{
+				Directory.Delete(directory, true);
+			}
 			
 			OnSetup();
 		}
@@ -31,10 +44,18 @@ namespace Hertzole.SettingsManager.Tests
 			}
 			
 			objects.Clear();
+			
+			string directory = Path.GetDirectoryName(settings.ComputedSavePath);
+			if (Directory.Exists(directory))
+			{
+				Directory.Delete(directory, true);
+			}
 		
 			OnTearDown();
 		}
-		
+
+		protected virtual void OnPreSetup() { }
+
 		protected virtual void OnSetup() { }
 
 		protected virtual void OnTearDown() { }

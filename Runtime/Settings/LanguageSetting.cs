@@ -15,12 +15,22 @@ namespace Hertzole.SettingsManager
 #endif
 	public class LanguageSetting : Setting<Locale>
 	{
-		public override bool CanSave { get { return false; } }
-
 		public override object GetSerializeValue()
 		{
-			Locale currentLocale = LocalizationSettings.SelectedLocale;
+			Locale currentLocale = Value;
 			return currentLocale.Identifier.Code;
+		}
+
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
+		{
+			if (newValue is string stringValue)
+			{
+				value = TryConvertValue(stringValue);
+			}
+			else
+			{
+				base.SetSerializedValue(newValue, serializer);
+			}
 		}
 
 		protected override Locale TryConvertValue(object newValue)
@@ -30,7 +40,7 @@ namespace Hertzole.SettingsManager
 				Locale selectedLocale = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier(localeCode));
 				return selectedLocale;
 			}
-
+			
 			return LocalizationSettings.SelectedLocale;
 		}
 

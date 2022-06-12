@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Hertzole.SettingsManager
@@ -19,6 +20,11 @@ namespace Hertzole.SettingsManager
 		public event Action<T> OnValueChanging;
 		public event Action<T> OnValueChanged;
 
+		public override void ResetState()
+		{
+			value = defaultValue;
+		}
+		
 		protected virtual T GetValue()
 		{
 			return value;
@@ -26,7 +32,7 @@ namespace Hertzole.SettingsManager
 
 		protected virtual void SetValue(T newValue)
 		{
-			if (!value.Equals(newValue))
+			if (!EqualityComparer<T>.Default.Equals(value, newValue))
 			{
 				OnValueChanging?.Invoke(value);
 				value = newValue;

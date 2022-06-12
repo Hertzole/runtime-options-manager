@@ -175,7 +175,12 @@ namespace Hertzole.SettingsManager.Editor
 			root.Add(CreateSpace());
 
 			// root.Add(categoriesList);
-			root.Add(new IMGUIContainer(() => { EditorGUILayout.PropertyField(categories, true); }));
+			root.Add(new IMGUIContainer(() =>
+			{
+				serializedObject.Update();
+				EditorGUILayout.PropertyField(categories, true);
+				serializedObject.ApplyModifiedProperties();
+			}));
 
 			root.Add(CreateSpace(16));
 
