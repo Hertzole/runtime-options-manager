@@ -450,23 +450,35 @@ namespace Hertzole.SettingsManager
 				settingData.Clear();
 				excludedSettings.Clear();
 				loadedSettings.Clear();
+				
+				GetSavePaths();
 
-				byte[] data = File.ReadAllBytes(SavePath);
-				Serializer.Deserialize(data, settingData);
-				Dictionary<string, object>.Enumerator enumerator = settingData.GetEnumerator();
-				while (enumerator.MoveNext())
+				foreach (string settingPath in settingPaths.Keys)
 				{
-					KeyValuePair<string, object> current = enumerator.Current;
-
-					if (Manager.TryGetSetting(current.Key, out Setting setting))
+					if(!File.Exists(settingPath))
 					{
-						loadedSettings.Add(current.Key);
-						setting.SetSerializedValue(current.Value, Serializer);
-						excludedSettings.Add(current.Key);
+						continue;
 					}
+					
+					byte[] data = File.ReadAllBytes(settingPath);
+					Serializer.Deserialize(data, settingData);
+					Dictionary<string, object>.Enumerator enumerator = settingData.GetEnumerator();
+					while (enumerator.MoveNext())
+					{
+						KeyValuePair<string, object> current = enumerator.Current;
+
+						if (Manager.TryGetSetting(current.Key, out Setting setting))
+						{
+							loadedSettings.Add(current.Key);
+							setting.SetSerializedValue(current.Value, Serializer);
+							excludedSettings.Add(current.Key);
+						}
+					}
+
+					enumerator.Dispose();
 				}
 
-				enumerator.Dispose();
+				
 				SetDefaultValues(excludedSettings);
 			}
 

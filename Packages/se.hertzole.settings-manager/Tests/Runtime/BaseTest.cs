@@ -26,11 +26,7 @@ namespace Hertzole.SettingsManager.Tests
 			
 			settings.Initialize();
 
-			string directory = Path.GetDirectoryName(settings.ComputedSavePath);
-			if (Directory.Exists(directory))
-			{
-				Directory.Delete(directory, true);
-			}
+			CleanUp();
 			
 			OnSetup();
 		}
@@ -45,13 +41,18 @@ namespace Hertzole.SettingsManager.Tests
 			
 			objects.Clear();
 			
+			CleanUp();
+		
+			OnTearDown();
+		}
+
+		protected virtual void CleanUp()
+		{
 			string directory = Path.GetDirectoryName(settings.ComputedSavePath);
 			if (Directory.Exists(directory))
 			{
 				Directory.Delete(directory, true);
 			}
-		
-			OnTearDown();
 		}
 
 		protected virtual void OnPreSetup() { }
