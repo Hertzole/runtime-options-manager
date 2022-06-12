@@ -37,9 +37,13 @@ jobs:
         path: Library
         key: Library-2021
 
-    # Run the tests
+    # Run play mode tests
     - name: Run play mode tests
       run: unity-editor -nographics -logFile /dev/stdout -runTests -testPlatform playmode -testResults Tests/playmode.xml -enableCodeCoverage -coverageResultsPath TestCoverage -debugCodeOptimization -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.*"
+
+    # Run edit mode tests
+    - name: Run edit mode tests
+      run: unity-editor -nographics -logFile /dev/stdout -runTests -testPlatform editmode -testResults Tests/editmode.xml -enableCodeCoverage -coverageResultsPath TestCoverage -debugCodeOptimization -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.*"
 
     # Upload test results
     - name: Upload test results
@@ -122,7 +126,7 @@ jobs:
            /d:sonar.host.url=https://sonarcloud.io \
            /d:sonar.verbose=false \
            /d:sonar.login=$SONAR_TOKEN \
-           /d:sonar.cs.nunit.reportsPaths=Tests/editmode-results.xml,Tests/playmode-results.xml \
-           /d:sonar.cs.opencover.reportsPaths=Coverage/unity-runtime-settings-opencov/PlayMode/TestCoverageResults_0000.xml
+           /d:sonar.cs.nunit.reportsPaths=Tests/editmode.xml,Tests/playmode.xml \
+           /d:sonar.cs.opencover.reportsPaths=Coverage/unity-runtime-settings-opencov/PlayMode/TestCoverageResults_0000.xml,Coverage/unity-runtime-settings-opencov/EditMode/TestCoverageResults_0000.xml
           dotnet build unity-runtime-settings.sln
           ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN

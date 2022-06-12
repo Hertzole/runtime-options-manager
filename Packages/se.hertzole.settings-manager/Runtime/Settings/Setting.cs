@@ -81,6 +81,8 @@ namespace Hertzole.SettingsManager
 			return Instantiate(uiPrefab, parent);
 		}
 
+		public virtual void ResetState() { }
+
 #if HERTZ_SETTINGS_UIELEMENTS
 		public virtual VisualElement CreateUIElement()
 		{

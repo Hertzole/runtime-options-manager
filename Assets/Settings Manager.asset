@@ -49,6 +49,7 @@ MonoBehaviour:
     settings:
     - {fileID: 11400000, guid: 8eaef7a853a0d1849b677efe1ed0539e, type: 2}
     - {fileID: 11400000, guid: c43d5922a54a92144b63f4c7391a0266, type: 2}
+    - {fileID: 11400000, guid: d2d5cbd06f118db45bb1327e768fc694, type: 2}
   references:
     version: 2
     RefIds:

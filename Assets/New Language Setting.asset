@@ -23,8 +23,13 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   identifier: language
+  uiPrefab: {fileID: 0}
   uiElement: {fileID: 9197481963319205126, guid: 68a54ba21f269944bb6169a2babbfc68, type: 3}
-  defaultValue: {fileID: 11400000, guid: 7556af701b233c948bc672f32db2459a, type: 2}
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
+  defaultValue: {fileID: 11400000, guid: 385e3ad51888eb947af48e5e4e4cb1d8, type: 2}
   references:
     version: 2
     RefIds: []

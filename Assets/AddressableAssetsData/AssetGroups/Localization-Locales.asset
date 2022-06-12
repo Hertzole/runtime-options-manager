@@ -17,13 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: fa0b486b2c6a37b45861f44b3125e223
   m_SerializeEntries:
-  - m_GUID: 7556af701b233c948bc672f32db2459a
+  - m_GUID: a02c02d8fb627f5489a2d2fc46233c59
     m_Address: English (en)
-    m_ReadOnly: 1
-    m_SerializedLabels:
-    - Locale
-  - m_GUID: 5972143a25814c448aaea7510c4f74e9
-    m_Address: Swedish (sv)
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
