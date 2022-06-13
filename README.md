@@ -36,7 +36,7 @@ resolution, audio volumes, graphics, etc.
    URL: `https://package.openupm.com`  
    Scopes:  
    - `com.openupm`  
-   - `se.hertzole.unity-runtime-settings`
+   - `se.hertzole.settingsmanager`
 2. Click apply and close the project settings.
 3. Open up the package manager.  
    Click in the menu bar Window → Package Manager
