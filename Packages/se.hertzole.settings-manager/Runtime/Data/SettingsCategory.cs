@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+#if HERTZ_SETTINGS_LOCALIZATION
 using UnityEngine.Localization;
+#endif
 
 namespace Hertzole.SettingsManager
 {
