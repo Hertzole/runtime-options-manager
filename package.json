@@ -1,9 +1,9 @@
 {
   "name": "se.hertzole.settingsmanager",
-  "version": "0.1.0-preview",
+  "version": "0.1.1-preview",
   "displayName": "Settings Manager",
   "description": "Settings package",
-  "unity": "2020.3",
+  "unity": "2021.3",
   "unityRelease": "0f1",
   "dependencies": {
     "com.unity.modules.audio": "1.0.0",
