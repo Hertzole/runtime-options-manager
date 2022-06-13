@@ -1,6 +1,6 @@
 {
   "name": "se.hertzole.settingsmanager",
-  "version": "0.1.1-preview",
+  "version": "0.1.2-preview",
   "displayName": "Settings Manager",
   "description": "Settings package",
   "unity": "2021.3",
