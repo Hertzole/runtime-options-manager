@@ -19,8 +19,11 @@ jobs:
         git branch -d dev-package &> /dev/null || echo dev-package branch not found
         git subtree split -P "$PKG_ROOT" -b dev-package
         mv "Assets/Samples" /tmp/example
+        mv README.md /tmp/README.md
         git checkout dev-package
         mkdir "Samples~"
+        mv /tmp/README.md README.md
+        git add README.md
         mv /tmp/example/* "Samples~/"
         git add "Samples~"
         git config --global user.name 'github-bot'
