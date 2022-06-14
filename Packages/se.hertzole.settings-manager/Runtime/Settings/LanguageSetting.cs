@@ -48,12 +48,14 @@ namespace Hertzole.SettingsManager
 
 		public void SetDropdownValue(int index)
 		{
-			LocalizationSettings.Instance.SetSelectedLocale(LocalizationSettings.Instance.GetAvailableLocales().Locales[index]);
+			Locale newLocale = LocalizationSettings.Instance.GetAvailableLocales().Locales[index];
+			Value = newLocale;
+			LocalizationSettings.Instance.SetSelectedLocale(newLocale);
 		}
 
 		public int GetDropdownValue()
 		{
-			return LocalizationSettings.Instance.GetAvailableLocales().Locales.IndexOf(LocalizationSettings.Instance.GetSelectedLocale());
+			return LocalizationSettings.Instance.GetAvailableLocales().Locales.IndexOf(Value);
 		}
 
 		public IReadOnlyList<(string text, Sprite icon)> GetDropdownValues()
