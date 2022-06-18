@@ -100,7 +100,7 @@ jobs:
           apt install -y openjdk-11-jre-headless
 
       - name: Generate Solution
-        run: unity-editor -nographics -logFile /dev/stdout -customBuildName unity-runtime-settings -projectPath . -executeMethod GitTools.Solution.Sync -quit
+        run: unity-editor -nographics -logFile /dev/stdout -customBuildName runtime-options-manager -projectPath . -executeMethod GitTools.Solution.Sync -quit
 
       - name: Get test reports
         uses: actions/download-artifact@v3
@@ -122,11 +122,11 @@ jobs:
           ls Coverage
           ./dotnet-sonarscanner begin \
            /o:hertzole \
-           /k:unity-runtime-settings \
+           /k:runtime-options-manager \
            /d:sonar.host.url=https://sonarcloud.io \
            /d:sonar.verbose=false \
            /d:sonar.login=$SONAR_TOKEN \
            /d:sonar.cs.nunit.reportsPaths=Tests/editmode.xml,Tests/playmode.xml \
-           /d:sonar.cs.opencover.reportsPaths=Coverage/unity-runtime-settings-opencov/PlayMode/TestCoverageResults_0000.xml,Coverage/unity-runtime-settings-opencov/EditMode/TestCoverageResults_0000.xml
-          dotnet build unity-runtime-settings.sln
+           /d:sonar.cs.opencover.reportsPaths=Coverage/runtime-options-manager-opencov/PlayMode/TestCoverageResults_0000.xml,Coverage/runtime-options-manager-opencov/EditMode/TestCoverageResults_0000.xml
+          dotnet build runtime-options-manager.sln
           ./dotnet-sonarscanner end /d:sonar.login=$SONAR_TOKEN
