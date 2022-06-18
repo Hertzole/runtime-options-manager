@@ -1,0 +1,17 @@
+{
+    "name": "Hertzole.RuntimeOptionsManager.Examples.InputRebindExample",
+    "rootNamespace": "Hertzole.OptionsManager.Examples.InputRebindExample",
+    "references": [
+        "GUID:ad731d8366fe76c44b224fe1ea11f9ee",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
