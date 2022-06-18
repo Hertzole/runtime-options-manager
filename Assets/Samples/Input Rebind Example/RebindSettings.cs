@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Hertzole.SettingsManager.Samples.InputRebinding
+namespace Hertzole.RuntimeOptionsManager.Samples.InputRebinding
 {
 	public class RebindSettings : MonoBehaviour
 	{

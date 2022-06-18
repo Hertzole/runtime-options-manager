@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Hertzole.SettingsManager.Editor
+namespace Hertzole.RuntimeOptionsManager.Editor
 {
 	public class SettingsManagerEditorSettings
 	{

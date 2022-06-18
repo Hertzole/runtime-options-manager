@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Toggle Setting", menuName = "Hertzole/Settings/Toggle Setting")]

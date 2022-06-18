@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
-namespace Hertzole.SettingsManager.Localization
+namespace Hertzole.RuntimeOptionsManager.Localization
 {
 	[Serializable]
 	public class SettingsLocalizationSelector : IStartupLocaleSelector

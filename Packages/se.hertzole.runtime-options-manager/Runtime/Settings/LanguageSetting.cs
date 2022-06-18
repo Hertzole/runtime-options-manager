@@ -9,7 +9,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UIElements;
 #endif
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Language Setting", menuName = "Hertzole/Settings/Language Setting")]
@@ -20,6 +20,7 @@ namespace Hertzole.SettingsManager
 		
 		public override object GetSerializeValue()
 		{
+			Debug.Log(Value);
 			Locale currentLocale = Value;
 			return currentLocale.Identifier.Code;
 		}

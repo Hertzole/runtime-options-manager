@@ -4,7 +4,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Hertzole.SettingsManager.Editor
+namespace Hertzole.RuntimeOptionsManager.Editor
 {
 	public class FoldoutPopupField<T> : VisualElement, INotifyValueChanged<T>
 	{

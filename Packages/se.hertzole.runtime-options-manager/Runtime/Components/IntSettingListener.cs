@@ -1,4 +1,4 @@
-﻿namespace Hertzole.SettingsManager
+﻿namespace Hertzole.RuntimeOptionsManager
 {
 	public class IntSettingListener : SettingListener<int, IntSetting> { }
 }

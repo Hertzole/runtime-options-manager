@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Hertzole.SettingsManager.Tests
+namespace Hertzole.RuntimeOptionsManager.Tests
 {
 	public class MinMaxTests : BaseTest
 	{

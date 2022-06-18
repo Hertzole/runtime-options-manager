@@ -10,7 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEditor;
 #endif
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Settings Manager", menuName = "Hertzole/Settings/Settings Manager", order = -10000)]
@@ -476,14 +476,14 @@ namespace Hertzole.SettingsManager
 			{
 				Debug.Log("Load settings routine");
 				
-#if HERTZ_SETTINGS_LOCALIZATION
-				AsyncOperationHandle<LocalizationSettings> localizationOperation = LocalizationSettings.Instance.GetInitializationOperation();
-				while (!localizationOperation.IsDone)
-				{
-					Debug.Log("Not done...");
-					yield return null;
-				}
-#endif
+// #if HERTZ_SETTINGS_LOCALIZATION
+// 				AsyncOperationHandle<LocalizationSettings> localizationOperation = LocalizationSettings.Instance.GetInitializationOperation();
+// 				while (!localizationOperation.IsDone)
+// 				{
+// 					Debug.Log("Not done...");
+// 					yield return null;
+// 				}
+// #endif
 
 				Debug.Log("Get save paths");
 				
@@ -500,7 +500,7 @@ namespace Hertzole.SettingsManager
 
 					Debug.Log("Read bytes");
 					byte[] data = File.ReadAllBytes(settingPath);
-					Debug.Log("Deserialize");
+					Debug.Log("Deserialize " + data + " | " + settingPath);
 					Serializer.Deserialize(data, settingData);
 					Debug.Log("Get enumerator");
 					Dictionary<string, object>.Enumerator enumerator = settingData.GetEnumerator();
@@ -527,6 +527,8 @@ namespace Hertzole.SettingsManager
 				SetDefaultValues(excludedSettings);
 				isLoadingSettings = false;
 				HasLoadedSettings = true;
+
+				yield return null;
 			}
 
 			internal bool HasLoadedSetting(string identifier)

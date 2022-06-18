@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace Hertzole.SettingsManager.Editor
+namespace Hertzole.RuntimeOptionsManager.Editor
 {
 	[CustomEditor(typeof(Setting))]
 	public class SettingEditor : UnityEditor.Editor

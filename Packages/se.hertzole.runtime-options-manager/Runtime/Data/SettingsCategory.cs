@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Localization;
 #endif
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 	[Serializable]
 	public class SettingsCategory

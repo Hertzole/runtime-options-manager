@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Hertzole.SettingsManager.Samples.UI
+namespace Hertzole.RuntimeOptionsManager.Samples.UI
 {
 	public class ToggleSetting : BaseSettingElement
 	{
