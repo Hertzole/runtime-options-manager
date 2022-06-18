@@ -125,8 +125,8 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
-    "se.hertzole.settingsmanager": {
-      "version": "file:se.hertzole.settings-manager",
+    "se.hertzole.runtime-options-manager": {
+      "version": "file:se.hertzole.runtime-options-manager",
       "depth": 0,
       "source": "embedded",
       "dependencies": {

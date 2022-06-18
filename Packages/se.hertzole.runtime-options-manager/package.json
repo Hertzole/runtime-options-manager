@@ -1,8 +1,8 @@
 {
-  "name": "se.hertzole.settingsmanager",
+  "name": "se.hertzole.runtime-options-manager",
   "version": "0.2.0-preview",
-  "displayName": "Settings Manager",
-  "description": "Settings package",
+  "displayName": "Runtime Options Manager",
+  "description": "A drop-in solution for easily managing your runtime game options.",
   "unity": "2021.3",
   "unityRelease": "0f1",
   "dependencies": {
@@ -28,5 +28,7 @@
       "description": "Example scene with a simple input rebinding setup.",
       "path": "Samples~/Input Rebind Example"
     }
-  ]
+  ],
+  "type": "library",
+  "hideInEditor": false
 }

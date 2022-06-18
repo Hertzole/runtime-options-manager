@@ -1,4 +1,5 @@
 #if HERTZ_SETTINGS_LOCALIZATION
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -25,8 +26,10 @@ namespace Hertzole.SettingsManager
 
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
+			Debug.Log("Set language serialized value");
 			if (newValue is string stringValue)
 			{
+				Debug.Log("It's a string value, try convert.");
 				value = TryConvertValue(stringValue);
 			}
 			else
@@ -37,12 +40,29 @@ namespace Hertzole.SettingsManager
 
 		protected override Locale TryConvertValue(object newValue)
 		{
+			Debug.Log($"TryConvert language {newValue}");
+			
 			if (newValue is string localeCode)
 			{
-				Locale selectedLocale = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier(localeCode));
-				return selectedLocale;
+				Debug.Log("Is string. Get locale");
+				try
+				{
+					Debug.Log("Get available locales");
+					var availableLocales = LocalizationSettings.AvailableLocales;
+					Debug.Log("Get locale");
+					var locale = availableLocales.GetLocale(new LocaleIdentifier("localeCode"));
+					Locale selectedLocale = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier(localeCode));
+					Debug.Log($"Found locale {selectedLocale}");
+					return selectedLocale;
+				}
+				catch (Exception e)
+				{
+					Debug.Log(e.Message);
+					return LocalizationSettings.SelectedLocale;
+				}
 			}
 
+			Debug.Log("Didn't find locale. Return default.");
 			return LocalizationSettings.SelectedLocale;
 		}
 

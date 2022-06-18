@@ -1,4 +1,4 @@
-# Unity Runtime Settings
+# Runtime Options Manager
 ### Experimental drop-in solution for runtime settings
 
 ⚠ This is very experimental as of right now! ⚠
@@ -12,7 +12,7 @@
 
 ## ❓ What is this?
 
-Unity runtime settings is supposed to be a drop-in solution for managing runtime settings for your game. Settings like
+Runtime Options Manager is supposed to be a drop-in solution for managing runtime settings for your game. Settings like
 resolution, audio volumes, graphics, etc. 
 
 ![Settings Manager in project settings](https://i.imgur.com/rvus6eV.png)
@@ -42,10 +42,10 @@ resolution, audio volumes, graphics, etc.
 3. Open up the package manager.  
    Click in the menu bar Window → Package Manager
 4. Select `Packages: My Registries` in the menu bar of the package manager window.
-5. You should see Unity Runtime Settings under the `Hertzole` section. Click on it and then press Install in the bottom right corner.
+5. You should see Unity Options Manager under the `Hertzole` section. Click on it and then press Install in the bottom right corner.
 
 ### Unity package manager through git
 1. Open up the Unity package manager
 2. Click on the plus icon in the top left and "Add package from git url"
-3. Paste in `https://github.com/Hertzole/unity-runtime-settings.git#package`  
-   You can also paste in `https://github.com/Hertzole/unity-runtime-settings.git#dev-package` if you want the latest (but unstable!) changes.
+3. Paste in `https://github.com/Hertzole/runtime-options-manager.git#package`  
+   You can also paste in `https://github.com/Hertzole/runtime-options-manager.git#dev-package` if you want the latest (but unstable!) changes.

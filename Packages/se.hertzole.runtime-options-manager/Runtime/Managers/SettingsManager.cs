@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
+using UnityEngine.ResourceManagement.AsyncOperations;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -43,7 +46,6 @@ namespace Hertzole.SettingsManager
 		private List<SettingsCategory> categories = new List<SettingsCategory>();
 
 		private bool isInitialized = false;
-		private bool hasLoadedSettings;
 
 		private readonly Dictionary<string, Setting> cachedSettings = new Dictionary<string, Setting>();
 
@@ -104,7 +106,7 @@ namespace Hertzole.SettingsManager
 			}
 		}
 
-		public bool HasLoadedSettings { get { return hasLoadedSettings; } }
+		public bool HasLoadedSettings { get { return behavior != null && behavior.HasLoadedSettings; } }
 
 		public string ComputedSavePath { get; private set; }
 
@@ -182,7 +184,6 @@ namespace Hertzole.SettingsManager
 		public void LoadSettings()
 		{
 			behavior.LoadSettings();
-			hasLoadedSettings = true;
 		}
 
 		/// <summary>
@@ -190,10 +191,9 @@ namespace Hertzole.SettingsManager
 		/// </summary>
 		public void LoadSettingsIfNeeded()
 		{
-			if (!hasLoadedSettings)
+			if (!HasLoadedSettings)
 			{
 				behavior.LoadSettings();
-				hasLoadedSettings = true;
 			}
 		}
 
@@ -301,6 +301,10 @@ namespace Hertzole.SettingsManager
 			{
 				instance.behavior.LoadSettings();
 			}
+			else
+			{
+				instance.behavior.SetDefaultValues();
+			}
 		}
 
 		public static string GetSavePath(SettingsManager settings)
@@ -372,6 +376,7 @@ namespace Hertzole.SettingsManager
 			public bool AutoSaveSettings { get; internal set; }
 
 			public string SavePath { get; internal set; }
+			public bool HasLoadedSettings { get; private set; }
 
 			private void Update()
 			{
@@ -440,36 +445,77 @@ namespace Hertzole.SettingsManager
 				}
 			}
 
+			private bool isLoadingSettings;
+
 			internal void LoadSettings()
 			{
-				if (!File.Exists(SavePath))
+				if (isLoadingSettings)
 				{
 					return;
 				}
 
+				HasLoadedSettings = false;
+				
 				settingData.Clear();
 				excludedSettings.Clear();
 				loadedSettings.Clear();
+				
+				if (!File.Exists(SavePath))
+				{
+					SetDefaultValues(excludedSettings);
+					HasLoadedSettings = true;
+					return;
+				}
+
+				isLoadingSettings = true;
+
+				StartCoroutine(LoadSettingsRoutine());
+			}
+
+			private IEnumerator LoadSettingsRoutine()
+			{
+				Debug.Log("Load settings routine");
+				
+#if HERTZ_SETTINGS_LOCALIZATION
+				AsyncOperationHandle<LocalizationSettings> localizationOperation = LocalizationSettings.Instance.GetInitializationOperation();
+				while (!localizationOperation.IsDone)
+				{
+					Debug.Log("Not done...");
+					yield return null;
+				}
+#endif
+
+				Debug.Log("Get save paths");
 				
 				GetSavePaths();
 
 				foreach (string settingPath in settingPaths.Keys)
 				{
+					Debug.Log("Loading settings from " + settingPath);
+					
 					if(!File.Exists(settingPath))
 					{
 						continue;
 					}
-					
+
+					Debug.Log("Read bytes");
 					byte[] data = File.ReadAllBytes(settingPath);
+					Debug.Log("Deserialize");
 					Serializer.Deserialize(data, settingData);
+					Debug.Log("Get enumerator");
 					Dictionary<string, object>.Enumerator enumerator = settingData.GetEnumerator();
 					while (enumerator.MoveNext())
 					{
+						Debug.Log("Move");
+						
 						KeyValuePair<string, object> current = enumerator.Current;
 
+						Debug.Log($"Try get setting {current.Key}");
 						if (Manager.TryGetSetting(current.Key, out Setting setting))
 						{
+							Debug.Log("Found setting");
 							loadedSettings.Add(current.Key);
+							Debug.Log($"Loaded setting {current.Key}. Setting serialized value to {current.Value}");
 							setting.SetSerializedValue(current.Value, Serializer);
 							excludedSettings.Add(current.Key);
 						}
@@ -477,9 +523,10 @@ namespace Hertzole.SettingsManager
 
 					enumerator.Dispose();
 				}
-
 				
 				SetDefaultValues(excludedSettings);
+				isLoadingSettings = false;
+				HasLoadedSettings = true;
 			}
 
 			internal bool HasLoadedSetting(string identifier)
@@ -520,13 +567,13 @@ namespace Hertzole.SettingsManager
 				}
 			}
 
-			private void SetDefaultValues(ICollection<string> excluding)
+			internal void SetDefaultValues(ICollection<string> excluding = null)
 			{
 				for (int i = 0; i < manager.categories.Count; i++)
 				{
 					for (int j = 0; j < manager.categories[i].Settings.Count; j++)
 					{
-						if (!excluding.Contains(manager.categories[i].Settings[j].Identifier))
+						if (excluding == null || !excluding.Contains(manager.categories[i].Settings[j].Identifier))
 						{
 							manager.categories[i].Settings[j].SetSerializedValue(manager.categories[i].Settings[j].GetDefaultValue(), Serializer);
 						}
@@ -577,7 +624,6 @@ namespace Hertzole.SettingsManager
 		private void ResetState()
 		{
 			isInitialized = false;
-			hasLoadedSettings = false;
 			cachedSettings.Clear();
 
 			for (int i = 0; i < categories.Count; i++)
