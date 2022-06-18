@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Hertzole.RuntimeOptionsManager.Samples.InputRebinding
+namespace Hertzole.OptionsManager.Samples.InputRebinding
 {
 	public class InputSettingElement : MonoBehaviour
 	{

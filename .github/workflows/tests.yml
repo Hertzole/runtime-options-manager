@@ -39,11 +39,11 @@ jobs:
 
     # Run play mode tests
     - name: Run play mode tests
-      run: unity-editor -nographics -logFile /dev/stdout -runTests -testPlatform playmode -testResults Tests/playmode.xml -enableCodeCoverage -coverageResultsPath TestCoverage -debugCodeOptimization -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.*"
+      run: unity-editor -nographics -logFile /dev/stdout -runTests -testPlatform playmode -testResults Tests/playmode.xml -enableCodeCoverage -coverageResultsPath TestCoverage -debugCodeOptimization -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.RuntimeOptionsManager"
 
     # Run edit mode tests
     - name: Run edit mode tests
-      run: unity-editor -nographics -logFile /dev/stdout -runTests -testPlatform editmode -testResults Tests/editmode.xml -enableCodeCoverage -coverageResultsPath TestCoverage -debugCodeOptimization -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.*"
+      run: unity-editor -nographics -logFile /dev/stdout -runTests -testPlatform editmode -testResults Tests/editmode.xml -enableCodeCoverage -coverageResultsPath TestCoverage -debugCodeOptimization -coverageOptions "generateAdditionalMetrics;generateHtmlReport;generateBadgeReport;assemblyFilters:+Hertzole.RuntimeOptionsManager.Editor"
 
     # Upload test results
     - name: Upload test results

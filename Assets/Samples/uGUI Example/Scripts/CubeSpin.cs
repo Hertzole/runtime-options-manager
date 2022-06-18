@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Hertzole.RuntimeOptionsManager.Samples.UI
+namespace Hertzole.OptionsManager.Samples.UI
 {
 	public class CubeSpin : MonoBehaviour
 	{

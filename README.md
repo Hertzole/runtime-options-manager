@@ -1,9 +1,9 @@
 # Runtime Options Manager
-### Experimental drop-in solution for runtime settings
+### Scriptable object based drop-in solution for runtime settings
 
 ⚠ This is very experimental as of right now! ⚠
 
-[![openupm](https://img.shields.io/npm/v/se.hertzole.settingsmanager?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/se.hertzole.settingsmanager/)
+[![OpenUPM](https://img.shields.io/npm/v/se.hertzole.runtime-options-manager?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/se.hertzole.runtime-options-manager/)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=coverage)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
@@ -13,7 +13,8 @@
 ## ❓ What is this?
 
 Runtime Options Manager is supposed to be a drop-in solution for managing runtime settings for your game. Settings like
-resolution, audio volumes, graphics, etc. 
+resolution, audio volumes, graphics, etc. It's all based around scriptable objects to easily manage your settings in the
+editor.
 
 ![Settings Manager in project settings](https://i.imgur.com/rvus6eV.png)
 
@@ -37,12 +38,12 @@ resolution, audio volumes, graphics, etc.
    URL: `https://package.openupm.com`  
    Scopes:  
    - `com.openupm`  
-   - `se.hertzole.settingsmanager`
+   - `se.hertzole.runtime-options-manager`
 2. Click apply and close the project settings.
 3. Open up the package manager.  
    Click in the menu bar Window → Package Manager
-4. Select `Packages: My Registries` in the menu bar of the package manager window.
-5. You should see Unity Options Manager under the `Hertzole` section. Click on it and then press Install in the bottom right corner.
+4. Click the `+` in the top left corner and select `Add package by name...` or `Add package from git URL...`
+5. Paste in `se.hertzole.runtime-options-manager` into the field and click add
 
 ### Unity package manager through git
 1. Open up the Unity package manager

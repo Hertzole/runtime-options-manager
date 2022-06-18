@@ -1,8 +1,9 @@
 ﻿#if HERTZ_SETTINGS_INPUTSYSTEM // Only used when the new input system is installed.
 using System;
 using Newtonsoft.Json;
+using UnityEngine;
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 	public class InputBindingDataJsonConverter : JsonConverter<InputBindingData>
 	{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hertzole.RuntimeOptionsManager.Tests
+namespace Hertzole.OptionsManager.Tests
 {
 	public abstract partial class SerializerTest<T> : BaseTest where T : ISettingSerializer, new()
 	{

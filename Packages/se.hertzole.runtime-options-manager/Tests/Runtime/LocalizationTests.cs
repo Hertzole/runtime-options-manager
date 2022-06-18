@@ -1,7 +1,7 @@
 ﻿#if HERTZ_SETTINGS_LOCALIZATION
 using System.Collections;
 using System.IO;
-using Hertzole.RuntimeOptionsManager.Localization;
+using Hertzole.OptionsManager.Localization;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -10,7 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hertzole.RuntimeOptionsManager.Tests
+namespace Hertzole.OptionsManager.Tests
 {
 	public class LocalizationTests : BaseTest
 	{
@@ -73,8 +73,6 @@ namespace Hertzole.RuntimeOptionsManager.Tests
 
 			languageSetting.Value = sv;
 
-			// yield return null;
-
 			Assert.AreEqual(settings, SettingsManager.Instance);
 
 			Assert.AreEqual(sv, languageSetting.Value);
@@ -103,52 +101,6 @@ namespace Hertzole.RuntimeOptionsManager.Tests
 
 			Locale result = selector.GetStartupLocale(null);
 
-			Assert.AreEqual(null, result);
-		}
-
-		[UnityTest]
-		public IEnumerator StartupSelectorWithoutSettingsManagers()
-		{
-			LocalizationSettings localSettings = ScriptableObject.CreateInstance<LocalizationSettings>();
-			localSettings.name = "[TEST ONLY] LocalizationSettings";
-			LocalesProvider localesProvider = new LocalesProvider();
-			localSettings.SetAvailableLocales(localesProvider);
-
-			LocalizationSettings.Instance = localSettings;
-
-			yield return null;
-
-			Locale en = ScriptableObject.CreateInstance<Locale>();
-			en.Identifier = new LocaleIdentifier("en");
-			Locale sv = ScriptableObject.CreateInstance<Locale>();
-			sv.Identifier = new LocaleIdentifier("sv");
-
-			AsyncOperationHandle providerInitialize = localesProvider.PreloadOperation;
-			while (!providerInitialize.IsDone)
-			{
-				yield return null;
-			}
-
-			localesProvider.AddLocale(en);
-			localesProvider.AddLocale(sv);
-
-			LanguageSetting languageSetting = AddSetting<LanguageSetting>();
-			languageSetting.Identifier = "language";
-			languageSetting.Value = sv;
-
-			settings.SaveSettings();
-			string path = settings.ComputedSavePath;
-
-			SettingsManager.Instance = null;
-
-			SettingsLocalizationSelector selector = new SettingsLocalizationSelector
-			{
-				SettingIdentifier = "language"
-			};
-
-			Locale result = selector.GetStartupLocale(null);
-
-			Assert.IsTrue(File.Exists(path));
 			Assert.AreEqual(null, result);
 		}
 	}

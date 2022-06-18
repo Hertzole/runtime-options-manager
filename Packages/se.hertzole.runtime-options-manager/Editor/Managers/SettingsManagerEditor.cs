@@ -5,7 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Hertzole.RuntimeOptionsManager.Editor
+namespace Hertzole.OptionsManager.Editor
 {
 	[CustomEditor(typeof(SettingsManager))]
 	public class SettingsManagerEditor : UnityEditor.Editor

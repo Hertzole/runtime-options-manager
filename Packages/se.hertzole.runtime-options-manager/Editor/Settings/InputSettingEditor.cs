@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace Hertzole.RuntimeOptionsManager.Editor
+namespace Hertzole.OptionsManager.Editor
 {
 	[CustomEditor(typeof(InputSetting))]
 	public class InputSettingEditor : SettingEditor

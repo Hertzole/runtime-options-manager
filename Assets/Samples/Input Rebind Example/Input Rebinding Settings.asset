@@ -20,7 +20,7 @@ MonoBehaviour:
   customPathProvider:
     rid: -2
   serializer:
-    rid: 4416338364373925946
+    rid: 2437375803530149948
   categories:
   - displayName: Input
     displayNameLocalized:
@@ -43,7 +43,7 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4416338364373925946
-      type: {class: JsonSettingSerializer, ns: Hertzole.SettingsManager, asm: Hertzole.SettingsManager}
+    - rid: 2437375803530149948
+      type: {class: JsonSettingSerializer, ns: Hertzole.OptionsManager, asm: Hertzole.RuntimeOptionsManager}
       data:
-        prettyPrint: 0
+        prettyPrint: 1

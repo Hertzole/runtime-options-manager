@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Hertzole.RuntimeOptionsManager.Samples.UI
+namespace Hertzole.OptionsManager.Samples.UI
 {
 	public class SettingsBuilder : MonoBehaviour
 	{

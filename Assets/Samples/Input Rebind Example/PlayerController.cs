@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Hertzole.RuntimeOptionsManager.Samples.InputRebinding
+namespace Hertzole.OptionsManager.Samples.InputRebinding
 {
 	public class PlayerController : MonoBehaviour
 	{

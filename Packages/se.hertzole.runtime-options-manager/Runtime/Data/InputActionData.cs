@@ -1,7 +1,7 @@
 ﻿#if HERTZ_SETTINGS_INPUTSYSTEM // Only used when the new input system is installed.
 using System.Collections.Generic;
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 	public struct InputActionData
 	{
