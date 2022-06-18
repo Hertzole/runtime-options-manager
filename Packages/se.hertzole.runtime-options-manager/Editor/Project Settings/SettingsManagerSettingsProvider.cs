@@ -15,7 +15,7 @@ namespace Hertzole.RuntimeOptionsManager.Editor
 
 		public override void OnActivate(string searchContext, VisualElement rootElement)
 		{
-			rootElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/se.hertzole.settingsmanager/Editor/Templates/ProjectSettings.uss"));
+			rootElement.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/se.hertzole.runtime-options-manager/Editor/Templates/ProjectSettings.uss"));
 			
 			ScrollView root = new ScrollView
 			{ 

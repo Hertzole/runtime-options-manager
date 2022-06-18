@@ -4,11 +4,11 @@
 ⚠ This is very experimental as of right now! ⚠
 
 [![openupm](https://img.shields.io/npm/v/se.hertzole.settingsmanager?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/se.hertzole.settingsmanager/)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=unity-runtime-settings&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=unity-runtime-settings)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=unity-runtime-settings&metric=coverage)](https://sonarcloud.io/summary/new_code?id=unity-runtime-settings)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=unity-runtime-settings&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=unity-runtime-settings)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=unity-runtime-settings&metric=bugs)](https://sonarcloud.io/summary/new_code?id=unity-runtime-settings)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=unity-runtime-settings&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=unity-runtime-settings)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=coverage)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=bugs)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=runtime-options-manager&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=runtime-options-manager)
 
 ## ❓ What is this?
 

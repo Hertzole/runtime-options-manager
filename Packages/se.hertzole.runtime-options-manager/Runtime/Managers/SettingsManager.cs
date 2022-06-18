@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+#if HERTZ_SETTINGS_LOCALIZATION
 using UnityEngine.Localization.Settings;
-using UnityEngine.ResourceManagement.AsyncOperations;
+#endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -474,16 +475,16 @@ namespace Hertzole.RuntimeOptionsManager
 
 			private IEnumerator LoadSettingsRoutine()
 			{
-				Debug.Log("Load settings routine");
-				
-// #if HERTZ_SETTINGS_LOCALIZATION
-// 				AsyncOperationHandle<LocalizationSettings> localizationOperation = LocalizationSettings.Instance.GetInitializationOperation();
-// 				while (!localizationOperation.IsDone)
-// 				{
-// 					Debug.Log("Not done...");
-// 					yield return null;
-// 				}
-// #endif
+#if HERTZ_SETTINGS_LOCALIZATION
+				if (LocalizationSettings.Instance.GetAvailableLocales() is LocalesProvider localesProvider)
+				{
+					var loadOperation = localesProvider.PreloadOperation;
+					while(!loadOperation.IsDone)
+					{
+						yield return null;
+					}
+				}
+#endif
 
 				Debug.Log("Get save paths");
 				
