@@ -1,0 +1,13 @@
+.unity-base-field__label {
+    min-width: 250px !important;
+    max-width: 250px !important;
+}
+
+.unity-foldout__content .unity-base-field__label {
+    min-width: 235px !important;
+    max-width: 235px !important;
+}
+
+.unity-base-field {
+    margin-left: 1px;
+}
