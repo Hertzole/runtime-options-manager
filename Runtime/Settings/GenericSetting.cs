@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 	public abstract class Setting<T> : Setting
 	{

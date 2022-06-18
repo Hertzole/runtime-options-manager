@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 	[Serializable]
 	public class JsonSettingSerializer : ISettingSerializer
@@ -91,8 +91,16 @@ namespace Hertzole.RuntimeOptionsManager
 				default:
 					throw new ArgumentException("Unable to deserialize type " + typeof(T).Name + " from data of type " + data.GetType().Name);
 			}
-			
-			return JsonConvert.DeserializeObject<T>(json, serializerSettings);
+
+			try
+			{
+				return JsonConvert.DeserializeObject<T>(json, serializerSettings);
+			}
+			catch (JsonException e)
+			{
+				Debug.LogError($"Failed to deserialize JSON type: {e.Message}");
+				return default;
+			}
 		}
 	}
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 	public partial class FullscreenModeSetting : IDropdownValuesLocalized
 	{

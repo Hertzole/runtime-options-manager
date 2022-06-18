@@ -1,4 +1,4 @@
-﻿namespace Hertzole.RuntimeOptionsManager
+﻿namespace Hertzole.OptionsManager
 {
 	public class FloatSettingListener : SettingListener<float, FloatSetting> { }
 }

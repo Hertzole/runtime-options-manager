@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Audio Setting", menuName = "Hertzole/Settings/Audio Setting")]

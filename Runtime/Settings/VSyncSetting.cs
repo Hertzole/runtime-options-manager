@@ -1,15 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 #if HERTZ_SETTINGS_UIELEMENTS
 using UnityEngine.UIElements;
 #endif
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New VSync Setting", menuName = "Hertzole/Settings/VSync Settings")]
 #endif
-	public class VSyncSetting : Setting<bool>
+	public class VSyncSetting : ToggleSetting
 	{
 		protected override void SetValue(bool newValue)
 		{
@@ -21,11 +20,6 @@ namespace Hertzole.RuntimeOptionsManager
 				InvokeOnValueChanged(newValue);
 				InvokeOnSettingChanged();
 			}
-		}
-
-		protected override bool TryConvertValue(object newValue)
-		{
-			return Convert.ToBoolean(newValue);
 		}
 
 #if HERTZ_SETTINGS_UIELEMENTS

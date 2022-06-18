@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
+using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hertzole.RuntimeOptionsManager.Tests
+namespace Hertzole.OptionsManager.Tests
 {
 	public class SetValueTests : BaseTest
 	{
@@ -27,6 +28,7 @@ namespace Hertzole.RuntimeOptionsManager.Tests
 		public void SetValue_VSync()
 		{
 			QualitySettings.vSyncCount = 0;
+			Assert.AreEqual(0, QualitySettings.vSyncCount);
 			SetValueTest<VSyncSetting, bool>(true);
 			Assert.AreEqual(1, QualitySettings.vSyncCount);
 		}

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Input Setting", menuName = "Hertzole/Settings/Input Setting")]

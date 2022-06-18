@@ -3,7 +3,7 @@ using System.IO;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Hertzole.RuntimeOptionsManager.Tests
+namespace Hertzole.OptionsManager.Tests
 {
 	public class BaseTest
 	{

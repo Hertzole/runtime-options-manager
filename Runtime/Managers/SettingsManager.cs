@@ -11,7 +11,7 @@ using UnityEngine.Localization.Settings;
 using UnityEditor;
 #endif
 
-namespace Hertzole.RuntimeOptionsManager
+namespace Hertzole.OptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Settings Manager", menuName = "Hertzole/Settings/Settings Manager", order = -10000)]
@@ -486,37 +486,25 @@ namespace Hertzole.RuntimeOptionsManager
 				}
 #endif
 
-				Debug.Log("Get save paths");
-				
 				GetSavePaths();
 
 				foreach (string settingPath in settingPaths.Keys)
 				{
-					Debug.Log("Loading settings from " + settingPath);
-					
 					if(!File.Exists(settingPath))
 					{
 						continue;
 					}
 
-					Debug.Log("Read bytes");
 					byte[] data = File.ReadAllBytes(settingPath);
-					Debug.Log("Deserialize " + data + " | " + settingPath);
 					Serializer.Deserialize(data, settingData);
-					Debug.Log("Get enumerator");
 					Dictionary<string, object>.Enumerator enumerator = settingData.GetEnumerator();
 					while (enumerator.MoveNext())
 					{
-						Debug.Log("Move");
-						
 						KeyValuePair<string, object> current = enumerator.Current;
 
-						Debug.Log($"Try get setting {current.Key}");
 						if (Manager.TryGetSetting(current.Key, out Setting setting))
 						{
-							Debug.Log("Found setting");
 							loadedSettings.Add(current.Key);
-							Debug.Log($"Loaded setting {current.Key}. Setting serialized value to {current.Value}");
 							setting.SetSerializedValue(current.Value, Serializer);
 							excludedSettings.Add(current.Key);
 						}

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hertzole.RuntimeOptionsManager.Tests
+namespace Hertzole.OptionsManager.Tests
 {
 	public class OverwritePathTests : BaseTest
 	{

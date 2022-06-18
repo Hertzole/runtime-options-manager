@@ -1,6 +1,6 @@
 {
     "name": "Hertzole.RuntimeOptionsManager",
-    "rootNamespace": "Hertzole.RuntimeOptionsManager",
+    "rootNamespace": "Hertzole.OptionsManager",
     "references": [
         "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
         "GUID:84651a3751eca9349aac36a66bba901b",

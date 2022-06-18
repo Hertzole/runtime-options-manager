@@ -6,7 +6,7 @@ using UnityEditor.Audio;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Hertzole.RuntimeOptionsManager.Editor
+namespace Hertzole.OptionsManager.Editor
 {
 	[CustomEditor(typeof(AudioSetting))]
 	public class AudioSettingEditor : SettingEditor
