@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 using UnityEngine.Localization;
 #endif
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 	public abstract class Setting : ScriptableObject
 	{

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Hertzole.SettingsManager.Tests
+namespace Hertzole.RuntimeOptionsManager.Tests
 {
 	public class SettingListenerTests : BaseTest
 	{

@@ -2,7 +2,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 	public class InputBindingDataJsonConverter : JsonConverter<InputBindingData>
 	{

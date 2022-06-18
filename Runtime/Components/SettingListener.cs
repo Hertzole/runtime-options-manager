@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 	[DefaultExecutionOrder(-100)] // Must run AFTER SettingsManager.
 	public abstract class SettingListener<TValue, TSetting> : MonoBehaviour where TSetting : Setting<TValue>

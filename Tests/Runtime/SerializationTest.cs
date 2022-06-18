@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hertzole.SettingsManager.Tests
+namespace Hertzole.RuntimeOptionsManager.Tests
 {
 	public class SerializationTest : BaseTest
 	{

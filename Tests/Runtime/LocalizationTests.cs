@@ -1,7 +1,7 @@
 ﻿#if HERTZ_SETTINGS_LOCALIZATION
 using System.Collections;
 using System.IO;
-using Hertzole.SettingsManager.Localization;
+using Hertzole.RuntimeOptionsManager.Localization;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -10,7 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
 
-namespace Hertzole.SettingsManager.Tests
+namespace Hertzole.RuntimeOptionsManager.Tests
 {
 	public class LocalizationTests : BaseTest
 	{
@@ -57,6 +57,7 @@ namespace Hertzole.SettingsManager.Tests
 
 			LanguageSetting languageSetting = AddSetting<LanguageSetting>();
 			languageSetting.Identifier = "language";
+			languageSetting.Value = localesProvider.GetLocale("en");
 
 			SettingsManager.Instance = settings;
 
@@ -72,10 +73,11 @@ namespace Hertzole.SettingsManager.Tests
 
 			languageSetting.Value = sv;
 
-			yield return null;
+			// yield return null;
 
 			Assert.AreEqual(settings, SettingsManager.Instance);
 
+			Assert.AreEqual(sv, languageSetting.Value);
 			settings.SaveSettings();
 
 			Assert.IsTrue(File.Exists(settings.ComputedSavePath));

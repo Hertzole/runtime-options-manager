@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.TestTools;
 
-namespace Hertzole.SettingsManager.Tests
+namespace Hertzole.RuntimeOptionsManager.Tests
 {
 	public partial class SerializerTest<T>
 	{

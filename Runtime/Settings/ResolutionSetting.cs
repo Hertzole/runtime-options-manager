@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 #endif
 
-namespace Hertzole.SettingsManager
+namespace Hertzole.RuntimeOptionsManager
 {
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Resolution Setting", menuName = "Hertzole/Settings/Resolution Setting")]

@@ -1,6 +1,6 @@
 {
-    "name": "Hertzole.SettingsManager.Editor",
-    "rootNamespace": "Hertzole.SettingsManager.Editor",
+    "name": "Hertzole.RuntimeOptionsManager.Editor",
+    "rootNamespace": "Hertzole.RuntimeOptionsManager.Editor",
     "references": [
         "GUID:ad731d8366fe76c44b224fe1ea11f9ee",
         "GUID:75469ad4d38634e559750d17036d5f7c"
