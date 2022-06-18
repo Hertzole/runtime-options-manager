@@ -31,4 +31,4 @@ jobs:
         git commit -am "Packaged project"
         git push -f -u origin dev-package
       env:
-        PKG_ROOT: "Packages/se.hertzole.settings-manager"
+        PKG_ROOT: "Packages/se.hertzole.runtime-options-manager"
