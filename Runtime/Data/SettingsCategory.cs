@@ -19,13 +19,13 @@ namespace Hertzole.OptionsManager
 		[SerializeField]
 		private Sprite icon = default;
 		[SerializeField]
-		private List<Setting> settings = new List<Setting>();
+		private List<BaseSetting> settings = new List<BaseSetting>();
 
 		public string DisplayName { get { return displayName; } set { displayName = value; } }
 #if HERTZ_SETTINGS_LOCALIZATION
 		public LocalizedString DisplayNameLocalized { get { return displayNameLocalized; } set { displayNameLocalized = value; } }
 #endif
 		public Sprite Icon { get { return icon; } set { icon = value; } }
-		public List<Setting> Settings { get { return settings; } set { settings = value; } }
+		public List<BaseSetting> Settings { get { return settings; } set { settings = value; } }
 	}
 }
