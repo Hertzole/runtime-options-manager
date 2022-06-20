@@ -61,7 +61,7 @@ namespace Hertzole.OptionsManager.Tests
 
 		protected virtual void OnTearDown() { }
 
-		protected T AddSetting<T>() where T : Setting
+		protected T AddSetting<T>() where T : BaseSetting
 		{
 			T setting = ScriptableObject.CreateInstance<T>();
 			settings.Categories[0].Settings.Add(setting);

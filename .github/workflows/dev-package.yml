@@ -2,6 +2,8 @@ name: Development Package
 
 on:
   push:
+    branch:
+      - master
     paths-ignore:
       - '.github/**'
       - '*.md'

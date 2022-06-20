@@ -1065,6 +1065,7 @@ MonoBehaviour:
   settings: {fileID: 11400000, guid: e2666dc1344928448ae38a6fa67c0b77, type: 2}
   playerInput: {fileID: 1464842379}
   settingsContent: {fileID: 94319357}
+  inputHelper: {fileID: 11400000, guid: 7601078b2a1a95548b9a2ca7c63a053e, type: 2}
 --- !u!1 &1943184888
 GameObject:
   m_ObjectHideFlags: 0

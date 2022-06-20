@@ -11,6 +11,8 @@ namespace Hertzole.OptionsManager.Samples.InputRebinding
 		private PlayerInput playerInput = default;
 		[SerializeField]
 		private RectTransform settingsContent = default;
+		[SerializeField]
+		private InputHelper inputHelper = default;
 
 		private void Start()
 		{
@@ -28,19 +30,46 @@ namespace Hertzole.OptionsManager.Samples.InputRebinding
 			CreateSettings();
 		}
 
+		private void OnEnable()
+		{
+			inputHelper.OnResetControlsRequested += OnResetControls;
+		}
+
+		private void OnDisable()
+		{
+			inputHelper.OnResetControlsRequested -= OnResetControls;
+		}
+
+		private void OnResetControls()
+		{
+			foreach (SettingsCategory category in settings.Categories)
+			{
+				foreach (BaseSetting baseSetting in category.Settings)
+				{
+					if (baseSetting is InputSetting inputSetting)
+					{
+						inputSetting.ResetToDefault(playerInput);
+					}
+				}
+			}
+		}
+
 		private void CreateSettings()
 		{
-			for (int i = 0; i < settings.Categories.Count; i++)
+			foreach (SettingsCategory category in settings.Categories)
 			{
-				for (int j = 0; j < settings.Categories[i].Settings.Count; j++)
+				foreach (BaseSetting baseSetting in category.Settings)
 				{
-					if (!(settings.Categories[i].Settings[j] is InputSetting inputSetting))
+					if (baseSetting is InputSetting inputSetting)
 					{
-						continue;
+						GameObject ui = Instantiate(inputSetting.UiPrefab, settingsContent);
+						ui.GetComponent<InputSettingElement>().BindSetting(playerInput, inputSetting);
 					}
-
-					GameObject ui = Instantiate(inputSetting.UiPrefab, settingsContent);
-					ui.GetComponent<InputSettingElement>().BindSetting(playerInput, inputSetting);
+					else if (baseSetting is ButtonSetting buttonSetting)
+					{
+						GameObject ui = Instantiate(buttonSetting.UiPrefab, settingsContent);
+						ui.GetComponent<ButtonSettingElement>().BindSetting(buttonSetting);
+					}
 				}
 			}
 		}
