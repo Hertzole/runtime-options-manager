@@ -1,7 +1,12 @@
 ﻿using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
+#if HERTZ_SETTINGS_UNITASK
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
+#else
+using Task = System.Threading.Tasks.Task;
+#endif
 
 namespace Hertzole.OptionsManager
 {
@@ -18,24 +23,24 @@ namespace Hertzole.OptionsManager
 		private bool hasMaxValue = true;
 		[SerializeField]
 		private int maxValue = 100;
-		[SerializeField] 
+		[SerializeField]
 		private bool enableSlider = true;
 		[SerializeField]
 		private AudioMixer targetAudioMixer = default;
 		[SerializeField]
 		private string targetProperty = default;
 
+		public AudioMixer TargetAudioMixer { get { return targetAudioMixer; } set { targetAudioMixer = value; } }
+		public string TargetProperty { get { return targetProperty; } set { targetProperty = value; } }
+
+		public bool EnableSlider { get { return enableSlider; } set { enableSlider = value; } }
+		public bool WholeSliderNumbers { get { return true; } }
+
 		public bool HasMinValue { get { return hasMinValue; } set { hasMinValue = value; } }
 		public bool HasMaxValue { get { return hasMaxValue; } set { hasMaxValue = value; } }
 
 		public int MinValue { get { return minValue; } set { minValue = value; } }
 		public int MaxValue { get { return maxValue; } set { maxValue = value; } }
-	
-		public bool EnableSlider { get { return enableSlider; } set { enableSlider = value; } }
-		public bool WholeSliderNumbers { get { return true; } }
-
-		public AudioMixer TargetAudioMixer { get { return targetAudioMixer; } set { targetAudioMixer = value; } }
-		public string TargetProperty { get { return targetProperty; } set { targetProperty = value; } }
 
 		protected override void SetValue(int newValue)
 		{
@@ -54,7 +59,7 @@ namespace Hertzole.OptionsManager
 
 				UpdateVolume(newValue);
 				value = newValue;
-				
+
 				InvokeOnValueChanged(value);
 				InvokeOnSettingChanged();
 			}
@@ -68,10 +73,19 @@ namespace Hertzole.OptionsManager
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
 			base.SetSerializedValue(newValue, serializer);
-			SetSerializedValueAsyncVoid(value);
+			SetSerializedValueAsyncVoid(value)
+#if HERTZ_SETTINGS_UNITASK
+				.Forget()
+#endif
+				;
 		}
 
-		private async void SetSerializedValueAsyncVoid(int newValue)
+#if HERTZ_SETTINGS_UNITASK
+		private async UniTaskVoid
+#else
+		private async void
+#endif
+			SetSerializedValueAsyncVoid(int newValue)
 		{
 			// There must be a delay, otherwise it will not be updated. 
 			// Why? Because Unity...
@@ -84,7 +98,7 @@ namespace Hertzole.OptionsManager
 			if (targetAudioMixer != null && !string.IsNullOrEmpty(targetProperty))
 			{
 				float volume = newValue == 0 ? 0 : newValue / 100f;
-				Debug.Log("Set volume to " + volume + "(" + (Mathf.Log10(volume) * 20) + ") on " + targetAudioMixer.name + "." + targetProperty);
+				Debug.Log("Set volume to " + volume + "(" + Mathf.Log10(volume) * 20 + ") on " + targetAudioMixer.name + "." + targetProperty);
 				targetAudioMixer.SetFloat(targetProperty, volume <= 0 ? -80f : Mathf.Log10(volume) * 20);
 			}
 		}

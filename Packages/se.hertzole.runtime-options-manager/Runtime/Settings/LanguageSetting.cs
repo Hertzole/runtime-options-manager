@@ -1,10 +1,15 @@
 #if HERTZ_SETTINGS_LOCALIZATION
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
+#if HERTZ_SETTINGS_UNITASK
+using Cysharp.Threading.Tasks;
+using Task = Cysharp.Threading.Tasks.UniTask;
+#else
+using Task = System.Threading.Tasks.Task;
+#endif
 
 namespace Hertzole.OptionsManager
 {
@@ -25,7 +30,11 @@ namespace Hertzole.OptionsManager
 		{
 			if (newValue is string stringValue)
 			{
-				SetSerializedValueAsyncVoid(stringValue);
+				SetSerializedValueAsyncVoid(stringValue)
+#if HERTZ_SETTINGS_UNITASK
+					.Forget()
+#endif
+					;
 			}
 			else
 			{
@@ -37,7 +46,12 @@ namespace Hertzole.OptionsManager
 		///     Set the value asynchronously due to needing to wait for the localization settings to be loaded.
 		/// </summary>
 		/// <param name="localeCode"></param>
-		private async void SetSerializedValueAsyncVoid(string localeCode)
+#if HERTZ_SETTINGS_UNITASK
+		private async UniTaskVoid
+#else
+		private async void
+ #endif
+			SetSerializedValueAsyncVoid(string localeCode)
 		{
 			if (LocalizationSettings.Instance.GetAvailableLocales() is LocalesProvider localesProvider)
 			{
