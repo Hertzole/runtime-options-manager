@@ -138,22 +138,6 @@ namespace Hertzole.OptionsManager
 
 				isLoadingSettings = true;
 
-				StartCoroutine(LoadSettingsRoutine());
-			}
-
-			private IEnumerator LoadSettingsRoutine()
-			{
-#if HERTZ_SETTINGS_LOCALIZATION
-				if (LocalizationSettings.Instance.GetAvailableLocales() is LocalesProvider localesProvider)
-				{
-					var loadOperation = localesProvider.PreloadOperation;
-					while(!loadOperation.IsDone)
-					{
-						yield return null;
-					}
-				}
-#endif
-
 				GetSavePaths();
 
 				foreach (string settingPath in settingPaths.Keys)
@@ -184,8 +168,6 @@ namespace Hertzole.OptionsManager
 				SetDefaultValues(excludedSettings);
 				isLoadingSettings = false;
 				HasLoadedSettings = true;
-
-				yield return null;
 			}
 
 			internal bool HasLoadedSetting(string identifier)

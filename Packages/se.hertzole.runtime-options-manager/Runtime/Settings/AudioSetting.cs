@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -67,14 +68,23 @@ namespace Hertzole.OptionsManager
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
 			base.SetSerializedValue(newValue, serializer);
-			UpdateVolume(value);
+			SetSerializedValueAsyncVoid(value);
+		}
+
+		private async void SetSerializedValueAsyncVoid(int newValue)
+		{
+			// There must be a delay, otherwise it will not be updated. 
+			// Why? Because Unity...
+			await Task.Yield();
+			UpdateVolume(newValue);
 		}
 
 		private void UpdateVolume(int newValue)
 		{
-			if (targetAudioMixer != null)
+			if (targetAudioMixer != null && !string.IsNullOrEmpty(targetProperty))
 			{
 				float volume = newValue == 0 ? 0 : newValue / 100f;
+				Debug.Log("Set volume to " + volume + "(" + (Mathf.Log10(volume) * 20) + ") on " + targetAudioMixer.name + "." + targetProperty);
 				targetAudioMixer.SetFloat(targetProperty, volume <= 0 ? -80f : Mathf.Log10(volume) * 20);
 			}
 		}

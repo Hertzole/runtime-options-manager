@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,7 @@ namespace Hertzole.OptionsManager.Samples.UI
 		[SerializeField]
 		private Text categoryLabelPrefab = default;
 
-		private void Start()
+		private void Awake()
 		{
 			// If no settings have been assigned, use the global one.
 			if (settings == null)
@@ -26,7 +27,7 @@ namespace Hertzole.OptionsManager.Samples.UI
 				// When you have custom settings, it's important to initialize them.
 				settings.Initialize();
 			}
-		
+
 			BuildSettingsUI();
 		}
 
@@ -36,9 +37,12 @@ namespace Hertzole.OptionsManager.Samples.UI
 			{
 				BuildCategory(category);
 
-				foreach (Setting setting in category.Settings)
+				foreach (BaseSetting baseSetting in category.Settings)
 				{
-					BuildSetting(setting);
+					if (baseSetting is Setting setting)
+					{
+						BuildSetting(setting);
+					}
 				}
 			}
 		}
