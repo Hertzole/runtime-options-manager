@@ -84,26 +84,31 @@ namespace Hertzole.OptionsManager
 			}
 
 			Resolution[] allResolutions = Screen.resolutions;
-			List<Resolution> resolutions = new List<Resolution>();
 
 			int refreshRate = Screen.currentResolution.refreshRate;
+			Debug.Log($"REFRESH {refreshRate}");
 
+			int count = 0;
 			for (int i = 0; i < allResolutions.Length; i++)
 			{
-				Resolution data = new Resolution
+				if (allResolutions[i].refreshRate == refreshRate)
 				{
-					width = allResolutions[i].width,
-					height = allResolutions[i].height,
-					refreshRate = refreshRate
-				};
-
-				if (!resolutions.Contains(data))
-				{
-					resolutions.Add(allResolutions[i]);
+					count++;
 				}
 			}
+			
+			uniqueResolutions = new Resolution[count];
 
-			uniqueResolutions = resolutions.ToArray();
+			int index = 0;
+			
+			for (int i = 0; i < allResolutions.Length; i++)
+			{
+				if(allResolutions[i].refreshRate == refreshRate)
+				{
+					uniqueResolutions[index] = allResolutions[i];
+					index++;
+				}
+			}
 
 			return uniqueResolutions;
 		}
