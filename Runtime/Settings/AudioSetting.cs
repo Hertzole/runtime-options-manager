@@ -1,12 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Audio;
-#if HERTZ_SETTINGS_UNITASK
-using Cysharp.Threading.Tasks;
-using Task = Cysharp.Threading.Tasks.UniTask;
-#else
-using Task = System.Threading.Tasks.Task;
-#endif
 
 namespace Hertzole.OptionsManager
 {
@@ -73,19 +68,10 @@ namespace Hertzole.OptionsManager
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
 			base.SetSerializedValue(newValue, serializer);
-			SetSerializedValueAsyncVoid(value)
-#if HERTZ_SETTINGS_UNITASK
-				.Forget()
-#endif
-				;
+			SetSerializedValueAsyncVoid(value);
 		}
-
-#if HERTZ_SETTINGS_UNITASK
-		private async UniTaskVoid
-#else
-		private async void
-#endif
-			SetSerializedValueAsyncVoid(int newValue)
+		
+		private async void SetSerializedValueAsyncVoid(int newValue)
 		{
 			// There must be a delay, otherwise it will not be updated. 
 			// Why? Because Unity...
@@ -98,7 +84,6 @@ namespace Hertzole.OptionsManager
 			if (targetAudioMixer != null && !string.IsNullOrEmpty(targetProperty))
 			{
 				float volume = newValue == 0 ? 0 : newValue / 100f;
-				Debug.Log("Set volume to " + volume + "(" + Mathf.Log10(volume) * 20 + ") on " + targetAudioMixer.name + "." + targetProperty);
 				targetAudioMixer.SetFloat(targetProperty, volume <= 0 ? -80f : Mathf.Log10(volume) * 20);
 			}
 		}
