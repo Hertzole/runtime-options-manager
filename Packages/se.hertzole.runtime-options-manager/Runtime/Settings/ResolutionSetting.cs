@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 #if HERTZ_SETTINGS_UIELEMENTS
 using UnityEngine.UIElements;
@@ -15,6 +16,8 @@ namespace Hertzole.OptionsManager
 		private string resolutionFormat = "{0}x{1}";
 		
 		protected Resolution[] uniqueResolutions = null;
+		
+		private static readonly ResolutionComparer resolutionComparer = new ResolutionComparer();
 
 		public override bool CanSave { get { return false; } }
 
@@ -86,7 +89,6 @@ namespace Hertzole.OptionsManager
 			Resolution[] allResolutions = Screen.resolutions;
 
 			int refreshRate = Screen.currentResolution.refreshRate;
-			Debug.Log($"REFRESH {refreshRate}");
 
 			int count = 0;
 			for (int i = 0; i < allResolutions.Length; i++)
@@ -110,6 +112,22 @@ namespace Hertzole.OptionsManager
 				}
 			}
 
+			// Resolution[] tempResolutions = new Resolution[]
+			// {
+			// 	new Resolution { width = 300, height = 300, refreshRate = 60 },
+			// 	new Resolution { width = 300, height = 300, refreshRate = 120 },
+			// 	new Resolution { width = 300, height = 300, refreshRate = 165 },
+			// 	new Resolution { width = 600, height = 600, refreshRate = 165 },
+			// 	new Resolution { width = 600, height = 600, refreshRate = 60 },
+			// 	new Resolution { width = 100, height = 100, refreshRate = 30 },
+			// 	new Resolution { width = 100, height = 100, refreshRate = 15 },
+			// 	new Resolution { width = 100, height = 100, refreshRate = 128 },
+			// 	new Resolution { width = 150, height = 150, refreshRate = 30 },
+			// };
+
+			//TODO: Optimize this. Don't use LINQ.
+			uniqueResolutions = allResolutions.OrderBy(x => x.width).ThenByDescending(x => x.refreshRate).Distinct(resolutionComparer).ToArray();
+
 			return uniqueResolutions;
 		}
 
@@ -117,7 +135,7 @@ namespace Hertzole.OptionsManager
 		{
 			GetUniqueResolutions();
 			
-			Screen.SetResolution(uniqueResolutions[index].width, uniqueResolutions[index].height, Screen.fullScreen);
+			Screen.SetResolution(uniqueResolutions[index].width, uniqueResolutions[index].height, Screen.fullScreen, uniqueResolutions[index].refreshRate);
 		}
 
 		public int GetDropdownValue()
@@ -146,10 +164,26 @@ namespace Hertzole.OptionsManager
 
 			for (int i = 0; i < uniqueResolutions.Length; i++)
 			{
-				values.Add((string.Format(resolutionFormat, uniqueResolutions[i].width, uniqueResolutions[i].height), null));
+				values.Add((string.Format(resolutionFormat, uniqueResolutions[i].width.ToString(), uniqueResolutions[i].height.ToString(), uniqueResolutions[i].refreshRate.ToString()), null));
 			}
 
 			return values;
+		}
+		
+		private class ResolutionComparer : IEqualityComparer<Resolution>
+		{
+			public bool Equals(Resolution x, Resolution y)
+			{
+				return x.width == y.width && x.height == y.height;
+			}
+
+			public int GetHashCode(Resolution obj)
+			{
+				unchecked
+				{
+					return (obj.width * 397) ^ obj.height;
+				}
+			}
 		}
 	}
 }
