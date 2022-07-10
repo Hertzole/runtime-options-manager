@@ -32,7 +32,7 @@ namespace Hertzole.OptionsManager
 
 		protected virtual void SetValue(T newValue)
 		{
-			if (!EqualityComparer<T>.Default.Equals(value, newValue))
+			if (!EqualityComparer<T>.Default.Equals(Value, newValue))
 			{
 				OnValueChanging?.Invoke(value);
 				value = newValue;

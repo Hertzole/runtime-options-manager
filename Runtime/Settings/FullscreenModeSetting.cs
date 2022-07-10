@@ -5,10 +5,6 @@ using UnityEngine;
 using UnityEngine.Localization;
 #endif
 
-#if HERTZ_SETTINGS_UIELEMENTS && UNITY_2021_2_OR_NEWER
-using UnityEngine.UIElements;
-#endif
-
 namespace Hertzole.OptionsManager
 {
 #if UNITY_EDITOR
@@ -25,13 +21,14 @@ namespace Hertzole.OptionsManager
 		[SerializeField]
 		private ModeInfo windowed = new ModeInfo(true, "Windowed");
 
-		private readonly List<FullScreenMode> modes = new List<FullScreenMode>(4);
+		private bool hasModes = false;
+		private readonly List<ModeInfo> modes = new List<ModeInfo>(4);
 
 		public override bool CanSave { get { return false; } }
 
 		protected override void SetValue(FullScreenMode newValue)
 		{
-			if (!value.Equals(newValue))
+			if (value != newValue)
 			{
 				InvokeOnValueChanging(value);
 				value = newValue;
@@ -42,123 +39,125 @@ namespace Hertzole.OptionsManager
 			}
 		}
 
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
+		{
+			Value = Screen.fullScreenMode;
+		}
+
 		protected override FullScreenMode TryConvertValue(object newValue)
 		{
-			return Screen.fullScreenMode;
+			switch (newValue)
+			{
+				case FullScreenMode fullScreenMode:
+					return fullScreenMode;
+				case int intMode:
+					switch (intMode)
+					{
+						case 0:
+							return FullScreenMode.ExclusiveFullScreen;
+						case 1:
+							return FullScreenMode.FullScreenWindow;
+						case 2:
+							return FullScreenMode.MaximizedWindow;
+						case 3:
+							return FullScreenMode.Windowed;
+						default:
+							Debug.LogError($"Fullscreen mode with int value {intMode} is not supported.");
+							return DefaultValue;
+					}
+			}
+
+			return DefaultValue;
 		}
 
-// #if HERTZ_SETTINGS_UIELEMENTS && UNITY_2021_2_OR_NEWER
-// 		public override VisualElement CreateUIElement()
-// 		{
-// 			if (uiElement == null)
-// 			{
-// 				return null;
-// 			}
-//
-// 			var ui = uiElement.CloneTree();
-// 			var dropdown = ui.Q<DropdownField>();
-// 			dropdown.choices.Clear();
-// 			dropdown.label = DisplayName;
-//
-// 			dropdown.choices.Add("Windowed");
-// 			dropdown.choices.Add("Borderless Fullscreen");
-// 			dropdown.choices.Add("Exclusive Fullscreen");
-//
-// 			switch (Screen.fullScreenMode)
-// 			{
-// 				case FullScreenMode.ExclusiveFullScreen:
-// 					dropdown.index = 2;
-// 					break;
-// 				case FullScreenMode.FullScreenWindow:
-// 					dropdown.index = 1;
-// 					break;
-// 				case FullScreenMode.MaximizedWindow:
-// 				case FullScreenMode.Windowed:
-// 					dropdown.index = 0;
-// 					break;
-// 				default:
-// 					throw new ArgumentOutOfRangeException();
-// 			}
-//
-// 			dropdown.RegisterValueChangedCallback(evt =>
-// 			{
-// 				switch (dropdown.index)
-// 				{
-// 					case 0:
-// 						Screen.fullScreenMode = FullScreenMode.Windowed;
-// 						break;
-// 					case 1:
-// 						Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-// 						break;
-// 					case 2:
-// 						Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-// 						break;
-// 				}
-// 			});
-// 			
-// 			return ui;
-// 		}
-// #endif
-		public void SetDropdownValue(int index)
+		private int IndexOf(FullScreenMode mode)
 		{
-			SetValue(modes[index]);
+			GetModes();
+
+			for (int i = 0; i < modes.Count; i++)
+			{
+				if (modes[i].fullScreenMode == mode)
+				{
+					return i;
+				}
+			}
+
+			return -1;
 		}
 
-		public int GetDropdownValue()
+		private void GetModes()
 		{
-			return modes.IndexOf(Screen.fullScreenMode);
-		}
+			if (hasModes)
+			{
+				return;
+			}
 
-		public IReadOnlyList<(string text, Sprite icon)> GetDropdownValues()
-		{
-			bool firstTimeSetup = modes.Count == 0;
-
-			List<(string, Sprite)> list = new List<(string, Sprite)>(4);
 			if (exclusiveFullscreen.isEnabled)
 			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.ExclusiveFullScreen);
-				}
-
-				list.Add((exclusiveFullscreen.name, null));
+				exclusiveFullscreen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+				modes.Add(exclusiveFullscreen);
 			}
 
 			if (borderlessFullscreen.isEnabled)
 			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.FullScreenWindow);
-				}
-
-				list.Add((borderlessFullscreen.name, null));
+				borderlessFullscreen.fullScreenMode = FullScreenMode.FullScreenWindow;
+				modes.Add(borderlessFullscreen);
 			}
 
 			if (maximizedWindow.isEnabled)
 			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.MaximizedWindow);
-				}
-
-				list.Add((maximizedWindow.name, null));
+				maximizedWindow.fullScreenMode = FullScreenMode.MaximizedWindow;
+				modes.Add(maximizedWindow);
 			}
 
 			if (windowed.isEnabled)
 			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.Windowed);
-				}
-
-				list.Add((windowed.name, null));
+				windowed.fullScreenMode = FullScreenMode.Windowed;
+				modes.Add(windowed);
 			}
 
-			return list;
+			hasModes = true;
+		}
+		
+		public void SetDropdownValue(int index)
+		{
+			GetModes();
+
+			SetValue(modes[index].fullScreenMode);
+		}
+
+		public int GetDropdownValue()
+		{
+			GetModes();
+
+			int index = IndexOf(Value);
+
+			return index == -1 ? 0 : index;
+		}
+
+		public IReadOnlyList<(string text, Sprite icon)> GetDropdownValues()
+		{
+			GetModes();
+
+			(string, Sprite)[] result = new (string, Sprite)[modes.Count];
+			for (int i = 0; i < modes.Count; i++)
+			{
+				result[i] = (modes[i].name, modes[i].icon);
+			}
+
+			return result;
+		}
+
+		public override void ResetState()
+		{
+			base.ResetState();
+
+			hasModes = false;
+			modes.Clear();
 		}
 
 		[Serializable]
-		public struct ModeInfo
+		public class ModeInfo
 		{
 			public bool isEnabled;
 
@@ -167,7 +166,10 @@ namespace Hertzole.OptionsManager
 			public LocalizedString localizedName;
 #endif
 
-			public ModeInfo(bool isEnabled, string name) : this()
+			public FullScreenMode fullScreenMode;
+			public Sprite icon;
+
+			public ModeInfo(bool isEnabled, string name)
 			{
 				this.isEnabled = isEnabled;
 				this.name = name;
