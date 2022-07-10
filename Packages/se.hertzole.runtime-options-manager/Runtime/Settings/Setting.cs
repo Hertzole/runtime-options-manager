@@ -1,11 +1,5 @@
 ﻿using System;
 using UnityEngine;
-#if HERTZ_SETTINGS_UIELEMENTS
-using UnityEngine.UIElements;
-#endif
-#if HERTZ_SETTINGS_LOCALIZATION
-using UnityEngine.Localization;
-#endif
 
 namespace Hertzole.OptionsManager
 {
@@ -17,15 +11,15 @@ namespace Hertzole.OptionsManager
 #if UNITY_EDITOR
 		[Header("Saving")]
 #endif
-		[SerializeField] 
+		[SerializeField]
 		private bool overwriteSavePath = false;
-		[SerializeField] 
+		[SerializeField]
 		private string overriddenSavePath = default;
-		[SerializeField] 
+		[SerializeField]
 		private bool overwriteFileName = false;
-		[SerializeField] 
+		[SerializeField]
 		private string overriddenFileName = default;
-		
+
 		public string Identifier { get { return identifier; } set { identifier = value; } }
 
 		public bool OverwriteSavePath { get { return overwriteSavePath; } set { overwriteSavePath = value; } }
@@ -45,7 +39,7 @@ namespace Hertzole.OptionsManager
 		{
 			return null;
 		}
-		
+
 		protected void InvokeOnSettingChanged()
 		{
 			OnSettingChanged?.Invoke();

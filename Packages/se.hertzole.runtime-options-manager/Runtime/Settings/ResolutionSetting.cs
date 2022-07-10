@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-#if HERTZ_SETTINGS_UIELEMENTS
-using UnityEngine.UIElements;
-#endif
 
 namespace Hertzole.OptionsManager
 {
@@ -23,7 +20,7 @@ namespace Hertzole.OptionsManager
 
 		protected override void SetValue(Resolution newValue)
 		{
-			if (!value.Equals(newValue))
+			if (!EqualityComparer<Resolution>.Default.Equals(Value, newValue))
 			{
 				InvokeOnValueChanging(value);
 				value = newValue;

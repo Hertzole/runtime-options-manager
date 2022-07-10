@@ -9,51 +9,16 @@ namespace Hertzole.OptionsManager
 	{
 		public IReadOnlyList<(LocalizedString text, Sprite icon)> GetLocalizedDropdownValues()
 		{
-			bool firstTimeSetup = modes.Count == 0;
+			GetModes();
 
-			List<(LocalizedString, Sprite)> list = new List<(LocalizedString, Sprite)>(4);
+			(LocalizedString, Sprite)[] result = new (LocalizedString, Sprite)[modes.Count];
 
-			if (exclusiveFullscreen.isEnabled)
+			for (int i = 0; i < modes.Count; i++)
 			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.ExclusiveFullScreen);
-				}
-
-				list.Add((exclusiveFullscreen.localizedName, null));
+				result[i] = (modes[i].localizedName, modes[i].icon);
 			}
 
-			if (borderlessFullscreen.isEnabled)
-			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.FullScreenWindow);
-				}
-
-				list.Add((borderlessFullscreen.localizedName, null));
-			}
-
-			if (maximizedWindow.isEnabled)
-			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.MaximizedWindow);
-				}
-
-				list.Add((maximizedWindow.localizedName, null));
-			}
-
-			if (windowed.isEnabled)
-			{
-				if (firstTimeSetup)
-				{
-					modes.Add(FullScreenMode.Windowed);
-				}
-
-				list.Add((windowed.localizedName, null));
-			}
-
-			return list;
+			return result;
 		}
 	}
 }

@@ -17,6 +17,11 @@ namespace Hertzole.OptionsManager
 
 		public override object GetSerializeValue()
 		{
+			if (Value == null)
+			{
+				return DefaultValue.Identifier.Code;
+			}
+			
 			Locale currentLocale = Value;
 			return currentLocale.Identifier.Code;
 		}
