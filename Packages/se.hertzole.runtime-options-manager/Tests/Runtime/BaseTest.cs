@@ -9,6 +9,10 @@ namespace Hertzole.OptionsManager.Tests
 	{
 		protected SettingsManager settings;
 		protected readonly List<GameObject> objects = new List<GameObject>();
+		
+		protected static readonly bool[] boolValues = { true, false };
+		protected static readonly int[] intValues = { int.MinValue, int.MaxValue, 0, -42, 42, -69, 69, -420, 420, -1, 1 };
+		protected static readonly float[] floatValues = { float.MinValue, float.MaxValue, 0, -42.42f, 42.42f, -69.69f, 69.69f, -420.69f, 420.69f, -1.1f, 1.1f };
 
 		[SetUp]
 		public void Setup()
@@ -61,10 +65,23 @@ namespace Hertzole.OptionsManager.Tests
 
 		protected virtual void OnTearDown() { }
 
-		protected T AddSetting<T>() where T : BaseSetting
+		protected T AddSetting<T>(bool hasValueLimits = false) where T : BaseSetting
 		{
 			T setting = ScriptableObject.CreateInstance<T>();
 			settings.Categories[0].Settings.Add(setting);
+			
+			if (setting is IMinMaxInt minMaxInt)
+			{
+				minMaxInt.HasMaxValue = hasValueLimits;
+				minMaxInt.HasMinValue = hasValueLimits;
+			}
+
+			if (setting is IMinMaxFloat minMaxFloat)
+			{
+				minMaxFloat.HasMaxValue = hasValueLimits;
+				minMaxFloat.HasMinValue = hasValueLimits;
+			}
+			
 			return setting;
 		}
 	}

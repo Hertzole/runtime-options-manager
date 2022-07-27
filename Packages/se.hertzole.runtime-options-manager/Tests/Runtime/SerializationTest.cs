@@ -12,7 +12,7 @@ namespace Hertzole.OptionsManager.Tests
 		protected override void CleanUp()
 		{
 			base.CleanUp();
-			
+
 			string savePath = Application.dataPath + "/" + OverwritePathTests.SAVE_PATH;
 
 			if (Directory.Exists(savePath))
@@ -36,27 +36,33 @@ namespace Hertzole.OptionsManager.Tests
 		}
 
 		[Test]
-		public void GetSerializeValue_IntSetting()
+		public void GetSerializeValue_IntSetting([ValueSource(nameof(intValues))] int value)
 		{
-			TestSerializeValue<IntSetting, int>(1);
+			TestSerializeValue<IntSetting, int>(value);
 		}
 
 		[Test]
-		public void GetSerializeValue_FloatSetting()
+		public void GetSerializeValue_FloatSetting([ValueSource(nameof(floatValues))] float value)
 		{
-			TestSerializeValue<FloatSetting, float>(1.1f);
+			TestSerializeValue<FloatSetting, float>(value);
 		}
 
 		[Test]
-		public void GetSerializeValue_BoolSetting()
+		public void GetSerializeValue_BoolSetting([ValueSource(nameof(boolValues))] bool value)
 		{
-			TestSerializeValue<ToggleSetting, bool>(true);
+			TestSerializeValue<ToggleSetting, bool>(value);
 		}
 
 		[Test]
-		public void GetSerializeValue_AudioSetting()
+		public void GetSerializeValue_AudioSetting([ValueSource(nameof(intValues))] int value)
 		{
-			TestSerializeValue<AudioSetting, int>(1);
+			TestSerializeValue<AudioSetting, int>(value);
+		}
+
+		[Test]
+		public void GetSerializeValue_VsyncSetting([ValueSource(nameof(boolValues))] bool value)
+		{
+			TestSerializeValue<VSyncSetting, bool>(value);
 		}
 
 		[Test]
@@ -110,7 +116,7 @@ namespace Hertzole.OptionsManager.Tests
 
 		private void TestSerializeValue<TSetting, TValue>(TValue newValue) where TSetting : Setting<TValue>, new()
 		{
-			TSetting setting = AddSetting<TSetting>();
+			TSetting setting = AddSetting<TSetting>(false);
 			setting.Value = newValue;
 			setting.GetSerializeValue();
 

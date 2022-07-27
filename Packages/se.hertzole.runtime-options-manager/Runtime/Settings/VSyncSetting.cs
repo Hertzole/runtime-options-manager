@@ -22,7 +22,13 @@ namespace Hertzole.OptionsManager
 			}
 		}
 
-// #if HERTZ_SETTINGS_UIELEMENTS
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
+		{
+			base.SetSerializedValue(newValue, serializer);
+			QualitySettings.vSyncCount = Value ? 1 : 0;
+		}
+
+		// #if HERTZ_SETTINGS_UIELEMENTS
 // 		public override VisualElement CreateUIElement()
 // 		{
 // 			if (uiElement == null)
