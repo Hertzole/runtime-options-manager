@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
 namespace Hertzole.OptionsManager.Tests
@@ -8,7 +9,7 @@ namespace Hertzole.OptionsManager.Tests
 	public abstract partial class SerializerTest<T> : BaseTest where T : ISettingSerializer, new()
 	{
 		protected T serializer;
-
+		
 		protected override void OnSetup()
 		{
 			serializer = new T();
@@ -25,27 +26,51 @@ namespace Hertzole.OptionsManager.Tests
 		}
 
 		[Test]
-		public void SerializeFloatSetting()
+		public void SerializeFloatSetting([ValueSource(nameof(floatValues))] float value)
 		{
-			SerializeTest<FloatSetting, float>(6.9f);
+			SerializeTest<FloatSetting, float>(value);
 		}
 
 		[Test]
-		public void SerializeIntSetting()
+		public void SerializeIntSetting([ValueSource(nameof(intValues))] int value)
 		{
-			SerializeTest<IntSetting, int>(42);
+			SerializeTest<IntSetting, int>(value);
 		}
 
 		[Test]
-		public void SerializeToggleSetting()
+		public void SerializeToggleSetting([ValueSource(nameof(boolValues))] bool value)
 		{
-			SerializeTest<ToggleSetting, bool>(true);
+			SerializeTest<ToggleSetting, bool>(value);
 		}
 
 		[Test]
-		public void SerializeAudioSetting()
+		public void SerializeAudioSetting([ValueSource(nameof(intValues))] int value)
 		{
-			SerializeTest<AudioSetting, int>(50);
+			SerializeTest<AudioSetting, int>(value);
+		}
+		
+		[Test]
+		public void SerializeVSyncOn()
+		{
+			QualitySettings.vSyncCount = 0;
+			Assert.AreEqual(0, QualitySettings.vSyncCount);
+			SerializeTest<VSyncSetting, bool>(true, setting =>
+			{
+				QualitySettings.vSyncCount = 0;
+			});
+			Assert.AreEqual(1, QualitySettings.vSyncCount);
+		}
+		
+		[Test]
+		public void SerializeVSyncOff()
+		{
+			QualitySettings.vSyncCount = 1;
+			Assert.AreEqual(1, QualitySettings.vSyncCount);
+			SerializeTest<VSyncSetting, bool>(false, setting =>
+			{
+				QualitySettings.vSyncCount = 1;
+			});
+			Assert.AreEqual(0, QualitySettings.vSyncCount);
 		}
 
 		[Test]
@@ -96,12 +121,14 @@ namespace Hertzole.OptionsManager.Tests
 			SetInvalidSerializedValue<AudioSetting, int>();
 		}
 
-		private void SerializeTest<TSetting, TValue>(TValue newValue) where TSetting : Setting<TValue> where TValue : IEquatable<TValue>
+		private void SerializeTest<TSetting, TValue>(TValue newValue, Action<TSetting> beforeSave = null) where TSetting : Setting<TValue> where TValue : IEquatable<TValue>
 		{
-			TSetting setting = AddSetting<TSetting>();
+			TSetting setting = AddSetting<TSetting>(false);
 
 			setting.Identifier = "setting";
 			setting.Value = newValue;
+
+			beforeSave?.Invoke(setting);
 
 			Dictionary<string, object> serializedData = new Dictionary<string, object>();
 
@@ -119,7 +146,7 @@ namespace Hertzole.OptionsManager.Tests
 
 			setting.SetSerializedValue(value, serializer);
 
-			Assert.AreEqual(newValue, setting.Value);
+			Assert.AreEqual(newValue, setting.Value, $"Value is {setting.Value} but should be {newValue} after deserialization.");
 		}
 
 		private void SetInvalidSerializedValue<TSetting, TValue>() where TSetting : Setting<TValue>
