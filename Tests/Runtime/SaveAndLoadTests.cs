@@ -5,7 +5,7 @@ using Assert = UnityEngine.Assertions.Assert;
 
 namespace Hertzole.OptionsManager.Tests
 {
-	public class SaveAndLoadTests : BaseTest
+	public partial class SaveAndLoadTests : BaseTest
 	{
 		[Test]
 		public void SaveWithBaseSetting()
@@ -53,24 +53,39 @@ namespace Hertzole.OptionsManager.Tests
 		private void SerializeTest<TSetting, TValue>(TValue newValue) where TSetting : Setting<TValue> where TValue : IEquatable<TValue>
 		{
 			TSetting setting = AddSetting<TSetting>();
-
 			setting.Identifier = "setting";
-			setting.Value = newValue;
 
-			Assert.AreNotEqual(default, newValue, "You should not provide the default value as it needs something else to check against!");
-			Assert.AreEqual(newValue, setting.Value);
+			SaveAndLoad(() =>
+			{
+				setting.Value = newValue;
+				
+				Assert.AreNotEqual(default, newValue, "You should not provide the default value as it needs something else to check against!");
+				Assert.AreEqual(newValue, setting.Value);
+			}, () =>
+			{
+				setting.Value = default;
+				Assert.AreNotEqual(newValue, setting.Value);
+			}, () =>
+			{
+				Assert.AreEqual(newValue, setting.Value);
+			});
+		}
+
+		private void SaveAndLoad(Action preSave = null, Action postSave = null, Action postLoad = null)
+		{
+			preSave?.Invoke();
+			
 			Assert.IsFalse(File.Exists(settings.ComputedSavePath));
 			
 			settings.SaveSettings();
 
 			Assert.IsTrue(File.Exists(settings.ComputedSavePath));
 			
-			setting.Value = default;
-			Assert.AreNotEqual(newValue, setting.Value);
-			
+			postSave?.Invoke();
+
 			settings.LoadSettings();
 			
-			Assert.AreEqual(newValue, setting.Value);
+			postLoad?.Invoke();
 		}
 	}
 }
