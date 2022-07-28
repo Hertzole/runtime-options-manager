@@ -1,0 +1,16 @@
+{
+    "name": "Hertzole.RuntimeOptionsManager.Samples.uGUI",
+    "rootNamespace": "Hertzole.OptionsManager.Samples.uGUI",
+    "references": [
+        "GUID:ad731d8366fe76c44b224fe1ea11f9ee"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

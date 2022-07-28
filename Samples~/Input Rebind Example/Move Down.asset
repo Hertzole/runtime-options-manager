@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f85330685774546863396a7a1c1a501, type: 3}
+  m_Name: Move Down
+  m_EditorClassIdentifier: 
+  displayName: Move Down
+  displayNameLocalized:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  identifier: move_down
+  uiPrefab: {fileID: 607000209400603388, guid: 1f7271c14f4cf6546810acfe75cc30dd, type: 3}
+  uiElement: {fileID: 0}
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
+  targetAction: {fileID: -1721885394449788270, guid: 69a5d0f6ac31e854f8aec66d8db59f70, type: 3}
+  bindings:
+  - bindingId: f0f91576-e75b-4987-a47b-08d76865bbc2
+    groups: Keyboard
+  - bindingId: a4c3ace2-caeb-4749-932d-995d2be10b18
+    groups: Gamepad
+  references:
+    version: 2
+    RefIds: []
