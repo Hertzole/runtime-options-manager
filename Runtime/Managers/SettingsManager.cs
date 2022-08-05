@@ -169,8 +169,6 @@ namespace Hertzole.OptionsManager
 				return;
 			}
 
-			Debug.Log("Initialize settings");
-
 			instance = this;
 			TryCreateBehavior();
 			InitializeCategories();
