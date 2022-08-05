@@ -11,9 +11,25 @@ namespace Hertzole.OptionsManager
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Language Setting", menuName = "Hertzole/Settings/Language Setting")]
 #endif
-	public class LanguageSetting : Setting<Locale>, IDropdownValues
+	public class LanguageSetting : Setting<Locale>, IDropdownValues, ISerializationCallbackReceiver
 	{
+		public enum DisplayType
+		{
+			CultureInfoName = 0,
+			CultureInfoDisplayName = 1,
+			CultureInfoNativeName = 2,
+			CultureInfoEnglishName = 3,
+			CustomName = 4
+		}
+		
+		[SerializeField] 
+		private DisplayType nameDisplayType = DisplayType.CultureInfoNativeName;
+		[SerializeField] 
+		private SerializableKeyValuePair<Locale, string>[] customNames = default;
+		
 		private (string, Sprite)[] cachedDropdownValues;
+		
+		private readonly Dictionary<Locale, string> customNameDictionary = new Dictionary<Locale, string>();
 
 		public override object GetSerializeValue()
 		{
@@ -89,11 +105,35 @@ namespace Hertzole.OptionsManager
 			for (int i = 0; i < allLocales.Count; i++)
 			{
 				Locale locale = allLocales[i];
-				string displayName = locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
+				string displayName = GetLocaleName(locale, nameDisplayType);
 				cachedDropdownValues[i] = (displayName, null);
 			}
 
 			return cachedDropdownValues;
+		}
+
+		public string GetLocaleName(Locale locale, DisplayType displayType)
+		{
+			switch (displayType)
+			{
+				case DisplayType.CultureInfoName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.Name : locale.ToString();
+				case DisplayType.CultureInfoDisplayName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.DisplayName : locale.ToString();
+				case DisplayType.CultureInfoNativeName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
+				case DisplayType.CultureInfoEnglishName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.EnglishName : locale.ToString();
+				case DisplayType.CustomName:
+					if(customNameDictionary.TryGetValue(locale, out var customName))
+					{
+						return customName;
+					}
+					
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
+				default:
+					return locale.ToString();
+			}
 		}
 
 		// #if HERTZ_SETTINGS_UIELEMENTS && UNITY_2021_2_OR_NEWER
@@ -146,6 +186,28 @@ namespace Hertzole.OptionsManager
 		// 			dropdown.RegisterValueChangedCallback(evt => { LocalizationSettings.SelectedLocale = locales[dropdown.index]; });
 		// 		}
 		// #endif
+		void ISerializationCallbackReceiver.OnBeforeSerialize()
+		{
+			// Does nothing
+		}
+
+		void ISerializationCallbackReceiver.OnAfterDeserialize()
+		{
+			customNameDictionary.Clear();
+
+			if (customNames != null && customNames.Length > 0)
+			{
+				for (int i = 0; i < customNames.Length; i++)
+				{
+					if (customNames[i].key == null || customNameDictionary.ContainsKey(customNames[i].key))
+					{
+						continue;
+					}
+					
+					customNameDictionary.Add(customNames[i].key, customNames[i].value);
+				}
+			}
+		}
 	}
 }
 #endif
