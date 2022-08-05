@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -39,6 +40,13 @@ namespace Hertzole.OptionsManager.Tests
 
 			TargetLocalizationSettings.SetAvailableLocales(localesProvider);
 			TargetLocalizationSettings.SetSelectedLocale(locales[0]);
+			TargetLocalizationSettings.GetStartupLocaleSelectors().Clear();
+			TargetLocalizationSettings.GetStartupLocaleSelectors().Add(new SpecificLocaleSelector()
+			{
+				LocaleId = locales[0].Identifier
+			});
+
+			Assert.AreEqual(1, TargetLocalizationSettings.GetStartupLocaleSelectors().Count);
 
 			AsyncOperationHandle<LocalizationSettings> initializeOperation = TargetLocalizationSettings.GetInitializationOperation();
 
@@ -46,6 +54,8 @@ namespace Hertzole.OptionsManager.Tests
 			{
 				yield return null;
 			}
+	
+			Assert.AreEqual(1, TargetLocalizationSettings.GetStartupLocaleSelectors().Count);
 		}
 
 		protected override void OnTearDown()
