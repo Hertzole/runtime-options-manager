@@ -171,6 +171,24 @@ namespace Hertzole.OptionsManager
 			TryCreateBehavior();
 		}
 
+		private void InitializeSettings()
+		{
+			for (int i = 0; i < categories.Count; i++)
+			{
+				for (int j = 0; j < categories[i].Settings.Count; j++)
+				{
+					categories[i].Settings[j].Initialize(this);
+				}
+			}
+		}
+
+		public void StartCoroutine(IEnumerator coroutine)
+		{
+			TryCreateBehavior();
+
+			behavior.StartCoroutine(coroutine);
+		}
+
 		/// <summary>
 		/// Saves the settings to a file.
 		/// </summary>

@@ -28,7 +28,7 @@ namespace Hertzole.OptionsManager
 		public string OverriddenFileName { get { return overriddenFileName; } set { overriddenFileName = value; } }
 
 		public virtual bool CanSave { get { return true; } }
-
+		
 		public event Action OnSettingChanged;
 
 		public abstract object GetDefaultValue();
