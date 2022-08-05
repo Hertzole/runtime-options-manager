@@ -38,6 +38,7 @@ namespace Hertzole.OptionsManager.Tests
 			locales = localesProvider.Locales;
 
 			TargetLocalizationSettings.SetAvailableLocales(localesProvider);
+			TargetLocalizationSettings.SetSelectedLocale(locales[0]);
 
 			AsyncOperationHandle<LocalizationSettings> initializeOperation = TargetLocalizationSettings.GetInitializationOperation();
 
