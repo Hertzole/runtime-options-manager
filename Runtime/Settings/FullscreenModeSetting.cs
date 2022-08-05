@@ -26,6 +26,11 @@ namespace Hertzole.OptionsManager
 
 		public override bool CanSave { get { return false; } }
 
+		public ModeInfo ExclusiveFullscreen { get { return exclusiveFullscreen; } set { exclusiveFullscreen = value; } }
+		public ModeInfo BorderlessFullscreen { get { return borderlessFullscreen; } set { borderlessFullscreen = value; } }
+		public ModeInfo MaximizedWindow { get { return maximizedWindow; } set { maximizedWindow = value; } }
+		public ModeInfo Windowed { get { return windowed; } set { windowed = value; } }
+
 		protected override void SetValue(FullScreenMode newValue)
 		{
 			if (value != newValue)
@@ -39,32 +44,24 @@ namespace Hertzole.OptionsManager
 			}
 		}
 
-		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
-		{
-			Value = Screen.fullScreenMode;
-		}
-
 		protected override FullScreenMode TryConvertValue(object newValue)
 		{
-			switch (newValue)
+			if (newValue is int intMode)
 			{
-				case FullScreenMode fullScreenMode:
-					return fullScreenMode;
-				case int intMode:
-					switch (intMode)
-					{
-						case 0:
-							return FullScreenMode.ExclusiveFullScreen;
-						case 1:
-							return FullScreenMode.FullScreenWindow;
-						case 2:
-							return FullScreenMode.MaximizedWindow;
-						case 3:
-							return FullScreenMode.Windowed;
-						default:
-							Debug.LogError($"Fullscreen mode with int value {intMode} is not supported.");
-							return DefaultValue;
-					}
+				switch (intMode)
+				{
+					case 0:
+						return FullScreenMode.ExclusiveFullScreen;
+					case 1:
+						return FullScreenMode.FullScreenWindow;
+					case 2:
+						return FullScreenMode.MaximizedWindow;
+					case 3:
+						return FullScreenMode.Windowed;
+					default:
+						Debug.LogError($"Fullscreen mode with int value {intMode} is not supported.");
+						return DefaultValue;
+				}
 			}
 
 			return DefaultValue;
@@ -117,6 +114,13 @@ namespace Hertzole.OptionsManager
 			}
 
 			hasModes = true;
+		}
+
+		public ModeInfo GetModeAtIndex(int index)
+		{
+			GetModes();
+
+			return modes[index];
 		}
 		
 		public void SetDropdownValue(int index)

@@ -1,7 +1,6 @@
 #if HERTZ_SETTINGS_LOCALIZATION
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -26,11 +25,69 @@ namespace Hertzole.OptionsManager
 		[SerializeField] 
 		private DisplayType nameDisplayType = DisplayType.CultureInfoNativeName;
 		[SerializeField] 
-		private SerializableKeyValuePair<Locale, string>[] customNames = default;
+		private List<SerializableKeyValuePair<Locale, string>> customNames = new List<SerializableKeyValuePair<Locale, string>>();
 		
 		private (string, Sprite)[] cachedDropdownValues;
 
+		private LocalizationSettings localizationSettings;
+
 		public DisplayType NameDisplayType { get { return nameDisplayType; } set { nameDisplayType = value; } }
+
+		public LocalizationSettings TargetLocalizationSettings
+		{
+			get
+			{
+				if (localizationSettings == null)
+				{
+					localizationSettings = LocalizationSettings.Instance;
+				}
+
+				return localizationSettings;
+			}
+			set { localizationSettings = value; }
+		}
+
+		public void AddCustomName(Locale locale, string localeName)
+		{
+			for (int i = 0; i < customNames.Count; i++)
+			{
+				if (customNames[i].Key == locale)
+				{
+					Debug.LogError($"Locale {locale} has already been added as a custom name.");
+					return;
+				}
+			}
+
+			customNames.Add(new SerializableKeyValuePair<Locale, string>(locale, localeName));
+		}
+
+		public bool RemoveCustomName(Locale locale)
+		{
+			for (int i = 0; i < customNames.Count; i++)
+			{
+				if (customNames[i].Key == locale)
+				{
+					customNames.RemoveAt(i);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public string GetCustomName(Locale locale)
+		{
+			for (int i = 0; i < customNames.Count; i++)
+			{
+				if (customNames[i].Key == locale)
+				{
+					return customNames[i].Value;
+				}
+			}
+
+			Debug.LogError($"Could not find a custom name for locale {locale}.");
+			return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
+		}
 
 		public override object GetSerializeValue()
 		{
@@ -49,6 +106,10 @@ namespace Hertzole.OptionsManager
 			{
 				SettingsManager.StartCoroutine(SetSerializedValueRoutine(stringValue));
 			}
+			else if (newValue is null)
+			{
+				SettingsManager.StartCoroutine(SetSerializedValueRoutine(string.Empty));
+			}
 			else
 			{
 				base.SetSerializedValue(newValue, serializer);
@@ -61,13 +122,18 @@ namespace Hertzole.OptionsManager
 		/// <param name="localeCode"></param>
 		private IEnumerator SetSerializedValueRoutine(string localeCode)
 		{
-			if (LocalizationSettings.Instance.GetAvailableLocales() is LocalesProvider localesProvider)
+			if (TargetLocalizationSettings.GetAvailableLocales() is LocalesProvider localesProvider)
 			{
 				AsyncOperationHandle loadOperation = localesProvider.PreloadOperation;
 				while (!loadOperation.IsDone)
 				{
 					yield return null;
 				}
+			}
+
+			if (string.IsNullOrWhiteSpace(localeCode))
+			{
+				localeCode = TargetLocalizationSettings.GetSelectedLocale().Identifier.Code;
 			}
 
 			value = TryConvertValue(localeCode);
@@ -77,27 +143,27 @@ namespace Hertzole.OptionsManager
 		{
 			if (newValue is string localeCode)
 			{
-				return LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier(localeCode));
+				return TargetLocalizationSettings.GetAvailableLocales().GetLocale(new LocaleIdentifier(localeCode));
 			}
 
-			return LocalizationSettings.SelectedLocale;
+			return TargetLocalizationSettings.GetSelectedLocale();
 		}
 
 		public void SetDropdownValue(int index)
 		{
-			Locale newLocale = LocalizationSettings.Instance.GetAvailableLocales().Locales[index];
+			Locale newLocale = TargetLocalizationSettings.GetAvailableLocales().Locales[index];
 			Value = newLocale;
-			LocalizationSettings.Instance.SetSelectedLocale(newLocale);
+			TargetLocalizationSettings.SetSelectedLocale(newLocale);
 		}
 
 		public int GetDropdownValue()
 		{
-			return LocalizationSettings.Instance.GetAvailableLocales().Locales.IndexOf(Value);
+			return TargetLocalizationSettings.GetAvailableLocales().Locales.IndexOf(Value);
 		}
 
 		public IReadOnlyList<(string text, Sprite icon)> GetDropdownValues()
 		{
-			List<Locale> allLocales = LocalizationSettings.Instance.GetAvailableLocales().Locales;
+			List<Locale> allLocales = TargetLocalizationSettings.GetAvailableLocales().Locales;
 			if (cachedDropdownValues == null || cachedDropdownValues.Length != allLocales.Count)
 			{
 				cachedDropdownValues = new (string, Sprite)[allLocales.Count];
@@ -126,7 +192,7 @@ namespace Hertzole.OptionsManager
 				case DisplayType.CultureInfoEnglishName:
 					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.EnglishName : locale.ToString();
 				case DisplayType.CustomName:
-					for (int i = 0; i < customNames.Length; i++)
+					for (int i = 0; i < customNames.Count; i++)
 					{
 						if (customNames[i].Key.Identifier == locale.Identifier)
 						{

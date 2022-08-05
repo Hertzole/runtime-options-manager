@@ -11,7 +11,9 @@ namespace Hertzole.OptionsManager
 	{
 		[SerializeField]
 		private string resolutionFormat = "{0}x{1}";
-		
+
+		public string ResolutionFormat { get { return resolutionFormat; } set { resolutionFormat = value; } }
+
 		protected Resolution[] uniqueResolutions = null;
 		
 		private static readonly ResolutionComparer resolutionComparer = new ResolutionComparer();
@@ -132,7 +134,7 @@ namespace Hertzole.OptionsManager
 		{
 			GetUniqueResolutions();
 			
-			Screen.SetResolution(uniqueResolutions[index].width, uniqueResolutions[index].height, Screen.fullScreen, uniqueResolutions[index].refreshRate);
+			Value = uniqueResolutions[index];
 		}
 
 		public int GetDropdownValue()
@@ -141,9 +143,11 @@ namespace Hertzole.OptionsManager
 			
 			int index = 0;
 
+			Resolution currentValue = Value;
+			
 			for (int i = 0; i < uniqueResolutions.Length; i++)
 			{
-				if (uniqueResolutions[i].width == Screen.width && uniqueResolutions[i].height == Screen.height)
+				if (uniqueResolutions[i].width == currentValue.width && uniqueResolutions[i].height == currentValue.height)
 				{
 					index = i;
 					break;

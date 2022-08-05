@@ -50,17 +50,18 @@ namespace Hertzole.OptionsManager
 		{
 			if (newValue is T convertedValue)
 			{
-				value = convertedValue;
+				Value = convertedValue;
 			}
 			else
 			{
 				try
 				{
-					value = serializer.DeserializeType<T>(newValue);
+					Value = serializer.DeserializeType<T>(newValue);
+					Debug.Log($"Deserialized {serializer.DeserializeType<T>(newValue)}");
 				}
 				catch (ArgumentException)
 				{
-					value = TryConvertValue(newValue);
+					Value = TryConvertValue(newValue);
 				}
 			}
 		}
