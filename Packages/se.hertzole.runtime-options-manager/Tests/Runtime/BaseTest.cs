@@ -26,7 +26,8 @@ namespace Hertzole.OptionsManager.Tests
 			settings.SaveLocation = SettingsManager.SaveLocations.DataPath;
 			settings.SavePath = "test_settings";
 			settings.FileName = "settings_test_file.json";
-			settings.Categories.Add(new SettingsCategory());
+			// Don't initialize because we call initialize right after.
+			settings.AddCategory("Test Category", null, false);
 			
 			settings.Initialize();
 
@@ -68,7 +69,7 @@ namespace Hertzole.OptionsManager.Tests
 		protected T AddSetting<T>(bool hasValueLimits = false) where T : BaseSetting
 		{
 			T setting = ScriptableObject.CreateInstance<T>();
-			settings.Categories[0].Settings.Add(setting);
+			settings.Categories[0].AddSetting(setting);
 			
 			if (setting is IMinMaxInt minMaxInt)
 			{
