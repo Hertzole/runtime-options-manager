@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.Assertions;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -17,19 +19,23 @@ namespace Hertzole.OptionsManager.Tests
 
 		protected override IEnumerator OnSetUpRoutine()
 		{
+			AsyncOperationHandle<IResourceLocator> addressablesOperation = Addressables.InitializeAsync();
+			while (!addressablesOperation.IsDone)
+			{
+				yield return null;
+			}
+			
 			TargetLocalizationSettings = CreateLocalizationSettings();
 
 			LocalesProvider localesProvider = CreateLocalesProvider();
 
-			AsyncOperationHandle localesLoadOperation = localesProvider.PreloadOperation;
-			while (!localesLoadOperation.IsDone)
+			AsyncOperationHandle localesOperation = localesProvider.PreloadOperation;
+			while (!localesOperation.IsDone)
 			{
 				yield return null;
 			}
-
-			List<Locale> newLocales = CreteLocales();
 			
-			localesProvider.Locales.Clear();
+			List<Locale> newLocales = CreteLocales();
 
 			for (int i = 0; i < newLocales.Count; i++)
 			{
