@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 #if HERTZ_SETTINGS_LOCALIZATION
-using UnityEngine.Localization.Settings;
+using UnityEngine.Localization;
 #endif
 #if UNITY_EDITOR
 using UnityEditor;
@@ -29,7 +29,7 @@ namespace Hertzole.OptionsManager
 
 		[SerializeField]
 		private bool autoSaveSettings = true;
-		[SerializeField] 
+		[SerializeField]
 		private bool loadSettingsOnBoot = true;
 
 		[SerializeField]
@@ -133,14 +133,13 @@ namespace Hertzole.OptionsManager
 				{
 					Destroy(instance.behavior.gameObject);
 				}
-				
+
 				instance = value;
 				if (instance != null)
 				{
-					instance.Initialize();					
+					instance.Initialize();
 					TryCreateBehavior();
 				}
-				
 			}
 		}
 
@@ -159,6 +158,9 @@ namespace Hertzole.OptionsManager
 #endif
 		}
 
+		/// <summary>
+		///     Initializes this settings manager and sets this as the active global instance.
+		/// </summary>
 		public void Initialize()
 		{
 			if (isInitialized)
@@ -167,21 +169,28 @@ namespace Hertzole.OptionsManager
 				return;
 			}
 
+			Debug.Log("Initialize settings");
+
 			instance = this;
 			TryCreateBehavior();
+			InitializeCategories();
 		}
 
-		private void InitializeSettings()
+		/// <summary>
+		///     Initializes all the categories and their settings.
+		/// </summary>
+		private void InitializeCategories()
 		{
 			for (int i = 0; i < categories.Count; i++)
 			{
-				for (int j = 0; j < categories[i].Settings.Count; j++)
-				{
-					categories[i].Settings[j].Initialize(this);
-				}
+				categories[i].Initialize(this);
 			}
 		}
 
+		/// <summary>
+		///     Starts a coroutine on the scene behaviour.
+		/// </summary>
+		/// <param name="coroutine">The coroutine to start.</param>
 		public void StartCoroutine(IEnumerator coroutine)
 		{
 			TryCreateBehavior();
@@ -190,7 +199,48 @@ namespace Hertzole.OptionsManager
 		}
 
 		/// <summary>
-		/// Saves the settings to a file.
+		///	    Adds a new category to the list of categories.
+		/// </summary>
+		/// <param name="categoryName">The category name.</param>
+		/// <param name="icon">The category icon.</param>
+		/// <param name="initialize">If true, the category will be initialized right away after creation-</param>
+		/// <returns>The new category.</returns>
+		public SettingsCategory AddCategory(string categoryName, Sprite icon = null, bool initialize = true)
+		{
+			SettingsCategory category = new SettingsCategory
+			{
+				DisplayName = categoryName,
+				Icon = icon
+			};
+
+			categories.Add(category);
+			if (initialize)
+			{
+				category.Initialize(this);
+			}
+
+			return category;
+		}
+
+#if HERTZ_SETTINGS_LOCALIZATION
+		/// <summary>
+		///	    Adds a new category to the list of categories.
+		/// </summary>
+		/// <param name="localizedName">The category name.</param>
+		/// <param name="icon">The category icon.</param>
+		/// <param name="initialize">If true, the category will be initialized right away after creation-</param>
+		/// <returns>The new category.</returns>
+		public SettingsCategory AddCategory(LocalizedString localizedName, Sprite icon = null, bool initialize = true)
+		{
+			SettingsCategory category = AddCategory(string.Empty, icon, initialize);
+			category.DisplayNameLocalized = localizedName;
+
+			return category;
+		}
+#endif
+
+		/// <summary>
+		///     Saves the settings to a file.
 		/// </summary>
 		public void SaveSettings()
 		{
@@ -198,7 +248,7 @@ namespace Hertzole.OptionsManager
 		}
 
 		/// <summary>
-		/// Loads the settings from file.
+		///     Loads the settings from file.
 		/// </summary>
 		public void LoadSettings()
 		{
@@ -206,7 +256,7 @@ namespace Hertzole.OptionsManager
 		}
 
 		/// <summary>
-		/// Only loads settings if they already haven't been loaded.
+		///     Only loads settings if they already haven't been loaded.
 		/// </summary>
 		public void LoadSettingsIfNeeded()
 		{
@@ -227,7 +277,7 @@ namespace Hertzole.OptionsManager
 			{
 				foreach (BaseSetting baseSetting in category.Settings)
 				{
-					if(baseSetting is Setting newSetting && newSetting.Identifier == identifier)
+					if (baseSetting is Setting newSetting && newSetting.Identifier == identifier)
 					{
 						setting = newSetting;
 						cachedSettings.Add(identifier, newSetting);
@@ -330,7 +380,7 @@ namespace Hertzole.OptionsManager
 		{
 			savePathBuilder.Clear();
 
-			savePathBuilder.Append(GetSaveLocation(settings.saveLocation, settings.customPathProvider));
+			savePathBuilder.Append(GetSaveLocation(settings.saveLocation, settings.CustomPathProvider));
 
 			if (!string.IsNullOrWhiteSpace(settings.savePath))
 			{
