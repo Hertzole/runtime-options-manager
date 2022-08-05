@@ -11,7 +11,7 @@ namespace Hertzole.OptionsManager
 #if UNITY_EDITOR
 	[CreateAssetMenu(fileName = "New Language Setting", menuName = "Hertzole/Settings/Language Setting")]
 #endif
-	public class LanguageSetting : Setting<Locale>, IDropdownValues, ISerializationCallbackReceiver
+	public class LanguageSetting : Setting<Locale>, IDropdownValues
 	{
 		public enum DisplayType
 		{
@@ -28,8 +28,8 @@ namespace Hertzole.OptionsManager
 		private SerializableKeyValuePair<Locale, string>[] customNames = default;
 		
 		private (string, Sprite)[] cachedDropdownValues;
-		
-		private readonly Dictionary<Locale, string> customNameDictionary = new Dictionary<Locale, string>();
+
+		public DisplayType NameDisplayType { get { return nameDisplayType; } set { nameDisplayType = value; } }
 
 		public override object GetSerializeValue()
 		{
@@ -125,9 +125,12 @@ namespace Hertzole.OptionsManager
 				case DisplayType.CultureInfoEnglishName:
 					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.EnglishName : locale.ToString();
 				case DisplayType.CustomName:
-					if(customNameDictionary.TryGetValue(locale, out var customName))
+					for (int i = 0; i < customNames.Length; i++)
 					{
-						return customName;
+						if (customNames[i].key.Identifier == locale.Identifier)
+						{
+							return customNames[i].value;
+						}
 					}
 					
 					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
@@ -186,28 +189,6 @@ namespace Hertzole.OptionsManager
 		// 			dropdown.RegisterValueChangedCallback(evt => { LocalizationSettings.SelectedLocale = locales[dropdown.index]; });
 		// 		}
 		// #endif
-		void ISerializationCallbackReceiver.OnBeforeSerialize()
-		{
-			// Does nothing
-		}
-
-		void ISerializationCallbackReceiver.OnAfterDeserialize()
-		{
-			customNameDictionary.Clear();
-
-			if (customNames != null && customNames.Length > 0)
-			{
-				for (int i = 0; i < customNames.Length; i++)
-				{
-					if (customNames[i].key == null || customNameDictionary.ContainsKey(customNames[i].key))
-					{
-						continue;
-					}
-					
-					customNameDictionary.Add(customNames[i].key, customNames[i].value);
-				}
-			}
-		}
 	}
 }
 #endif
