@@ -170,8 +170,8 @@ namespace Hertzole.OptionsManager
 			}
 
 			instance = this;
-			TryCreateBehavior();
 			InitializeCategories();
+			TryCreateBehavior();
 		}
 
 		/// <summary>
