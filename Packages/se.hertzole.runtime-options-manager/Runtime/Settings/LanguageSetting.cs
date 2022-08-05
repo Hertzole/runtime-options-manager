@@ -127,9 +127,9 @@ namespace Hertzole.OptionsManager
 				case DisplayType.CustomName:
 					for (int i = 0; i < customNames.Length; i++)
 					{
-						if (customNames[i].key.Identifier == locale.Identifier)
+						if (customNames[i].Key.Identifier == locale.Identifier)
 						{
-							return customNames[i].value;
+							return customNames[i].Value;
 						}
 					}
 					
