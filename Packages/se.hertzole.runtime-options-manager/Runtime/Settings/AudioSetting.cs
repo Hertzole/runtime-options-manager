@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -68,14 +68,14 @@ namespace Hertzole.OptionsManager
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
 			base.SetSerializedValue(newValue, serializer);
-			SetSerializedValueAsyncVoid(value);
+			SettingsManager.StartCoroutine(SetSerializedValueRoutine(Value));
 		}
-		
-		private async void SetSerializedValueAsyncVoid(int newValue)
+
+		private IEnumerator SetSerializedValueRoutine(int newValue)
 		{
 			// There must be a delay, otherwise it will not be updated. 
 			// Why? Because Unity...
-			await Task.Yield();
+			yield return null;
 			UpdateVolume(newValue);
 		}
 
