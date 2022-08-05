@@ -1,4 +1,5 @@
 #if HERTZ_SETTINGS_LOCALIZATION
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -46,7 +47,7 @@ namespace Hertzole.OptionsManager
 		{
 			if (newValue is string stringValue)
 			{
-				SetSerializedValueAsyncVoid(stringValue);
+				SettingsManager.StartCoroutine(SetSerializedValueRoutine(stringValue));
 			}
 			else
 			{
@@ -58,14 +59,14 @@ namespace Hertzole.OptionsManager
 		///     Set the value asynchronously due to needing to wait for the localization settings to be loaded.
 		/// </summary>
 		/// <param name="localeCode"></param>
-		private async void SetSerializedValueAsyncVoid(string localeCode)
+		private IEnumerator SetSerializedValueRoutine(string localeCode)
 		{
 			if (LocalizationSettings.Instance.GetAvailableLocales() is LocalesProvider localesProvider)
 			{
 				AsyncOperationHandle loadOperation = localesProvider.PreloadOperation;
 				while (!loadOperation.IsDone)
 				{
-					await Task.Yield();
+					yield return null;
 				}
 			}
 

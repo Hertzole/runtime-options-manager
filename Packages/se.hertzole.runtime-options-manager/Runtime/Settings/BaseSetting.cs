@@ -12,6 +12,17 @@ namespace Hertzole.OptionsManager
 		public string DisplayName { get { return displayName; } set { displayName = value; } }
 		public GameObject UiPrefab { get { return uiPrefab; } set { uiPrefab = value; } }
 
+		protected SettingsManager SettingsManager { get; private set; }
+
+		public void Initialize(SettingsManager manager)
+		{
+			SettingsManager = manager;
+			
+			OnInitialize();
+		}
+		
+		protected virtual void OnInitialize() { }
+
 		public virtual void ResetState() { }
 	}
 }
