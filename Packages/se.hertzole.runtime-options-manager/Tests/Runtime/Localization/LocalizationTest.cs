@@ -45,8 +45,6 @@ namespace Hertzole.OptionsManager.Tests
 				LocaleId = locales[0].Identifier
 			});
 
-			Assert.AreEqual(1, TargetLocalizationSettings.GetStartupLocaleSelectors().Count);
-
 			AsyncOperationHandle<LocalizationSettings> initializeOperation = TargetLocalizationSettings.GetInitializationOperation();
 
 			while (!initializeOperation.IsDone)
