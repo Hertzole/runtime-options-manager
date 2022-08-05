@@ -39,7 +39,6 @@ namespace Hertzole.OptionsManager.Tests
 			locales = localesProvider.Locales;
 
 			TargetLocalizationSettings.SetAvailableLocales(localesProvider);
-			TargetLocalizationSettings.SetSelectedLocale(locales[0]);
 			TargetLocalizationSettings.GetStartupLocaleSelectors().Clear();
 			TargetLocalizationSettings.GetStartupLocaleSelectors().Add(new SpecificLocaleSelector()
 			{
