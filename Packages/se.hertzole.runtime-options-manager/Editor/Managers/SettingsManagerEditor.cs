@@ -112,6 +112,11 @@ namespace Hertzole.OptionsManager.Editor
 			saveLocationField.RegisterValueChangedCallback(ctx =>
 			{
 				UpdateFinalPath();
+
+				if (ctx == null || ctx.newValue == null)
+				{
+					return;
+				}
 				
 				SettingsManager.SaveLocations newValue = (SettingsManager.SaveLocations) ctx.newValue;
 
