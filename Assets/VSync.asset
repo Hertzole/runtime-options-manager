@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: VSync
   m_EditorClassIdentifier: 
   displayName: VSync
+  uiPrefab: {fileID: 0}
   displayNameLocalized:
     m_TableReference:
       m_TableCollectionName: 
@@ -22,8 +23,12 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  identifier: vsync
   uiElement: {fileID: 9197481963319205126, guid: 5a846417d64ed4f4b9f571e3266cfba1, type: 3}
+  identifier: vsync
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
   defaultValue: 1
   references:
     version: 2

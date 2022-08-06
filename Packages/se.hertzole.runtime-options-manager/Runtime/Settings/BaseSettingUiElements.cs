@@ -8,6 +8,8 @@ namespace Hertzole.OptionsManager
 	{
 		[SerializeField]
 		protected VisualTreeAsset uiElement = default;
+
+		public VisualTreeAsset UIElement { get { return uiElement; } set { uiElement = value; } }
 	}
 }
 #endif

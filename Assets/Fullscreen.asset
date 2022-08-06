@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Fullscreen
   m_EditorClassIdentifier: 
   displayName: Fullscreen Mode
+  uiPrefab: {fileID: 0}
   displayNameLocalized:
     m_TableReference:
       m_TableCollectionName: 
@@ -22,9 +23,69 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  identifier: fullscreen_mode
   uiElement: {fileID: 9197481963319205126, guid: 68a54ba21f269944bb6169a2babbfc68, type: 3}
+  identifier: fullscreen_mode
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
   defaultValue: 0
+  exclusiveFullscreen:
+    isEnabled: 1
+    name: Exclusive Fullscreen
+    localizedName:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    fullScreenMode: 0
+    icon: {fileID: 0}
+  borderlessFullscreen:
+    isEnabled: 1
+    name: Borderless Fullscreen
+    localizedName:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    fullScreenMode: 0
+    icon: {fileID: 0}
+  maximizedWindow:
+    isEnabled: 0
+    name: Maximized Window
+    localizedName:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    fullScreenMode: 0
+    icon: {fileID: 0}
+  windowed:
+    isEnabled: 1
+    name: Windowed
+    localizedName:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    fullScreenMode: 0
+    icon: {fileID: 0}
   references:
     version: 2
     RefIds: []

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Cube Spin Speed
   m_EditorClassIdentifier: 
   displayName: Cube Spin Speed
+  uiPrefab: {fileID: 3833867431636445629, guid: 347918e2843cc8b47a0f5088f27a7c1a, type: 3}
   displayNameLocalized:
     m_TableReference:
       m_TableCollectionName: 
@@ -22,14 +23,19 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  identifier: cube_spin_speed
-  uiPrefab: {fileID: 3833867431636445629, guid: 347918e2843cc8b47a0f5088f27a7c1a, type: 3}
   uiElement: {fileID: 0}
+  identifier: cube_spin_speed
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
   defaultValue: 90
-  hasMinValue: 1
-  minValue: -360
-  hasMaxValue: 1
-  maxValue: 360
+  minValue:
+    enabled: 1
+    value: -360
+  maxValue:
+    enabled: 1
+    value: 360
   enableSlider: 1
   wholeSliderNumbers: 1
   references:

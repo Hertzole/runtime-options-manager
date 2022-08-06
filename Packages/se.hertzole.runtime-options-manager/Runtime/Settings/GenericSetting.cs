@@ -6,9 +6,6 @@ namespace Hertzole.OptionsManager
 {
 	public abstract class Setting<T> : Setting
 	{
-#if UNITY_EDITOR
-		[Header("Value Settings")]
-#endif
 		[SerializeField]
 		private T defaultValue = default;
 
