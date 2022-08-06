@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Master Volume
   m_EditorClassIdentifier: 
   displayName: Master Volume
+  uiPrefab: {fileID: 3833867431636445629, guid: 347918e2843cc8b47a0f5088f27a7c1a, type: 3}
   displayNameLocalized:
     m_TableReference:
       m_TableCollectionName: 
@@ -22,18 +23,19 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  identifier: master_volume
-  uiPrefab: {fileID: 3833867431636445629, guid: 347918e2843cc8b47a0f5088f27a7c1a, type: 3}
   uiElement: {fileID: 0}
+  identifier: master_volume
   overwriteSavePath: 0
   overriddenSavePath: 
   overwriteFileName: 0
   overriddenFileName: 
   defaultValue: 100
-  hasMinValue: 1
-  minValue: 0
-  hasMaxValue: 1
-  maxValue: 100
+  minValue:
+    enabled: 1
+    value: 0
+  maxValue:
+    enabled: 1
+    value: 100
   enableSlider: 1
   targetAudioMixer: {fileID: 24100000, guid: 3601568b8c86fdc4fbfb07929efee791, type: 2}
   targetProperty: MasterVolume
