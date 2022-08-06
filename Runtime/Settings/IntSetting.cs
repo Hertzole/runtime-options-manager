@@ -1,4 +1,5 @@
 ﻿using System;
+using Hertzole.OptionsManager.Extensions;
 using UnityEngine;
 
 namespace Hertzole.OptionsManager
@@ -9,35 +10,21 @@ namespace Hertzole.OptionsManager
 	public class IntSetting : Setting<int>, IMinMaxInt, ICanHaveSlider
 	{
 		[SerializeField]
-		private bool hasMinValue = default;
+		private ToggleableInt minValue = new ToggleableInt(false, 0);
 		[SerializeField]
-		private int minValue = default;
-		[SerializeField]
-		private bool hasMaxValue = default;
-		[SerializeField]
-		private int maxValue = default;
+		private ToggleableInt maxValue = new ToggleableInt(false, 0);
 		[SerializeField]
 		private bool enableSlider = default;
 		
 		public bool EnableSlider { get { return enableSlider; } set { enableSlider = value; } }
 		public bool WholeSliderNumbers { get { return true; } }
 
-		public bool HasMinValue { get { return hasMinValue; } set { hasMinValue = value; } }
-		public bool HasMaxValue { get { return hasMaxValue; } set { hasMaxValue = value; } }
-
-		public int MinValue { get { return minValue; } set { minValue = value; } }
-		public int MaxValue { get { return maxValue; } set { maxValue = value; } }
+		public ToggleableInt MinValue { get { return minValue; } set { minValue = value; } }
+		public ToggleableInt MaxValue { get { return maxValue; } set { maxValue = value; } }
 
 		protected override void SetValue(int newValue)
 		{
-			if (hasMinValue && newValue < minValue)
-			{
-				newValue = minValue;
-			}
-			else if (hasMaxValue && newValue > maxValue)
-			{
-				newValue = maxValue;
-			}
+			newValue = this.Clamp(newValue);
 
 			base.SetValue(newValue);
 		}

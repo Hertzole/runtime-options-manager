@@ -7,10 +7,7 @@ namespace Hertzole.OptionsManager
 	{
 		[SerializeField]
 		private string identifier = "new_setting";
-
-#if UNITY_EDITOR
-		[Header("Saving")]
-#endif
+		
 		[SerializeField]
 		private bool overwriteSavePath = false;
 		[SerializeField]

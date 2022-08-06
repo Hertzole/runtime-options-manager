@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Hertzole.OptionsManager.Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -11,13 +12,9 @@ namespace Hertzole.OptionsManager
 	public class AudioSetting : Setting<int>, IMinMaxInt, ICanHaveSlider
 	{
 		[SerializeField]
-		private bool hasMinValue = true;
+		private ToggleableInt minValue = new ToggleableInt(true, 0);
 		[SerializeField]
-		private int minValue = 0;
-		[SerializeField]
-		private bool hasMaxValue = true;
-		[SerializeField]
-		private int maxValue = 100;
+		private ToggleableInt maxValue = new ToggleableInt(true, 100);
 		[SerializeField]
 		private bool enableSlider = true;
 		[SerializeField]
@@ -31,22 +28,12 @@ namespace Hertzole.OptionsManager
 		public bool EnableSlider { get { return enableSlider; } set { enableSlider = value; } }
 		public bool WholeSliderNumbers { get { return true; } }
 
-		public bool HasMinValue { get { return hasMinValue; } set { hasMinValue = value; } }
-		public bool HasMaxValue { get { return hasMaxValue; } set { hasMaxValue = value; } }
-
-		public int MinValue { get { return minValue; } set { minValue = value; } }
-		public int MaxValue { get { return maxValue; } set { maxValue = value; } }
+		public ToggleableInt MinValue { get { return minValue; } set { minValue = value; } }
+		public ToggleableInt MaxValue { get { return maxValue; } set { maxValue = value; } }
 
 		protected override void SetValue(int newValue)
 		{
-			if (hasMinValue && newValue < minValue)
-			{
-				newValue = minValue;
-			}
-			else if (hasMaxValue && newValue > maxValue)
-			{
-				newValue = maxValue;
-			}
+			newValue = this.Clamp(newValue);
 
 			if (newValue != value)
 			{
