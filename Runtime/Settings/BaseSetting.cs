@@ -16,6 +16,11 @@ namespace Hertzole.OptionsManager
 
 		public void Initialize(SettingsManager manager)
 		{
+			if (SettingsManager == manager)
+			{
+				return;
+			}
+			
 			SettingsManager = manager;
 			
 			OnInitialize();

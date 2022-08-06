@@ -57,7 +57,6 @@ namespace Hertzole.OptionsManager
 				try
 				{
 					Value = serializer.DeserializeType<T>(newValue);
-					Debug.Log($"Deserialized {serializer.DeserializeType<T>(newValue)}");
 				}
 				catch (ArgumentException)
 				{

@@ -150,6 +150,7 @@ namespace Hertzole.OptionsManager
 			if (instance == null)
 			{
 				instance = this;
+				InitializeCategories();
 				TryCreateBehavior();
 			}
 
@@ -179,6 +180,13 @@ namespace Hertzole.OptionsManager
 		/// </summary>
 		private void InitializeCategories()
 		{
+#if UNITY_EDITOR
+			if (!Application.isPlaying)
+			{
+				return;
+			}
+#endif
+			
 			for (int i = 0; i < categories.Count; i++)
 			{
 				categories[i].Initialize(this);
@@ -419,7 +427,7 @@ namespace Hertzole.OptionsManager
 
 		private void OnPlayModeChanged(PlayModeStateChange state)
 		{
-			if (state == PlayModeStateChange.ExitingEditMode || state == PlayModeStateChange.ExitingPlayMode)
+			if (state == PlayModeStateChange.ExitingEditMode || state == PlayModeStateChange.EnteredEditMode)
 			{
 				ResetState();
 			}
