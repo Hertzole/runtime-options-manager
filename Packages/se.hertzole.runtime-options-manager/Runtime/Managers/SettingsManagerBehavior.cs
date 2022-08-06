@@ -97,7 +97,7 @@ namespace Hertzole.OptionsManager
 
 				GetSavePaths();
 
-				foreach (KeyValuePair<string,List<Setting>> settingPath in settingPaths)
+				foreach (KeyValuePair<string, List<Setting>> settingPath in settingPaths)
 				{
 					string directory = Path.GetDirectoryName(settingPath.Key);
 
@@ -108,7 +108,7 @@ namespace Hertzole.OptionsManager
 					
 					settingData.Clear();
 					GetSerializeData(settingData, settingPath.Value);
-					
+
 					byte[] data = Serializer.Serialize(settingData);
 					File.WriteAllBytes(settingPath.Key, data);
 				}
