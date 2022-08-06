@@ -27,6 +27,11 @@
       "displayName": "Input Rebind Example",
       "description": "Example scene with a simple input rebinding setup.",
       "path": "Samples~/Input Rebind Example"
+    },
+    {
+      "displayName": "Language Example",
+      "description": "Example scene with a simple language switcher.",
+      "path": "Samples~/Language Example"
     }
   ],
   "type": "library",

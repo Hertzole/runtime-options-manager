@@ -130,7 +130,7 @@ namespace Hertzole.OptionsManager
 					yield return null;
 				}
 			}
-
+			
 			if (string.IsNullOrWhiteSpace(localeCode))
 			{
 				localeCode = TargetLocalizationSettings.GetSelectedLocale().Identifier.Code;
