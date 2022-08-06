@@ -13,9 +13,7 @@ namespace Hertzole.OptionsManager.Editor
 	{
 		// Value Settings
 		private SerializedProperty defaultValue;
-		private SerializedProperty hasMinValue;
 		private SerializedProperty minValue;
-		private SerializedProperty hasMaxValue;
 		private SerializedProperty maxValue;
 		private SerializedProperty enableSlider;
 
@@ -30,9 +28,7 @@ namespace Hertzole.OptionsManager.Editor
 			base.OnEnable();
 			
 			defaultValue = serializedObject.FindProperty(nameof(defaultValue));
-			hasMinValue = serializedObject.FindProperty(nameof(hasMinValue));
 			minValue = serializedObject.FindProperty(nameof(minValue));
-			hasMaxValue = serializedObject.FindProperty(nameof(hasMaxValue));
 			maxValue = serializedObject.FindProperty(nameof(maxValue));
 			enableSlider = serializedObject.FindProperty(nameof(enableSlider));
 			
@@ -49,16 +45,8 @@ namespace Hertzole.OptionsManager.Editor
 			serializedObject.Update();
 
 			EditorGUILayout.PropertyField(defaultValue);
-			EditorGUILayout.PropertyField(hasMinValue);
-			if (hasMinValue.boolValue)
-			{
-				EditorGUILayout.PropertyField(minValue);
-			}
-			EditorGUILayout.PropertyField(hasMaxValue);
-			if (hasMaxValue.boolValue)
-			{
-				EditorGUILayout.PropertyField(maxValue);
-			}
+			EditorGUILayout.PropertyField(minValue);
+			EditorGUILayout.PropertyField(maxValue);
 			EditorGUILayout.PropertyField(enableSlider);
 
 			EditorGUILayout.Space();
