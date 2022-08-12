@@ -122,6 +122,7 @@ namespace Hertzole.OptionsManager
 				if (instance == null)
 				{
 					instance = GetOrCreateSettings();
+					instance.Initialize();
 				}
 
 				TryCreateBehavior();
@@ -166,12 +167,10 @@ namespace Hertzole.OptionsManager
 		{
 			if (isInitialized)
 			{
-				Debug.LogError($"{name} has already been initialized.");
 				return;
 			}
 
 			instance = this;
-			InitializeCategories();
 			TryCreateBehavior();
 		}
 
@@ -341,6 +340,7 @@ namespace Hertzole.OptionsManager
 				return;
 			}
 
+			instance.InitializeCategories();
 			CreateBehavior();
 		}
 
