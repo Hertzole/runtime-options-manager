@@ -34,7 +34,7 @@ namespace Hertzole.OptionsManager
 		{
 			unchecked
 			{
-				return (enabled.GetHashCode() * 397) ^ value.GetHashCode();
+				return (Enabled.GetHashCode() * 397) ^ Value.GetHashCode();
 			}
 		}
 
