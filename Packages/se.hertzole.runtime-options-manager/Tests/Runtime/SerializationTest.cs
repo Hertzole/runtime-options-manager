@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using UnityEngine;
@@ -92,26 +93,40 @@ namespace Hertzole.OptionsManager.Tests
 		[Test]
 		public void SaveLocation_PersistentDataPath()
 		{
-			Assert.AreEqual(Application.persistentDataPath, SettingsManager.GetSaveLocation(SettingsManager.SaveLocations.PersistentDataPath, null));
+			Assert.AreEqual(Application.persistentDataPath, SettingsManager.GetSaveLocation(SettingsManager.SaveLocations.PersistentDataPath, null, string.Empty, string.Empty));
 		}
 
 		[Test]
 		public void SaveLocation_DataPath()
 		{
-			Assert.AreEqual(Application.dataPath, SettingsManager.GetSaveLocation(SettingsManager.SaveLocations.DataPath, null));
+			Assert.AreEqual(Application.dataPath, SettingsManager.GetSaveLocation(SettingsManager.SaveLocations.DataPath, null, string.Empty, string.Empty));
 		}
 
 		[Test]
 		public void SaveLocation_Documents()
 		{
-			Assert.AreEqual(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingsManager.GetSaveLocation(SettingsManager.SaveLocations.Documents, null));
+			Assert.AreEqual(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingsManager.GetSaveLocation(SettingsManager.SaveLocations.Documents, null, string.Empty, string.Empty));
 		}
 
 		[Test]
 		public void SaveLocation_Invalid()
 		{
 			LogAssert.Expect(LogType.Error, $"{int.MaxValue.ToString()} is an invalid save location. Returning persistent data path instead.");
-			Assert.AreEqual(Application.persistentDataPath, SettingsManager.GetSaveLocation((SettingsManager.SaveLocations) int.MaxValue, null));
+			Assert.AreEqual(Application.persistentDataPath, SettingsManager.GetSaveLocation((SettingsManager.SaveLocations) int.MaxValue, null, string.Empty, string.Empty));
+		}
+		
+		[Test]
+		public void SetSerializerUpdates()
+		{
+			ISettingSerializer serializer = new JsonSettingSerializer();
+			settings.Serializer = serializer;
+			Assert.AreEqual(serializer, settings.Serializer);
+			Assert.AreEqual(serializer, settings.behavior.Serializer);
+			
+			ISettingSerializer dummySerializer = new DummySerializer();
+			settings.Serializer = dummySerializer;
+			Assert.AreEqual(dummySerializer, settings.Serializer);
+			Assert.AreEqual(dummySerializer, settings.behavior.Serializer);
 		}
 
 		private void TestSerializeValue<TSetting, TValue>(TValue newValue) where TSetting : Setting<TValue>, new()
@@ -138,11 +153,45 @@ namespace Hertzole.OptionsManager.Tests
 
 			settings.SaveSettings();
 
-			string newPath = SettingsManager.GetSaveLocation(settings.SaveLocation, settings.CustomPathProvider) + "/" + settings.SavePath + "/" + settings.FileName;
+			string newPath = SettingsManager.GetSaveLocation(settings.SaveLocation, settings.CustomPathProvider, settings.SavePath, settings.FileName);
 
 			NUnit.Framework.Assert.IsTrue(File.Exists(newPath));
 
 			File.Delete(newPath);
+		}
+		
+		private class DummySerializer : ISettingSerializer
+		{
+			public byte[] Serialize(Dictionary<string, object> data)
+			{
+				throw new NotImplementedException();
+			}
+
+			public void Deserialize(byte[] data, Dictionary<string, object> dataToFill)
+			{
+				throw new NotImplementedException();
+			}
+
+			public T1 DeserializeType<T1>(object data)
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private class DummyPathProvider1 : ISettingPathProvider
+		{
+			public string GetFullSettingsPath(string path, string fileName)
+			{
+				throw new NotImplementedException();
+			}
+		}
+		
+		private class DummyPathProvider2 : ISettingPathProvider
+		{
+			public string GetFullSettingsPath(string path, string fileName)
+			{
+				throw new NotImplementedException();
+			}
 		}
 	}
 }

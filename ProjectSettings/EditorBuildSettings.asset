@@ -15,3 +15,4 @@ EditorBuildSettings:
     com.unity.addressableassets: {fileID: 11400000, guid: 7dc6d34aa7f3fda4aa941b4d99a89ed3, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 5c4b938b9bf85f24c9911d74b9ecb228, type: 2}
     com.unity.localization.settings: {fileID: 11400000, guid: c56a6eb5b195296479fe7604534a1f2a, type: 2}
+    se.hertzole.settingsmanager.settings: {fileID: 11400000, guid: 5041ea6a55f501947a1f559997d9d70e, type: 2}

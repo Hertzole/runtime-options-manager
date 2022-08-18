@@ -19,6 +19,8 @@ MonoBehaviour:
   fileName: settings.json
   customPathProvider:
     rid: -2
+  fileWriter:
+    rid: 2262347847988150275
   serializer:
     rid: 2262347581068410880
   categories:
@@ -44,3 +46,5 @@ MonoBehaviour:
       type: {class: JsonSettingSerializer, ns: Hertzole.OptionsManager, asm: Hertzole.RuntimeOptionsManager}
       data:
         prettyPrint: 1
+    - rid: 2262347847988150275
+      type: {class: FileWriter, ns: Hertzole.OptionsManager, asm: Hertzole.RuntimeOptionsManager}

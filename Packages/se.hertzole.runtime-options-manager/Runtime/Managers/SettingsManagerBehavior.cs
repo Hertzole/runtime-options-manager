@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization.Settings;
 
 namespace Hertzole.OptionsManager
 {
@@ -14,15 +10,16 @@ namespace Hertzole.OptionsManager
 			private bool dirtySave;
 			private bool startedListeningForSave;
 
+			private bool isLoadingSettings;
+
+			private readonly Dictionary<string, List<Setting>> settingPaths = new Dictionary<string, List<Setting>>();
+
 			private readonly Dictionary<string, object> settingData = new Dictionary<string, object>();
-			private readonly HashSet<string> loadedSettings = new HashSet<string>();
 
 			private float saveTime;
+			private readonly HashSet<string> loadedSettings = new HashSet<string>();
 			private readonly HashSet<string> excludedSettings = new HashSet<string>();
 			private SettingsManager manager;
-
-			private static readonly StringBuilder pathBuilder = new StringBuilder();
-
 			public SettingsManager Manager
 			{
 				get { return manager; }
@@ -37,7 +34,9 @@ namespace Hertzole.OptionsManager
 					ToggleSettingsListening(true);
 				}
 			}
-			public ISettingSerializer Serializer { get; internal set; }
+
+			public ISettingWriter Writer { get { return manager.fileWriter; } }
+			public ISettingSerializer Serializer { get { return manager.serializer; } }
 
 			public bool AutoSaveSettings { get; internal set; }
 
@@ -89,8 +88,6 @@ namespace Hertzole.OptionsManager
 				saveTime = Time.unscaledTime + 1f;
 			}
 
-			private readonly Dictionary<string, List<Setting>> settingPaths = new Dictionary<string, List<Setting>>();
-
 			internal void SaveSettings()
 			{
 				dirtySave = false;
@@ -99,22 +96,15 @@ namespace Hertzole.OptionsManager
 
 				foreach (KeyValuePair<string, List<Setting>> settingPath in settingPaths)
 				{
-					string directory = Path.GetDirectoryName(settingPath.Key);
-
-					if (!Directory.Exists(directory))
-					{
-						Directory.CreateDirectory(directory!);
-					}
+					Debug.Log("Wrote settings to " + settingPath.Key + " using " + Writer);
 					
 					settingData.Clear();
 					GetSerializeData(settingData, settingPath.Value);
 
 					byte[] data = Serializer.Serialize(settingData);
-					File.WriteAllBytes(settingPath.Key, data);
+					Writer.WriteFile(settingPath.Key, data);
 				}
 			}
-
-			private bool isLoadingSettings;
 
 			internal void LoadSettings()
 			{
@@ -124,17 +114,10 @@ namespace Hertzole.OptionsManager
 				}
 
 				HasLoadedSettings = false;
-				
+
 				settingData.Clear();
 				excludedSettings.Clear();
 				loadedSettings.Clear();
-				
-				if (!File.Exists(SavePath))
-				{
-					SetDefaultValues(excludedSettings);
-					HasLoadedSettings = true;
-					return;
-				}
 
 				isLoadingSettings = true;
 
@@ -142,12 +125,12 @@ namespace Hertzole.OptionsManager
 
 				foreach (string settingPath in settingPaths.Keys)
 				{
-					if(!File.Exists(settingPath))
+					if (!Writer.FileExists(settingPath))
 					{
 						continue;
 					}
 
-					byte[] data = File.ReadAllBytes(settingPath);
+					byte[] data = Writer.ReadFile(settingPath);
 					Serializer.Deserialize(data, settingData);
 					Dictionary<string, object>.Enumerator enumerator = settingData.GetEnumerator();
 					while (enumerator.MoveNext())
@@ -164,7 +147,7 @@ namespace Hertzole.OptionsManager
 
 					enumerator.Dispose();
 				}
-				
+
 				SetDefaultValues(excludedSettings);
 				isLoadingSettings = false;
 				HasLoadedSettings = true;
@@ -178,7 +161,7 @@ namespace Hertzole.OptionsManager
 			private void GetSavePaths()
 			{
 				settingPaths.Clear();
-				
+
 				foreach (SettingsCategory category in Manager.categories)
 				{
 					foreach (BaseSetting baseSetting in category.Settings)
@@ -216,7 +199,7 @@ namespace Hertzole.OptionsManager
 					{
 						if (baseSetting is Setting setting)
 						{
-							if(excluding == null || !excluding.Contains(setting.Identifier))
+							if (excluding == null || !excluding.Contains(setting.Identifier))
 							{
 								setting.SetSerializedValue(setting.GetDefaultValue(), Serializer);
 							}
@@ -231,17 +214,11 @@ namespace Hertzole.OptionsManager
 				{
 					return SavePath;
 				}
-				
-				pathBuilder.Clear();
 
-				pathBuilder.Append(GetSaveLocation(manager.saveLocation, manager.customPathProvider));
-				pathBuilder.Append('/');
+				string savePath = setting.OverwriteSavePath ? setting.OverriddenSavePath : manager.savePath;
+				string fileName = setting.OverwriteFileName ? setting.OverriddenFileName : manager.fileName;
 
-				pathBuilder.Append(setting.OverwriteSavePath ? setting.OverriddenSavePath : manager.savePath);
-				pathBuilder.Append('/');
-				pathBuilder.Append(setting.OverwriteFileName ? setting.OverriddenFileName : manager.fileName);
-
-				return Path.GetFullPath(pathBuilder.ToString());
+				return GetSaveLocation(manager.saveLocation, manager.customPathProvider, savePath, fileName);
 			}
 		}
 	}
