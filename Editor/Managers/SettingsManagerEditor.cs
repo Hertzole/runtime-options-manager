@@ -12,14 +12,17 @@ namespace Hertzole.OptionsManager.Editor
 	{
 		private Label finalPathLabel;
 		private readonly List<Type> availablePathProviders = new List<Type>();
-
 		private readonly List<Type> availableSerializers = new List<Type>();
-		private FoldoutPopupField<Type> pathProviderField;
+		private readonly List<Type> availableFileWriters = new List<Type>();
 
+		private FoldoutPopupField<Type> pathProviderField;
 		private FoldoutPopupField<Type> serializerField;
+		private FoldoutPopupField<Type> fileWriterField;
+
 		private SerializedProperty autoSaveSettings;
 		private SerializedProperty categories;
 		private SerializedProperty customPathProvider;
+		private SerializedProperty fileWriter;
 		private SerializedProperty fileName;
 		private SerializedProperty loadSettingsOnBoot;
 		private SerializedProperty saveLocation;
@@ -30,8 +33,11 @@ namespace Hertzole.OptionsManager.Editor
 		private int selectedPathProvider;
 
 		private Type selectedSerializer;
+		private Type selectedFileWriter;
+		
 		private VisualElement serializerSettings;
 		private VisualElement pathProviderSettings;
+		private VisualElement fileWriterSettings;
 
 		private void OnEnable()
 		{
@@ -41,17 +47,29 @@ namespace Hertzole.OptionsManager.Editor
 			savePath = serializedObject.FindProperty(nameof(savePath));
 			fileName = serializedObject.FindProperty(nameof(fileName));
 			customPathProvider = serializedObject.FindProperty(nameof(customPathProvider));
+			fileWriter = serializedObject.FindProperty(nameof(fileWriter));
 			serializer = serializedObject.FindProperty(nameof(serializer));
 			categories = serializedObject.FindProperty(nameof(categories));
 
 			settingsManager = (SettingsManager) target;
 
-			GetSerializerTypes();
+			availableSerializers.Clear();
+			availableFileWriters.Clear();
+			
+			availableSerializers.AddRange(GetAvailableTypes<ISettingSerializer>(serializer, out selectedSerializer));
+			availableFileWriters.AddRange(GetAvailableTypes<ISettingWriter>(fileWriter, out selectedFileWriter));
+			
 			GetPathProviders();
 
 			if (serializer.managedReferenceValue == null)
 			{
-				serializer.managedReferenceValue = Activator.CreateInstance(availableSerializers[0]);
+				serializer.managedReferenceValue = new JsonSettingSerializer();
+				serializedObject.ApplyModifiedProperties();
+			}
+
+			if (fileWriter.managedReferenceValue == null)
+			{
+				fileWriter.managedReferenceValue = new FileWriter();
 				serializedObject.ApplyModifiedProperties();
 			}
 		}
@@ -100,6 +118,25 @@ namespace Hertzole.OptionsManager.Editor
 			});
 
 			pathProviderField.style.display = saveLocation.enumValueIndex == 3 ? DisplayStyle.Flex : DisplayStyle.None;
+
+			fileWriterField = new FoldoutPopupField<Type>("File Writer", availableFileWriters, selectedFileWriter, FormatTypeName, FormatTypeName)
+			{
+				IsExpanded = fileWriter.isExpanded
+			};
+
+			fileWriterField.RegisterValueChangedCallback(ctx =>
+			{
+				fileWriter.managedReferenceValue = ctx.newValue == null ? null : Activator.CreateInstance(ctx.newValue);
+				serializedObject.ApplyModifiedProperties();
+				selectedFileWriter = ctx.newValue;
+				
+				UpdateFileWriterSettings();
+			});
+			
+			fileWriterField.RegisterFoldoutCallback(ctx =>
+			{
+				fileWriter.isExpanded = ctx.newValue;
+			});
 
 			Toggle autoSaveSettingsField = new Toggle(autoSaveSettings.displayName);
 			autoSaveSettingsField.BindProperty(autoSaveSettings);
@@ -162,6 +199,7 @@ namespace Hertzole.OptionsManager.Editor
 			MakePropertyField(loadSettingsOnBootField);
 			MakePropertyField(saveLocationField);
 			MakePropertyField(pathProviderField);
+			MakePropertyField(fileWriterField);
 			MakePropertyField(savePathField);
 			MakePropertyField(fileNameField);
 			MakePropertyField(serializerField);
@@ -172,6 +210,7 @@ namespace Hertzole.OptionsManager.Editor
 			root.Add(loadSettingsOnBootField);
 			root.Add(saveLocationField);
 			root.Add(pathProviderField);
+			root.Add(fileWriterField);
 			root.Add(savePathField);
 			root.Add(fileNameField);
 			root.Add(finalPathLabel);
@@ -191,6 +230,7 @@ namespace Hertzole.OptionsManager.Editor
 
 			UpdateSerializerSettings();
 			UpdatePathProviderSettings();
+			UpdateFileWriterSettings();
 
 			return root;
 		}
@@ -237,6 +277,24 @@ namespace Hertzole.OptionsManager.Editor
 			}
 			
 			pathProviderField.ShowFoldout = pathProviderSettings != null;
+		}
+
+		private void UpdateFileWriterSettings()
+		{
+			if (fileWriterSettings != null)
+			{
+				fileWriterSettings.RemoveFromHierarchy();
+				fileWriterSettings = null;
+			}
+
+			fileWriterSettings = CreateSerializerEditor(fileWriter);
+			
+			if (fileWriterSettings != null)
+			{
+				fileWriterField.AddToFoldout(fileWriterSettings);
+			}
+			
+			fileWriterField.ShowFoldout = fileWriterSettings != null;
 		}
 
 		private void UpdateFinalPath()
@@ -307,26 +365,28 @@ namespace Hertzole.OptionsManager.Editor
 			return arg == null ? "None" : arg.Name;
 		}
 
-		private void GetSerializerTypes()
+		private static Type[] GetAvailableTypes<T>(SerializedProperty property, out Type selectedType)
 		{
-			availableSerializers.Clear();
+			TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<T>();
+			Type[] result = new Type[types.Count];
 
-			TypeCache.TypeCollection serializers = TypeCache.GetTypesDerivedFrom<ISettingSerializer>();
-			availableSerializers.AddRange(serializers);
+			types.CopyTo(result, 0);
 
-			if (serializer.managedReferenceValue != null)
+			selectedType = null;
+			
+			if (property != null && property.managedReferenceValue != null)
 			{
-				for (int i = 0; i < serializers.Count; i++)
+				for (int i = 0; i < types.Count; i++)
 				{
-					if (serializers[i] == serializer.managedReferenceValue.GetType())
+					if (types[i] == property.managedReferenceValue.GetType())
 					{
-						selectedSerializer = serializers[i];
+						selectedType = types[i];
 						break;
 					}
 				}
 			}
 
-			selectedSerializer ??= serializers[0];
+			return result;
 		}
 
 		private void GetPathProviders()

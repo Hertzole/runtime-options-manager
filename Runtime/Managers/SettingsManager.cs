@@ -40,6 +40,8 @@ namespace Hertzole.OptionsManager
 		private string fileName = "settings.json";
 		[SerializeReference] 
 		private ISettingPathProvider customPathProvider = null;
+		[SerializeReference]
+		private ISettingWriter fileWriter = new FileWriter();
 		[SerializeReference] 
 		private ISettingSerializer serializer = new JsonSettingSerializer();
 
@@ -52,12 +54,11 @@ namespace Hertzole.OptionsManager
 
 		private static SettingsManager instance;
 
-		private SettingsManagerBehavior behavior;
-
-		private static readonly StringBuilder savePathBuilder = new StringBuilder();
+		internal SettingsManagerBehavior behavior;
 
 		public bool AutoSaveSettings { get { return autoSaveSettings; } set { autoSaveSettings = value; } }
 		public bool LoadSettingsOnBoot { get { return loadSettingsOnBoot; } set { loadSettingsOnBoot = value; } }
+
 		public SaveLocations SaveLocation
 		{
 			get { return saveLocation; }
@@ -112,6 +113,7 @@ namespace Hertzole.OptionsManager
 		public string ComputedSavePath { get; private set; }
 
 		public ISettingPathProvider CustomPathProvider { get { return customPathProvider; } set { customPathProvider = value; } }
+		public ISettingWriter FileWriter { get { return fileWriter; } set { fileWriter = value; } }
 		public ISettingSerializer Serializer { get { return serializer; } set { serializer = value; } }
 		public List<SettingsCategory> Categories { get { return categories; } set { categories = value; } }
 
@@ -368,7 +370,6 @@ namespace Hertzole.OptionsManager
 			DontDestroyOnLoad(behaviorObject);
 
 			instance.behavior.Manager = instance;
-			instance.behavior.Serializer = instance.Serializer;
 			instance.behavior.AutoSaveSettings = instance.autoSaveSettings;
 			instance.behavior.SavePath = GetSavePath(instance);
 
@@ -384,32 +385,21 @@ namespace Hertzole.OptionsManager
 
 		public static string GetSavePath(SettingsManager settings)
 		{
-			savePathBuilder.Clear();
-
-			savePathBuilder.Append(GetSaveLocation(settings.saveLocation, settings.CustomPathProvider));
-
-			if (!string.IsNullOrWhiteSpace(settings.savePath))
-			{
-				savePathBuilder.Append($"/{settings.savePath}");
-			}
-
-			savePathBuilder.Append($"/{settings.fileName}");
-
-			return Path.GetFullPath(savePathBuilder.ToString());
+			return GetSaveLocation(settings.saveLocation, settings.customPathProvider, settings.savePath, settings.fileName);
 		}
 
-		public static string GetSaveLocation(SaveLocations location, ISettingPathProvider pathProvider)
+		public static string GetSaveLocation(SaveLocations location, ISettingPathProvider pathProvider, string path, string fileName)
 		{
 			switch (location)
 			{
 				case SaveLocations.PersistentDataPath:
-					return Application.persistentDataPath;
+					return Path.Combine(Application.persistentDataPath, path, fileName);
 				case SaveLocations.DataPath:
-					return Application.dataPath;
+					return Path.Combine(Application.dataPath, path, fileName);
 				case SaveLocations.Documents:
-					return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+					return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), path, fileName);
 				case SaveLocations.Custom:
-					return pathProvider != null ? pathProvider.GetSettingsPath() : Application.persistentDataPath;
+					return pathProvider != null ? pathProvider.GetFullSettingsPath(path, fileName) : GetSaveLocation(SaveLocations.PersistentDataPath, null, path, fileName);
 				default:
 #if DEBUG
 					Debug.LogError($"{location} is an invalid save location. Returning persistent data path instead.");

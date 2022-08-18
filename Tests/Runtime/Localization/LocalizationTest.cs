@@ -19,7 +19,7 @@ namespace Hertzole.OptionsManager.Tests
 
 		protected override IEnumerator OnSetUpRoutine()
 		{
-			AsyncOperationHandle<IResourceLocator> addressablesOperation = Addressables.InitializeAsync();
+			AsyncOperationHandle<IResourceLocator> addressablesOperation = UnityEngine.AddressableAssets.Addressables.InitializeAsync();
 			while (!addressablesOperation.IsDone)
 			{
 				yield return null;

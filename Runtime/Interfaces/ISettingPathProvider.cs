@@ -2,6 +2,6 @@
 {
 	public interface ISettingPathProvider
 	{
-		string GetSettingsPath();
+		string GetFullSettingsPath(string path, string fileName);
 	}
 }
