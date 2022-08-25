@@ -27,24 +27,5 @@ namespace Hertzole.OptionsManager
 			base.SetSerializedValue(newValue, serializer);
 			QualitySettings.vSyncCount = Value ? 1 : 0;
 		}
-
-		// #if HERTZ_SETTINGS_UIELEMENTS
-// 		public override VisualElement CreateUIElement()
-// 		{
-// 			if (uiElement == null)
-// 			{
-// 				return null;
-// 			}
-//
-// 			TemplateContainer ui = uiElement.CloneTree();
-// 			Toggle toggle = ui.Q<Toggle>();
-// 			toggle.label = DisplayName;
-// 			toggle.SetValueWithoutNotify(Value);
-//
-// 			toggle.RegisterValueChangedCallback(evt => { Value = evt.newValue; });
-//
-// 			return ui;
-// 		}
-// #endif
 	}
 }

@@ -45,6 +45,9 @@ namespace Hertzole.OptionsManager
 
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
+			// We don't want to invoke the OnSettingChanged event when setting the serialized value as that will cause
+			// the settings manager to save the settings at boot.
+			DontInvokeSettingChanged = true;
 			if (newValue is T convertedValue)
 			{
 				Value = convertedValue;
@@ -60,6 +63,8 @@ namespace Hertzole.OptionsManager
 					Value = TryConvertValue(newValue);
 				}
 			}
+
+			DontInvokeSettingChanged = false;
 		}
 
 		public override object GetSerializeValue()

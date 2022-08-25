@@ -102,6 +102,8 @@ namespace Hertzole.OptionsManager
 
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
+			DontInvokeSettingChanged = true;
+			
 			if (newValue is string stringValue)
 			{
 				SettingsManager.StartCoroutine(SetSerializedValueRoutine(stringValue));
@@ -112,6 +114,7 @@ namespace Hertzole.OptionsManager
 			}
 			else
 			{
+				DontInvokeSettingChanged = false;
 				base.SetSerializedValue(newValue, serializer);
 			}
 		}
@@ -137,6 +140,7 @@ namespace Hertzole.OptionsManager
 			}
 
 			value = TryConvertValue(localeCode);
+			DontInvokeSettingChanged = false;
 		}
 
 		protected override Locale TryConvertValue(object newValue)
