@@ -33,50 +33,15 @@ namespace Hertzole.OptionsManager
 			}
 		}
 
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
+		{
+			// Does nothing, Unity handles this.
+		}
+
 		protected override Resolution TryConvertValue(object newValue)
 		{
 			return Screen.currentResolution;
 		}
-
-// #if HERTZ_SETTINGS_UIELEMENTS && UNITY_2021_2_OR_NEWER
-// 		public override VisualElement CreateUIElement()
-// 		{
-// 			if (uiElement == null)
-// 			{
-// 				return null;
-// 			}
-//
-// 			TemplateContainer ui = uiElement.CloneTree();
-// 			DropdownField dropdown = ui.Q<DropdownField>();
-// 			Resolution[] resolutions = GetUniqueResolutions();
-//
-// 			dropdown.choices.Clear();
-// 			dropdown.label = DisplayName;
-//
-// 			int selectedOption = 0;
-//
-// 			var currentWidth = Screen.width;
-// 			var currentHeight = Screen.height;
-// 			
-// 			for (int i = 0; i < resolutions.Length; i++)
-// 			{
-// 				if (resolutions[i].width == currentWidth && resolutions[i].height == currentHeight)
-// 				{
-// 					selectedOption = i;
-// 				}
-// 				
-// 				dropdown.choices.Add($"{resolutions[i].width}x{resolutions[i].height}");
-// 			}
-//
-// 			dropdown.SetValueWithoutNotify(dropdown.choices[selectedOption]);
-// 			dropdown.RegisterValueChangedCallback(evt =>
-// 			{
-// 				Screen.SetResolution(resolutions[dropdown.index].width, resolutions[dropdown.index].height, Screen.fullScreenMode);
-// 			});
-//
-// 			return ui;
-// 		}
-// #endif
 
 		public virtual Resolution[] GetUniqueResolutions()
 		{
@@ -170,7 +135,7 @@ namespace Hertzole.OptionsManager
 
 			return values;
 		}
-		
+
 		private class ResolutionComparer : IEqualityComparer<Resolution>
 		{
 			public bool Equals(Resolution x, Resolution y)

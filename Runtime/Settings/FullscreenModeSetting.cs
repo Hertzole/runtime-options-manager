@@ -44,6 +44,11 @@ namespace Hertzole.OptionsManager
 			}
 		}
 
+		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
+		{
+			// Does nothing, Unity handles this.
+		}
+
 		protected override FullScreenMode TryConvertValue(object newValue)
 		{
 			if (newValue is int intMode)
