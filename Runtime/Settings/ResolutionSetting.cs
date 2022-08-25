@@ -108,7 +108,7 @@ namespace Hertzole.OptionsManager
 			
 			int index = 0;
 
-			Resolution currentValue = Value;
+			Resolution currentValue = new Resolution(){width = Screen.width, height = Screen.height};
 			
 			for (int i = 0; i < uniqueResolutions.Length; i++)
 			{
