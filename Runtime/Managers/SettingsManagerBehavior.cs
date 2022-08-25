@@ -96,8 +96,6 @@ namespace Hertzole.OptionsManager
 
 				foreach (KeyValuePair<string, List<Setting>> settingPath in settingPaths)
 				{
-					Debug.Log("Wrote settings to " + settingPath.Key + " using " + Writer);
-					
 					settingData.Clear();
 					GetSerializeData(settingData, settingPath.Value);
 

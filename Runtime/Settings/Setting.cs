@@ -26,6 +26,8 @@ namespace Hertzole.OptionsManager
 
 		public virtual bool CanSave { get { return true; } }
 		
+		protected bool DontInvokeSettingChanged { get; set; }
+		
 		public event Action OnSettingChanged;
 
 		public abstract object GetDefaultValue();
@@ -39,7 +41,10 @@ namespace Hertzole.OptionsManager
 
 		protected void InvokeOnSettingChanged()
 		{
-			OnSettingChanged?.Invoke();
+			if (!DontInvokeSettingChanged)
+			{
+				OnSettingChanged?.Invoke();
+			}
 		}
 	}
 }
