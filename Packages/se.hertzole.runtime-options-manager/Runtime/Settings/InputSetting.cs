@@ -49,7 +49,7 @@ namespace Hertzole.OptionsManager
 						{
 							InputBinding binding = actionBindings[j];
 							binding.overridePath = actionData.bindings[i].path;
-							targetAction.action.ApplyBindingOverride(binding);
+							targetAction.action.ApplyBindingOverride(j, binding);
 							break;
 						}
 					}

@@ -1,8 +1,14 @@
-# Changelog
-All notable changes to this project will be documented in this file.
+## [0.3.0] - Unreleased
+### Added
+- Added `ISettingWriter` to overwrite how files are written
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Changed
+- **[BREAKING]** Int/Float/AudioSetting now uses `ToggleableInt`/`ToggleableFloat` instead for min/max values
+
+### Fixed
+- Fixed settings being marked as dirty on boot/load and thus saving on boot/load
+- Fixed resolution dropdown value returning the wrong value
+- Fixed input setting not loading keybinds correctly in some cases
 
 ## [0.2.0] - 2022-06-18
 ### Added
