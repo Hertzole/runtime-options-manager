@@ -139,7 +139,7 @@ namespace Hertzole.OptionsManager
 		{
 			GetModes();
 
-			int index = IndexOf(Value);
+			int index = IndexOf(Screen.fullScreenMode);
 
 			return index == -1 ? 0 : index;
 		}
