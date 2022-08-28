@@ -7,7 +7,7 @@ namespace Hertzole.OptionsManager
 	{
 		[SerializeField]
 		private string identifier = "new_setting";
-		
+
 		[SerializeField]
 		private bool overwriteSavePath = false;
 		[SerializeField]
@@ -25,9 +25,10 @@ namespace Hertzole.OptionsManager
 		public string OverriddenFileName { get { return overriddenFileName; } set { overriddenFileName = value; } }
 
 		public virtual bool CanSave { get { return true; } }
-		
+
+		/// <summary> If true, it won't invoke OnSettingChanged when the value is changed. </summary>
 		protected bool DontInvokeSettingChanged { get; set; }
-		
+
 		public event Action OnSettingChanged;
 
 		public abstract object GetDefaultValue();

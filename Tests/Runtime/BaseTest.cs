@@ -42,6 +42,8 @@ namespace Hertzole.OptionsManager.Tests
 		[UnityTearDown]
 		public IEnumerator TearDown()
 		{
+			Application.targetFrameRate = -1;
+			
 			for (int i = 0; i < objects.Count; i++)
 			{
 				Object.DestroyImmediate(objects[i]);
