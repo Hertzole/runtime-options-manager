@@ -17,56 +17,6 @@ namespace Hertzole.OptionsManager.Tests
 		};
 
 		[Test]
-		public void Set_SerializableValue_FullscreenMode([ValueSource(nameof(fullScreenModes))] FullScreenMode mode)
-		{
-			FullscreenModeSetting setting = AddSetting<FullscreenModeSetting>();
-			setting.SetSerializedValue(mode, new JsonSettingSerializer());
-
-			Assert.AreEqual(mode, setting.Value);
-		}
-
-		[Test]
-		public void Set_SerializableValue_Int([ValueSource(nameof(fullScreenModes))] FullScreenMode mode)
-		{
-			FullscreenModeSetting setting = AddSetting<FullscreenModeSetting>();
-			setting.SetSerializedValue((int) mode, new JsonSettingSerializer());
-
-			Assert.AreEqual(mode, setting.Value);
-		}
-
-		[Test]
-		public void Set_SerializableValue_InvalidInt([ValueSource(nameof(fullScreenModes))] FullScreenMode mode)
-		{
-			FullscreenModeSetting setting = AddSetting<FullscreenModeSetting>();
-			setting.DefaultValue = mode;
-			LogAssert.Expect(LogType.Error, $"Fullscreen mode with int value {int.MaxValue} is not supported.");
-			setting.SetSerializedValue(int.MaxValue, new JsonSettingSerializer());
-
-			Assert.AreEqual(mode, setting.Value);
-		}
-
-		[Test]
-		public void Set_SerializableValue_InvalidObject([ValueSource(nameof(fullScreenModes))] FullScreenMode mode)
-		{
-			FullscreenModeSetting setting = AddSetting<FullscreenModeSetting>();
-			setting.DefaultValue = mode;
-			setting.SetSerializedValue(new object(), new JsonSettingSerializer());
-
-			Assert.AreEqual(mode, setting.Value);
-		}
-
-		[Test]
-		public void Set_SerializableValue_InvalidNull([ValueSource(nameof(fullScreenModes))] FullScreenMode mode)
-		{
-			FullscreenModeSetting setting = AddSetting<FullscreenModeSetting>();
-			setting.DefaultValue = mode;
-			setting.SetSerializedValue(null, new JsonSettingSerializer());
-
-			// Apparently the serializer can deserialize null into exclusive fullscreen. ¯\_(ツ)_/¯
-			Assert.AreEqual(FullScreenMode.ExclusiveFullScreen, setting.Value);
-		}
-
-		[Test]
 		public void GetDropdownValues([ValueSource(nameof(boolValues))] bool exclusiveFullscreen,
 			[ValueSource(nameof(boolValues))] bool borderlessFullscreen,
 			[ValueSource(nameof(boolValues))] bool maximizedWindow,
