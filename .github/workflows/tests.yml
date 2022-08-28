@@ -6,8 +6,6 @@ on:
     paths:
       - 'Assets/**'
       - 'Packages/**'
-    paths-ignore:
-      - '*.md'
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
