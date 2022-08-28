@@ -214,13 +214,26 @@ namespace Hertzole.OptionsManager
 		/// <returns>The new category.</returns>
 		public SettingsCategory AddCategory(string categoryName, Sprite icon = null, bool initialize = true)
 		{
+			return InsertCategory(categories.Count, categoryName, icon, initialize);
+		}
+		
+		/// <summary>
+		///	    Inserts a new category to the list of categories at the given index.
+		/// </summary>
+		/// <param name="index">The index to insert the category at.</param>
+		/// <param name="categoryName">The category name.</param>
+		/// <param name="icon">The category icon.</param>
+		/// <param name="initialize">If true, the category will be initialized right away after creation-</param>
+		/// <returns>The new category.</returns>
+		public SettingsCategory InsertCategory(int index, string categoryName, Sprite icon = null, bool initialize = true)
+		{
 			SettingsCategory category = new SettingsCategory
 			{
 				DisplayName = categoryName,
 				Icon = icon
 			};
 
-			categories.Add(category);
+			categories.Insert(index, category);
 			if (initialize)
 			{
 				category.Initialize(this);
@@ -239,12 +252,48 @@ namespace Hertzole.OptionsManager
 		/// <returns>The new category.</returns>
 		public SettingsCategory AddCategory(LocalizedString localizedName, Sprite icon = null, bool initialize = true)
 		{
-			SettingsCategory category = AddCategory(string.Empty, icon, initialize);
+			SettingsCategory category = InsertCategory(categories.Count, string.Empty, icon, initialize);
+			category.DisplayNameLocalized = localizedName;
+
+			return category;
+		}
+		
+		/// <summary>
+		///	    Inserts a new category to the list of categories at the given index.
+		/// </summary>
+		/// <param name="index">The index to insert the category at.</param>
+		/// <param name="localizedName">The category name.</param>
+		/// <param name="icon">The category icon.</param>
+		/// <param name="initialize">If true, the category will be initialized right away after creation-</param>
+		/// <returns>The new category.</returns>
+		public SettingsCategory InsertCategory(int index, LocalizedString localizedName, Sprite icon = null, bool initialize = true)
+		{
+			SettingsCategory category = InsertCategory(index, string.Empty, icon, initialize);
 			category.DisplayNameLocalized = localizedName;
 
 			return category;
 		}
 #endif
+
+		/// <summary>
+		///		Removes a category at the given index from the list of categories.
+		/// </summary>
+		/// <param name="categoryIndex">The category index to remove.</param>
+		/// <returns>True if the category was removed, otherwise false.</returns>
+		public bool RemoveCategory(int categoryIndex)
+		{
+			return RemoveCategory(categories[categoryIndex]);
+		}
+		
+		/// <summary>
+		///		Removes a category from the list of categories.
+		/// </summary>
+		/// <param name="category">The category to remove.</param>
+		/// <returns>True if the category was removed, otherwise false.</returns>
+		public bool RemoveCategory(SettingsCategory category)
+		{
+			return categories.Remove(category);
+		}
 
 		/// <summary>
 		///     Saves the settings to a file.
