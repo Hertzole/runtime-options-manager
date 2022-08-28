@@ -35,20 +35,22 @@ namespace Hertzole.OptionsManager
 
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
+			// Unity handles resolutions itself so we don't need to do anything. Just set the value to the current resolution.
+			value = TryConvertValue(newValue);
+		}
+
+		protected override Resolution TryConvertValue(object newValue)
+		{
+			// This method is not used like the others. Since Unity handles the resolution itself we just return the current resolution.
+			
 			// Can't use Screen.currentResolution here because that returns the whole monitor resolution and not the
 			// game resolution.
-			value = new Resolution
+			return new Resolution
 			{
 				width = Screen.width,
 				height = Screen.height,
 				refreshRate = Screen.currentResolution.refreshRate
 			};
-		}
-
-		protected override Resolution TryConvertValue(object newValue)
-		{
-			// This is generally never called. Just return the current monitor resolution.
-			return Screen.currentResolution;
 		}
 
 		public virtual Resolution[] GetUniqueResolutions()

@@ -93,7 +93,7 @@ namespace Hertzole.OptionsManager
 		{
 			if (Value == null)
 			{
-				return DefaultValue.Identifier.Code;
+				return DefaultValue == null ? TargetLocalizationSettings.GetSelectedLocale().Identifier.Code : DefaultValue.Identifier.Code;
 			}
 			
 			Locale currentLocale = Value;
