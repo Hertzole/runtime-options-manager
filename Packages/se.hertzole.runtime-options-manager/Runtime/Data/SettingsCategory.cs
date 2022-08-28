@@ -51,11 +51,36 @@ namespace Hertzole.OptionsManager
 		/// <param name="initialize">If true, the setting will be initialized when added.</param>
 		public void AddSetting(BaseSetting setting, bool initialize = true)
 		{
-			settings.Add(setting);
+			InsertSetting(settings.Count, setting, initialize);
+		}
+		
+		public void InsertSetting(int index, BaseSetting setting, bool initialize = true)
+		{
+			settings.Insert(index, setting);
 			if (initialize)
 			{
 				setting.Initialize(settingsManager);
 			}
+		}
+
+		/// <summary>
+		///     Removes a setting from the category at the given index.
+		/// </summary>
+		/// <param name="settingIndex">The index of the setting to remove.</param>
+		/// <returns>True if the setting was removed, otherwise false.</returns>
+		public bool RemoveSetting(int settingIndex)
+		{
+			return RemoveSetting(settings[settingIndex]);
+		}
+
+		/// <summary>
+		///     Removes a setting from the category.
+		/// </summary>
+		/// <param name="setting">The setting to remove.</param>
+		/// <returns>True if the setting was removed, otherwise false.</returns>
+		public bool RemoveSetting(BaseSetting setting)
+		{
+			return settings.Remove(setting);
 		}
 	}
 }
