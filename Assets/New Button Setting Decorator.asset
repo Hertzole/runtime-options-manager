@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f12440a2ecd49c39678e353ea267fa8, type: 3}
-  m_Name: New Refresh Rate Setting
+  m_Script: {fileID: 11500000, guid: e19276aad8f8440dabd37de6bea3b1b6, type: 3}
+  m_Name: New Button Setting Decorator
   m_EditorClassIdentifier: 
   displayName: New Setting
   uiPrefab: {fileID: 0}
@@ -24,12 +24,9 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   uiElement: {fileID: 0}
-  identifier: new_setting
-  overwriteSavePath: 0
-  overriddenSavePath: 
-  overwriteFileName: 0
-  overriddenFileName: 
-  defaultValue: 0
+  onClick:
+    m_PersistentCalls:
+      m_Calls: []
   references:
     version: 2
     RefIds: []

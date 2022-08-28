@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1733b69937f84c0990b3a245c3a43003, type: 3}
-  m_Name: Fullscreen
+  m_Name: New Fullscreen Mode Setting
   m_EditorClassIdentifier: 
-  displayName: Fullscreen Mode
+  displayName: New Setting
   uiPrefab: {fileID: 0}
   displayNameLocalized:
     m_TableReference:
@@ -23,8 +23,8 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  uiElement: {fileID: 9197481963319205126, guid: 68a54ba21f269944bb6169a2babbfc68, type: 3}
-  identifier: fullscreen_mode
+  uiElement: {fileID: 0}
+  identifier: new_setting
   overwriteSavePath: 0
   overriddenSavePath: 
   overwriteFileName: 0

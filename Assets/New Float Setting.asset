@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f12440a2ecd49c39678e353ea267fa8, type: 3}
-  m_Name: New Refresh Rate Setting
+  m_Script: {fileID: 11500000, guid: 7fef8e52c30041feafa03180c0b06aea, type: 3}
+  m_Name: New Float Setting
   m_EditorClassIdentifier: 
   displayName: New Setting
   uiPrefab: {fileID: 0}
@@ -30,6 +30,14 @@ MonoBehaviour:
   overwriteFileName: 0
   overriddenFileName: 
   defaultValue: 0
+  minValue:
+    enabled: 0
+    value: 0
+  maxValue:
+    enabled: 0
+    value: 0
+  enableSlider: 0
+  wholeSliderNumbers: 0
   references:
     version: 2
     RefIds: []

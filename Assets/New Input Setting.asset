@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea58189d66ecb5a4f9ef2a773ac8bfe0, type: 3}
-  m_Name: Language
+  m_Script: {fileID: 11500000, guid: 8f85330685774546863396a7a1c1a501, type: 3}
+  m_Name: New Input Setting
   m_EditorClassIdentifier: 
-  displayName: Language
+  displayName: New Setting
   uiPrefab: {fileID: 0}
   displayNameLocalized:
     m_TableReference:
@@ -23,15 +23,14 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  uiElement: {fileID: 9197481963319205126, guid: 68a54ba21f269944bb6169a2babbfc68, type: 3}
-  identifier: language
+  uiElement: {fileID: 0}
+  identifier: new_setting
   overwriteSavePath: 0
   overriddenSavePath: 
   overwriteFileName: 0
   overriddenFileName: 
-  defaultValue: {fileID: 11400000, guid: a02c02d8fb627f5489a2d2fc46233c59, type: 2}
-  nameDisplayType: 0
-  customNames: []
+  targetAction: {fileID: 0}
+  bindings: []
   references:
     version: 2
     RefIds: []

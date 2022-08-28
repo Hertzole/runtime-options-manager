@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 909ba99dab6f4b8dbde28f05338d1ee2, type: 3}
-  m_Name: Resolution
+  m_Script: {fileID: 11500000, guid: b14326ee9a4d400a99896857b6311e34, type: 3}
+  m_Name: New Audio Setting
   m_EditorClassIdentifier: 
-  displayName: Resolution
+  displayName: New Setting
+  uiPrefab: {fileID: 0}
   displayNameLocalized:
     m_TableReference:
       m_TableCollectionName: 
@@ -22,8 +23,22 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  identifier: resolution
-  uiElement: {fileID: 9197481963319205126, guid: 68a54ba21f269944bb6169a2babbfc68, type: 3}
+  uiElement: {fileID: 0}
+  identifier: new_setting
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
+  defaultValue: 0
+  minValue:
+    enabled: 1
+    value: 0
+  maxValue:
+    enabled: 1
+    value: 100
+  enableSlider: 1
+  targetAudioMixer: {fileID: 0}
+  targetProperty: 
   references:
     version: 2
     RefIds: []

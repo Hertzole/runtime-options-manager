@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b14326ee9a4d400a99896857b6311e34, type: 3}
-  m_Name: Master Volume
+  m_Script: {fileID: 11500000, guid: ab47db853c0b4692a99d5503e1a5f4c3, type: 3}
+  m_Name: New Toggle Setting
   m_EditorClassIdentifier: 
-  displayName: Master Volume
+  displayName: New Setting
   uiPrefab: {fileID: 0}
   displayNameLocalized:
     m_TableReference:
@@ -24,19 +24,12 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   uiElement: {fileID: 0}
-  identifier: master_volume
+  identifier: new_setting
   overwriteSavePath: 0
   overriddenSavePath: 
   overwriteFileName: 0
   overriddenFileName: 
   defaultValue: 0
-  hasMinValue: 1
-  minValue: 0
-  hasMaxValue: 1
-  maxValue: 100
-  enableSlider: 1
-  targetAudioMixer: {fileID: 0}
-  targetProperty: 
   references:
     version: 2
     RefIds: []

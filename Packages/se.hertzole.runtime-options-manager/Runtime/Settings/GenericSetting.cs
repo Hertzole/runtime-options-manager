@@ -58,7 +58,7 @@ namespace Hertzole.OptionsManager
 				{
 					Value = serializer.DeserializeType<T>(newValue);
 				}
-				catch (ArgumentException)
+				catch (Exception)
 				{
 					Value = TryConvertValue(newValue);
 				}

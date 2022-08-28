@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc7bdb1ff81c4ca8b3616e9a79ef6c4b, type: 3}
-  m_Name: VSync
+  m_Name: New VSync Setting
   m_EditorClassIdentifier: 
-  displayName: VSync
+  displayName: New Setting
   uiPrefab: {fileID: 0}
   displayNameLocalized:
     m_TableReference:
@@ -23,13 +23,13 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  uiElement: {fileID: 9197481963319205126, guid: 5a846417d64ed4f4b9f571e3266cfba1, type: 3}
-  identifier: vsync
+  uiElement: {fileID: 0}
+  identifier: new_setting
   overwriteSavePath: 0
   overriddenSavePath: 
   overwriteFileName: 0
   overriddenFileName: 
-  defaultValue: 1
+  defaultValue: 0
   references:
     version: 2
     RefIds: []

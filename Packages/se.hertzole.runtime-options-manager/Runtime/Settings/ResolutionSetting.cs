@@ -134,12 +134,14 @@ namespace Hertzole.OptionsManager
 		{
 			GetUniqueResolutions();
 
-			List<(string text, Sprite icon)> values = new List<(string text, Sprite icon)>();
+			List<(string text, Sprite icon)> values = new List<(string text, Sprite icon)>(uniqueResolutions.Length);
 
 			for (int i = 0; i < uniqueResolutions.Length; i++)
 			{
 				values.Add((string.Format(resolutionFormat, uniqueResolutions[i].width.ToString(), uniqueResolutions[i].height.ToString(), uniqueResolutions[i].refreshRate.ToString()), null));
 			}
+			
+			values.TrimExcess();
 
 			return values;
 		}

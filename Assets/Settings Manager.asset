@@ -19,42 +19,18 @@ MonoBehaviour:
   fileName: settings.json
   customPathProvider:
     rid: -2
+  fileWriter:
+    rid: 2262348074321182722
   serializer:
     rid: 2437375803530149939
-  categories:
-  - displayName: Audio
-    displayNameLocalized:
-      m_TableReference:
-        m_TableCollectionName: 
-      m_TableEntryReference:
-        m_KeyId: 0
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    icon: {fileID: 0}
-    settings:
-    - {fileID: 11400000, guid: 5e400f8bf98dc4142946774af455b19f, type: 2}
-  - displayName: Video
-    displayNameLocalized:
-      m_TableReference:
-        m_TableCollectionName: 
-      m_TableEntryReference:
-        m_KeyId: 0
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    icon: {fileID: 0}
-    settings:
-    - {fileID: 11400000, guid: 8eaef7a853a0d1849b677efe1ed0539e, type: 2}
-    - {fileID: 11400000, guid: c43d5922a54a92144b63f4c7391a0266, type: 2}
-    - {fileID: 11400000, guid: d2d5cbd06f118db45bb1327e768fc694, type: 2}
+  categories: []
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 2262348074321182722
+      type: {class: FileWriter, ns: Hertzole.OptionsManager, asm: Hertzole.RuntimeOptionsManager}
     - rid: 2437375803530149939
       type: {class: JsonSettingSerializer, ns: Hertzole.OptionsManager, asm: Hertzole.RuntimeOptionsManager}
       data:
