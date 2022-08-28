@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.TestTools;
 
 namespace Hertzole.OptionsManager.Tests
@@ -109,6 +110,11 @@ namespace Hertzole.OptionsManager.Tests
 			}
 
 			return setting;
+		}
+		
+		protected void AssertHasSavedSettings()
+		{
+			Assert.IsTrue(File.Exists(settings.ComputedSavePath));
 		}
 	}
 }

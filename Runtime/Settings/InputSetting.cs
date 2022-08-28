@@ -30,7 +30,7 @@ namespace Hertzole.OptionsManager
 			// Check if it's an InputActionData. If it isn't try to make it one.
 			if (newValue is InputActionData actionData)
 			{
-				if (targetAction.action.id.ToString() != actionData.id)
+				if (targetAction == null || targetAction.action == null || targetAction.action.id.ToString() != actionData.id)
 				{
 					return;
 				}
@@ -64,6 +64,11 @@ namespace Hertzole.OptionsManager
 
 		public override object GetSerializeValue()
 		{
+			if(targetAction == null || targetAction.action == null)
+			{
+				return null;
+			}
+			
 			string actionId = targetAction.action.id.ToString();
 
 			InputBindingData[] bindingData = new InputBindingData[bindings.Length];
