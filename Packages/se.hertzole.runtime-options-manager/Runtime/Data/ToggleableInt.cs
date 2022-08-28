@@ -22,7 +22,7 @@ namespace Hertzole.OptionsManager
 
 		public bool Equals(ToggleableInt other)
 		{
-			return enabled == other.enabled && value.Equals(other.value);
+			return enabled == other.enabled && value == other.value;
 		}
 
 		public override bool Equals(object obj)
