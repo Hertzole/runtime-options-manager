@@ -47,6 +47,7 @@ namespace Hertzole.OptionsManager
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
 			// Does nothing, Unity handles this.
+			value = Screen.fullScreenMode;
 		}
 
 		protected override FullScreenMode TryConvertValue(object newValue)
@@ -139,7 +140,7 @@ namespace Hertzole.OptionsManager
 		{
 			GetModes();
 
-			int index = IndexOf(Screen.fullScreenMode);
+			int index = IndexOf(Value);
 
 			return index == -1 ? 0 : index;
 		}

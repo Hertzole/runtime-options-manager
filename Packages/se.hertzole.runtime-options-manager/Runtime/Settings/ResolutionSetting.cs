@@ -12,11 +12,11 @@ namespace Hertzole.OptionsManager
 		[SerializeField]
 		private string resolutionFormat = "{0}x{1}";
 
-		public string ResolutionFormat { get { return resolutionFormat; } set { resolutionFormat = value; } }
-
 		protected Resolution[] uniqueResolutions = null;
-		
+
 		private static readonly ResolutionComparer resolutionComparer = new ResolutionComparer();
+
+		public string ResolutionFormat { get { return resolutionFormat; } set { resolutionFormat = value; } }
 
 		public override bool CanSave { get { return false; } }
 
@@ -35,11 +35,19 @@ namespace Hertzole.OptionsManager
 
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
-			// Does nothing, Unity handles this.
+			// Can't use Screen.currentResolution here because that returns the whole monitor resolution and not the
+			// game resolution.
+			value = new Resolution
+			{
+				width = Screen.width,
+				height = Screen.height,
+				refreshRate = Screen.currentResolution.refreshRate
+			};
 		}
 
 		protected override Resolution TryConvertValue(object newValue)
 		{
+			// This is generally never called. Just return the current monitor resolution.
 			return Screen.currentResolution;
 		}
 
@@ -62,14 +70,14 @@ namespace Hertzole.OptionsManager
 					count++;
 				}
 			}
-			
+
 			uniqueResolutions = new Resolution[count];
 
 			int index = 0;
-			
+
 			for (int i = 0; i < allResolutions.Length; i++)
 			{
-				if(allResolutions[i].refreshRate == refreshRate)
+				if (allResolutions[i].refreshRate == refreshRate)
 				{
 					uniqueResolutions[index] = allResolutions[i];
 					index++;
@@ -98,18 +106,18 @@ namespace Hertzole.OptionsManager
 		public void SetDropdownValue(int index)
 		{
 			GetUniqueResolutions();
-			
+
 			Value = uniqueResolutions[index];
 		}
 
 		public int GetDropdownValue()
 		{
 			GetUniqueResolutions();
-			
+
 			int index = 0;
 
-			Resolution currentValue = new Resolution(){width = Screen.width, height = Screen.height};
-			
+			Resolution currentValue = Value;
+
 			for (int i = 0; i < uniqueResolutions.Length; i++)
 			{
 				if (uniqueResolutions[i].width == currentValue.width && uniqueResolutions[i].height == currentValue.height)
@@ -125,7 +133,7 @@ namespace Hertzole.OptionsManager
 		public IReadOnlyList<(string text, Sprite icon)> GetDropdownValues()
 		{
 			GetUniqueResolutions();
-			
+
 			List<(string text, Sprite icon)> values = new List<(string text, Sprite icon)>();
 
 			for (int i = 0; i < uniqueResolutions.Length; i++)
