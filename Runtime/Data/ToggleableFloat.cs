@@ -22,7 +22,7 @@ namespace Hertzole.OptionsManager
 
 		public bool Equals(ToggleableFloat other)
 		{
-			return enabled == other.enabled && value.Equals(other.value);
+			return enabled == other.enabled && Math.Abs(value - other.value) < 0.0001f;
 		}
 
 		public override bool Equals(object obj)
