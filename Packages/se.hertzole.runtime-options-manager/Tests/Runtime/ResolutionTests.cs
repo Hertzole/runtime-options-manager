@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 using Assert = UnityEngine.Assertions.Assert;
 
@@ -21,20 +22,12 @@ namespace Hertzole.OptionsManager.Tests
 		}
 
 		[Test]
-		public void Set_InvalidSerializableValue()
-		{
-			ResolutionSetting setting = AddSetting<ResolutionSetting>();
-			setting.SetSerializedValue(42, new JsonSettingSerializer());
-			Assert.AreEqual(Screen.currentResolution, setting.Value);
-		}
-
-		[Test]
 		public void Get_DropdownValues()
 		{
 			ResolutionSetting setting = AddSetting<ResolutionSetting>();
 			setting.ResolutionFormat = "{0} and {1}";
-			var resolutions = setting.GetUniqueResolutions();
-			var dropdownValues = setting.GetDropdownValues();
+			Resolution[] resolutions = setting.GetUniqueResolutions();
+			IReadOnlyList<(string text, Sprite icon)> dropdownValues = setting.GetDropdownValues();
 			Assert.AreEqual(resolutions.Length, dropdownValues.Count);
 
 			for (int i = 0; i < dropdownValues.Count; i++)

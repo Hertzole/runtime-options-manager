@@ -3,6 +3,9 @@ on:
   push:
     branch:
       - master
+    paths:
+      - 'Assets/**'
+      - 'Packages/**'
     paths-ignore:
       - '*.md'
 
