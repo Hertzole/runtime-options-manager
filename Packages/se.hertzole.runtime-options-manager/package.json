@@ -1,6 +1,6 @@
 {
   "name": "se.hertzole.runtime-options-manager",
-  "version": "0.3.0-preview",
+  "version": "0.4.0-preview",
   "displayName": "Runtime Options Manager",
   "description": "A drop-in solution for easily managing your runtime game options.",
   "unity": "2021.3",
