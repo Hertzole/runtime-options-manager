@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using NUnit.Framework;
+using UnityEngine.Localization;
 using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
 
@@ -67,6 +68,36 @@ namespace Hertzole.OptionsManager.Tests
 			setting.SetSerializedValue(42, new JsonSettingSerializer());
 			
 			Assert.AreEqual(TargetLocalizationSettings.GetSelectedLocale().Identifier, setting.Value.Identifier);
+		}
+		
+		[Test]
+		public void GetDefaultValue_Default()
+		{
+			LanguageSetting setting = AddSetting<LanguageSetting>();
+			setting.DefaultValue = Locales[1];
+			setting.DefaultValueBehavior = LanguageSetting.DefaultValueBehaviors.ReturnValue;
+
+			Assert.AreEqual(Locales[1].Identifier, ((Locale)setting.GetDefaultValue()).Identifier);
+		}
+		
+		[Test]
+		public void GetDefaultValue_ReturnNull()
+		{
+			LanguageSetting setting = AddSetting<LanguageSetting>();
+			setting.DefaultValue = Locales[1];
+			setting.DefaultValueBehavior = LanguageSetting.DefaultValueBehaviors.ReturnNull;
+
+			Assert.AreEqual(null, ((Locale)setting.GetDefaultValue()));
+		}
+		
+		[Test]
+		public void GetDefaultValue_ReturnNull_InvalidEnum()
+		{
+			LanguageSetting setting = AddSetting<LanguageSetting>();
+			setting.DefaultValue = Locales[1];
+			setting.DefaultValueBehavior = (LanguageSetting.DefaultValueBehaviors) 10;
+
+			Assert.AreEqual(null, ((Locale)setting.GetDefaultValue()));
 		}
 	}
 }
