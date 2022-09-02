@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fef8e52c30041feafa03180c0b06aea, type: 3}
+  m_Name: Cube Spin Speed
+  m_EditorClassIdentifier: 
+  displayName: Cube Spin Speed
+  uiPrefab: {fileID: 3833867431636445629, guid: 347918e2843cc8b47a0f5088f27a7c1a, type: 3}
+  displayNameLocalized:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  uiElement: {fileID: 0}
+  identifier: cube_spin_speed
+  overwriteSavePath: 0
+  overriddenSavePath: 
+  overwriteFileName: 0
+  overriddenFileName: 
+  defaultValue: 90
+  minValue:
+    enabled: 1
+    value: -360
+  maxValue:
+    enabled: 1
+    value: 360
+  enableSlider: 1
+  wholeSliderNumbers: 1
+  references:
+    version: 2
+    RefIds: []
