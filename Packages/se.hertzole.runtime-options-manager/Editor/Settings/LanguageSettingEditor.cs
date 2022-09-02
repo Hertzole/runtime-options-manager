@@ -12,6 +12,7 @@ namespace Hertzole.OptionsManager.Editor
 		private SerializedProperty defaultValue;
 		private SerializedProperty nameDisplayType;
 		private SerializedProperty customNames;
+		private SerializedProperty defaultValueBehavior;
 		
 		private ReorderableList customNamesList;
 
@@ -31,6 +32,7 @@ namespace Hertzole.OptionsManager.Editor
 			defaultValue = serializedObject.FindProperty(nameof(defaultValue));
 			nameDisplayType = serializedObject.FindProperty(nameof(nameDisplayType));
 			customNames = serializedObject.FindProperty(nameof(customNames));
+			defaultValueBehavior = serializedObject.FindProperty(nameof(defaultValueBehavior));
 			
 			customNamesList = new ReorderableList(serializedObject, customNames, true, true, true, true)
 			{
@@ -112,8 +114,13 @@ namespace Hertzole.OptionsManager.Editor
 			menuIcon ??=  EditorGUIUtility.TrIconContent("_Menu");
 
 			serializedObject.Update();
+
+			EditorGUILayout.PropertyField(defaultValueBehavior);
+			if(defaultValueBehavior.enumValueIndex == (int)LanguageSetting.DefaultValueBehaviors.ReturnValue)
+			{
+				EditorGUILayout.PropertyField(defaultValue);
+			}
 			
-			EditorGUILayout.PropertyField(defaultValue);
 			EditorGUILayout.PropertyField(nameDisplayType);
 
 			if (nameDisplayType.enumValueIndex == (int) LanguageSetting.DisplayType.CustomName)

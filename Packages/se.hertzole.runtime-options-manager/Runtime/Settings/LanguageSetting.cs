@@ -13,6 +13,12 @@ namespace Hertzole.OptionsManager
 #endif
 	public class LanguageSetting : Setting<Locale>, IDropdownValues
 	{
+		public enum DefaultValueBehaviors
+		{
+			ReturnValue = 0,
+			ReturnNull = 1
+		}
+
 		public enum DisplayType
 		{
 			CultureInfoName = 0,
@@ -21,17 +27,20 @@ namespace Hertzole.OptionsManager
 			CultureInfoEnglishName = 3,
 			CustomName = 4
 		}
-		
-		[SerializeField] 
+
+		[SerializeField]
 		private DisplayType nameDisplayType = DisplayType.CultureInfoNativeName;
-		[SerializeField] 
+		[SerializeField]
+		private DefaultValueBehaviors defaultValueBehavior = DefaultValueBehaviors.ReturnValue;
+		[SerializeField]
 		private List<SerializableKeyValuePair<Locale, string>> customNames = new List<SerializableKeyValuePair<Locale, string>>();
-		
+
 		private (string, Sprite)[] cachedDropdownValues;
 
 		private LocalizationSettings localizationSettings;
 
 		public DisplayType NameDisplayType { get { return nameDisplayType; } set { nameDisplayType = value; } }
+		public DefaultValueBehaviors DefaultValueBehavior { get { return defaultValueBehavior; } set { defaultValueBehavior = value; } }
 
 		public LocalizationSettings TargetLocalizationSettings
 		{
@@ -95,7 +104,7 @@ namespace Hertzole.OptionsManager
 			{
 				return DefaultValue == null ? TargetLocalizationSettings.GetSelectedLocale().Identifier.Code : DefaultValue.Identifier.Code;
 			}
-			
+
 			Locale currentLocale = Value;
 			return currentLocale.Identifier.Code;
 		}
@@ -103,7 +112,7 @@ namespace Hertzole.OptionsManager
 		public override void SetSerializedValue(object newValue, ISettingSerializer serializer)
 		{
 			DontInvokeSettingChanged = true;
-			
+
 			if (newValue is string stringValue)
 			{
 				SettingsManager.StartCoroutine(SetSerializedValueRoutine(stringValue));
@@ -133,10 +142,16 @@ namespace Hertzole.OptionsManager
 					yield return null;
 				}
 			}
-			
+
 			if (string.IsNullOrWhiteSpace(localeCode))
 			{
-				localeCode = TargetLocalizationSettings.GetSelectedLocale().Identifier.Code;
+				AsyncOperationHandle<Locale> getOperation = TargetLocalizationSettings.GetSelectedLocaleAsync();
+				while (!getOperation.IsDone)
+				{
+					yield return null;
+				}
+
+				localeCode = getOperation.Result.Identifier.Code;
 			}
 
 			value = TryConvertValue(localeCode);
@@ -151,6 +166,46 @@ namespace Hertzole.OptionsManager
 			}
 
 			return TargetLocalizationSettings.GetSelectedLocale();
+		}
+
+		public override object GetDefaultValue()
+		{
+			switch (defaultValueBehavior)
+			{
+				case DefaultValueBehaviors.ReturnValue:
+					return DefaultValue;
+				case DefaultValueBehaviors.ReturnNull:
+					return null; // Returning null will cause the setting to use the selected locale.
+				default:
+					return null;
+			}
+		}
+
+		public string GetLocaleName(Locale locale, DisplayType displayType)
+		{
+			switch (displayType)
+			{
+				case DisplayType.CultureInfoName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.Name : locale.ToString();
+				case DisplayType.CultureInfoDisplayName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.DisplayName : locale.ToString();
+				case DisplayType.CultureInfoNativeName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
+				case DisplayType.CultureInfoEnglishName:
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.EnglishName : locale.ToString();
+				case DisplayType.CustomName:
+					for (int i = 0; i < customNames.Count; i++)
+					{
+						if (customNames[i].Key.Identifier == locale.Identifier)
+						{
+							return customNames[i].Value;
+						}
+					}
+
+					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
+				default:
+					return locale.ToString();
+			}
 		}
 
 		public void SetDropdownValue(int index)
@@ -181,33 +236,6 @@ namespace Hertzole.OptionsManager
 			}
 
 			return cachedDropdownValues;
-		}
-
-		public string GetLocaleName(Locale locale, DisplayType displayType)
-		{
-			switch (displayType)
-			{
-				case DisplayType.CultureInfoName:
-					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.Name : locale.ToString();
-				case DisplayType.CultureInfoDisplayName:
-					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.DisplayName : locale.ToString();
-				case DisplayType.CultureInfoNativeName:
-					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
-				case DisplayType.CultureInfoEnglishName:
-					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.EnglishName : locale.ToString();
-				case DisplayType.CustomName:
-					for (int i = 0; i < customNames.Count; i++)
-					{
-						if (customNames[i].Key.Identifier == locale.Identifier)
-						{
-							return customNames[i].Value;
-						}
-					}
-					
-					return locale.Identifier.CultureInfo != null ? locale.Identifier.CultureInfo.NativeName : locale.ToString();
-				default:
-					return locale.ToString();
-			}
 		}
 	}
 }
